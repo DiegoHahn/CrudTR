@@ -1,0 +1,55 @@
+Cadastro de Cliente
+ 
+- Tipo da inscrição
+	CPF, CNPJ
+	Campo obrigatório
+- Número da inscrição
+	Validar se o tipo for CPF validar como CPF e vice versa
+	O campo tem que ser string, mas aceitar somente os números do CPF sem formatação
+	O FE vai formatar o CPF, e deve ao salvar enviar o CPF sem formatação
+	O mesmo vale para o CNPJ
+	Campo obrigatório
+- Código
+	Campo obrigatório
+	Mesmo aceitando apenas números, salvar no banco como string.
+- Nome
+	Limite 250 caracteres
+	Campo obrigatório
+- Nome Fantasia
+	Limite 250 caracteres
+- Data de abertura
+	Deve mostrar em tela no padrão dd/mm/yyyy
+	Apenas data
+	Campo obrigatório
+- Situação da empresa
+	ENUM: Ativo, Inativo, Suspenso
+	Por padrão deve vir como Ativo no formulário
+	Campo obrigatório
+Contador
+	Carregar lista de contadores ordenada pelo Nome
+	Campo obrigatório
+ 
+---------------------------------------------
+ 
+Cadastro de Contadores
+ 
+- CPF
+	Validar se o tipo for CPF validar como CPF e vice versa
+	O campo tem que ser string, mas aceitar somente os números do CPF sem formatação
+	O FE vai formatar o CPF, e deve ao salvar enviar o CPF sem formatação
+	Campo obrigatório
+- Código
+	Campo obrigatório
+	Mesmo aceitando apenas números, salvar no banco como string.
+- Nome
+	Limite 250 caracteres
+	Campo obrigatório
+- Situação do contador
+	boolean representando se ele está ativo ou inativo
+	Por padrão deve vir como Ativo no formulário
+	Campo obrigatório
+
+-----------------------------------------------
+ 
+Criar CRUD para Contadores com listagem
+Criar CRUD para Clientes com listagem
