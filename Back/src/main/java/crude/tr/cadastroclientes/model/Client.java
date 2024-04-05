@@ -1,6 +1,9 @@
 package crude.tr.cadastroclientes.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.servlet.Registration;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -10,11 +13,15 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Boolean registrationType;
+    @Enumerated(EnumType.STRING)
+    private RegistrationType registrationType;
     private String registrationNumber;
     private String clientCode;
     private String name;
     private String fantasyName;
+    //Anotação para configuração de formatação da data
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;
     @Enumerated(EnumType.STRING)
     private CompanyStatus companyStatus;
@@ -25,7 +32,7 @@ public class Client {
     public Client() {
     }
 
-    public Client(Boolean registrationType, String registrationNumber, String clientCode, String name, String fantasyName, LocalDate registrationDate, CompanyStatus companyStatus, Accountant accountant) {
+    public Client(RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, LocalDate registrationDate, CompanyStatus companyStatus, Accountant accountant) {
         this.registrationType = registrationType;
         this.registrationNumber = registrationNumber;
         this.clientCode = clientCode;
@@ -36,11 +43,11 @@ public class Client {
         this.accountant = accountant;
     }
 
-    public Boolean getRegistrationType() {
+    public RegistrationType getRegistrationType() {
         return registrationType;
     }
 
-    public void setRegistrationType(Boolean registrationType) {
+    public void setRegistrationType(RegistrationType registrationType) {
         this.registrationType = registrationType;
     }
 

@@ -1,8 +1,14 @@
 package crude.tr.cadastroclientes.controller;
 
+import crude.tr.cadastroclientes.dto.AccountantDTO;
+import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Accountant;
+import crude.tr.cadastroclientes.model.Client;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
+import crude.tr.cadastroclientes.service.AccountantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,23 +18,31 @@ import java.util.Optional;
 @RequestMapping("/accountants")
 public class AccountantController {
 
-        @Autowired
-        private AccountantRepository accountantRepository;
+    private final AccountantService accountantService;
 
-        @PostMapping
-        public Accountant addAccountant(@RequestBody Accountant accountant) {
-            return accountantRepository.save(accountant); // Salvando um novo cliente com save (método da JPA)
-        }
+    @Autowired
+    private AccountantRepository accountantRepository;
 
-        @GetMapping
-        public List<Accountant> getAllAccountants() {
-            return accountantRepository.findAll(); // Buscando todos os clientes
-        }
+    public AccountantController(AccountantService accountantService) {
+        this.accountantService = accountantService;
+    }
 
-        @GetMapping("/{id}")
-        public Optional<Accountant> getAccountantById(@PathVariable Long id) {
-            return accountantRepository.findById(id); // Buscando um cliente pelo id
-        }
+    @PostMapping
+    public ResponseEntity<Accountant> addAccountant(@RequestBody AccountantDTO accountantdto) {
+        Accountant accountant = accountantService.convertToAccountant(accountantdto);
+        Accountant savedAccountant = accountantService.addAccountant(accountant);
+        return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public List<Accountant> getAllAccountants() {
+        return accountantRepository.findAll(); // Buscando todos os clientes
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Accountant> getAccountantById(@PathVariable Long id) {
+        return accountantRepository.findById(id); // Buscando um cliente pelo id
+    }
 }
 
 

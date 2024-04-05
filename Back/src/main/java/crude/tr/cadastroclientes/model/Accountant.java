@@ -1,5 +1,6 @@
 package crude.tr.cadastroclientes.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class Accountant {
     private String name;
     private Boolean isActive;
 
+    //Não carrerga a lista de clientes quando buscar um contador
+    @JsonIgnore
     @OneToMany(mappedBy = "accountant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Client> clients;
 
@@ -28,6 +31,9 @@ public class Accountant {
         this.name = name;
         this.isActive = isActive;
 
+    }
+    public Long getId() {
+        return id;
     }
 
     public String getRegistrationNumber() {
@@ -54,11 +60,11 @@ public class Accountant {
         this.name = name;
     }
 
-    public Boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 
@@ -70,4 +76,5 @@ public class Accountant {
         clients.forEach(c -> c.setAccountant(this));
         this.clients = clients;
     }
+
 }
