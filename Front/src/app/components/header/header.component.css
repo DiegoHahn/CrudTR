@@ -1,0 +1,32 @@
+.header {
+  background: url(../../../assets/images/footer-background.png);
+  background-size: cover;
+  display: grid;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .logo img {
+  max-width: 350px;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+  margin-left: 4rem;
+}
+
+@media (max-width: 576px) {
+  .header .logo {
+    padding: 2rem;
+  }
+  .header p {
+    font-size: 1.5rem
+  }
+}
+
+@media (max-width: 768px) {
+  .header .logo {
+    width: 90%;
+  }
+  .header .imagem {
+    display: none;
+  }
+}
