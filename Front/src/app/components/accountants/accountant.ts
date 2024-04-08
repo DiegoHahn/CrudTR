@@ -1,8 +1,8 @@
 export interface Accountant {
     id?: number
-    conteudo: string
-    autoria: string
-    modelo: string
-    favorito: boolean
+    registrationNumber: string
+    accountantCode: string
+    name: string
+    isActive: boolean
 }
   
