@@ -9,44 +9,43 @@
 .ff-roboto-mono { font-family: 'Roboto Mono', monospace; }
 
 h1 {
-  position: absolute;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1,5rem;
+  text-align: left;
+  padding: 1rem 0;
 }
 
-h2 {
-  color: #154580;
-  font-weight: bold;
-  font-size: 2rem;
-  text-align: center;
-}
-
-.container {
-  padding-right: 1rem;
-  padding-left: 1rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.botao {
-  background: #154580;
+.btn-add{
+  background: #3789ee;
   color: #ffffff;
+  width: auto;
+  padding: 5px 10px; 
+  margin: 0 auto;
+  border-radius: 7px;
+  transition: 0.5s ease;
+  box-shadow: none;
+}
+
+
+.btn-add:hover {
+  border: 2px solid #04405c;
+  color: #04405c;
+} 
+
+/*
+.botao__desabilitado {
+  background: #7A7F87;
+  color: #FFFFFF;
   max-width: 270px;
   width: 250px;
   padding: 1rem;
   margin: 0 auto;
-  border: 2px solid #154580;
+  border: 2px solid #C4C4C4;
   border-radius: 10px;
   transition: 0.5s ease;
 }
-
-.botao:hover {
-  border: 2px solid #84EEC1;
-  color: #84EEC1;
-}
+*/
 
 @media (min-width: 576px) {
   .container {
@@ -68,16 +67,3 @@ h2 {
       width: 1140px;
   }
 }
-
-.botao__desabilitado {
-  background: #7A7F87;
-  color: #FFFFFF;
-  max-width: 270px;
-  width: 250px;
-  padding: 1rem;
-  margin: 0 auto;
-  border: 2px solid #C4C4C4;
-  border-radius: 10px;
-  transition: 0.5s ease;
-}
-

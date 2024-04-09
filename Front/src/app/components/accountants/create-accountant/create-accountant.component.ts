@@ -34,10 +34,11 @@ export class CreateAccountantComponent implements OnInit {
     })
   }
 
-  createAccountant() {
-    if(this.accountantForm.valid){
-      this.service.createAccountant(this.accountantForm.value).subscribe(() => {
-      })
+  
+  async createAccountant() {
+    if (this.accountantForm.valid) {
+      await this.service.createAccountant(this.accountantForm.value).toPromise();
+      this.router.navigate(['/listAccountants']);
     }
   }
 

@@ -1,0 +1,59 @@
+.container {
+    display: grid;
+    justify-content: center;
+    width: auto;
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 20px;
+}
+ 
+.table-header {
+    background-color: #e9e7e7;
+    color:black;
+}
+
+.table-header th {
+    padding: 15px;
+    text-align: center;
+}
+  
+.table-form {
+    background-color: #fafafa;
+}
+  
+.table-form td {
+    padding: 8px;
+    text-align: left;
+}
+   
+
+.sem-accountants {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+  
+
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+  
+.btn-edit img, .btn-delete img {
+    width: 18px;
+    height: 18px;
+}
+  
+.search-bar{
+    border-radius: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-right: 50px;
+    padding: 5px 10px;
+    text-align: left;
+    width: 200px;
+    border: gray 1.8px solid;
+}

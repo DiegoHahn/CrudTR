@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountantService } from '../accountants.service';
 import { Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
+import { Accountant } from '../accountant';
 
 @Component({
   selector: 'app-list-accountants',
@@ -9,12 +9,11 @@ import { FormBuilder } from '@angular/forms';
   styleUrls: ['./list-accountants.component.css']
 })
 export class ListAccountantsComponent implements OnInit {
-  accountants: any;
-
+  listAccountants: Accountant[] = [];
+    
   constructor(
   private service: AccountantService,
-  private router: Router,
-  private formBuilder: FormBuilder) { }
+  private router: Router) { }
 
   ngOnInit(): void {
     this.loadAccountants();
@@ -22,9 +21,10 @@ export class ListAccountantsComponent implements OnInit {
 
   loadAccountants(){
     this.service.listAccountant().subscribe(data => {
-      this.accountants = data;
-      this.accountants.forEach(console.log);
+      this.listAccountants = data;
+      console.log(this.listAccountants);
     });
   }
   
+
 }
