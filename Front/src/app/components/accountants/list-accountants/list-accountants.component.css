@@ -1,12 +1,15 @@
 .container {
     display: grid;
     justify-content: center;
+    min-width: 1200px;
     width: auto;
-    max-width: 1200px; 
     margin: 0 auto;
     padding: 20px;
 }
  
+.page-header{
+    display: flex;
+}
 .table-header {
     background-color: #e9e7e7;
     color:black;
@@ -18,15 +21,38 @@
 }
   
 .table-form {
-    background-color: #fafafa;
+    background-color:white;
 }
   
 .table-form td {
     padding: 8px;
     text-align: left;
 }
-   
+.table-form td.table-cell-situacao,
+.table-form td.table-cell-acoes {
+  text-align: center;
+}
 
+.table-cell-nome {
+    min-width: 20vb;
+}
+  
+.table-cell-cpf {
+    min-width: 150px;
+}
+  
+.table-cell-codigo {
+    min-width: 120px;
+}
+  
+.table-cell-situacao {
+    min-width: 100px;
+}
+  
+.table-cell-acoes {
+    min-width: 120px;
+}
+  
 .sem-accountants {
     text-align: center;
     padding: 20px;
@@ -47,13 +73,27 @@
     height: 18px;
 }
   
+
+.search-box{
+    position:relative;
+    display: inline-block;
+}
 .search-bar{
     border-radius: 6px;
     justify-content: center;
+    margin-top: 4px;
     margin-bottom: 20px;
     margin-right: 50px;
     padding: 5px 10px;
     text-align: left;
-    width: 200px;
+    width: 250px;
     border: gray 1.8px solid;
+}
+
+.search-icon{
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 9px;
+    right: 56px;
 }

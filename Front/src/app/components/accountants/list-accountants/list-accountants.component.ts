@@ -26,5 +26,9 @@ export class ListAccountantsComponent implements OnInit {
     });
   }
   
+  mostar(){
+    console.log('Hola');
+
+  }
 
 }

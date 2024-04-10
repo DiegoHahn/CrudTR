@@ -20,5 +20,4 @@ export class AccountantComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
