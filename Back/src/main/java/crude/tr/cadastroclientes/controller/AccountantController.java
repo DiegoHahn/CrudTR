@@ -43,6 +43,9 @@ public class AccountantController {
     public Optional<Accountant> getAccountantById(@PathVariable Long id) {
         return accountantRepository.findById(id); // Buscando um cliente pelo id
     }
+
+//    @PutMapping("/{id}")
+//
 }
 
 

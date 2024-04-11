@@ -25,10 +25,7 @@ export class ListAccountantsComponent implements OnInit {
       console.log(this.listAccountants);
     });
   }
-  
   mostar(){
-    console.log('Hola');
-
+    console.log('ola');
   }
-
 }

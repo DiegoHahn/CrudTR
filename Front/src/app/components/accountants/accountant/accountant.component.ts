@@ -10,14 +10,19 @@ export class AccountantComponent implements OnInit {
 
   @Input() accountant: Accountant = {
     id: 0,
+    name: 'modelo3',
     registrationNumber: '123445678912',
     accountantCode: '123',
-    name: 'modelo3',
     isActive: true
   }
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  mostar(){
+    console.log('Hola');
+    console.log(this.accountant);
   }
 }

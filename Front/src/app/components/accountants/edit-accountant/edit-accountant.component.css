@@ -1,0 +1,87 @@
+.container {
+    display: grid;
+    justify-content: center;
+    width: auto;
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 150px 0;
+}
+  
+.form-section {
+    background-color: white; 
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    width: 1200px;
+    max-width: 400px;
+}
+.form-header {
+  font-weight: bold;
+  font-size: larger;
+  margin-bottom: 20px;
+}
+
+.accountant-form {
+  width: 100%;
+  max-width: 400px; 
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel{
+    padding: 10px 20px;
+    border: none;
+    margin-left: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+.btn-save {
+  padding: 10px 30px;
+  border: none;
+  margin-left: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background-color: #f6766d;
+  color: white;
+}
+
+.btn-save {
+  background-color: #78b77a;
+  color: white;
+}
+
+.btn-disabled {
+    opacity: 80%;
+    padding: 10px 30px;
+    border: none;
+    margin-left: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: rgb(187, 187, 187);
+  }
+  

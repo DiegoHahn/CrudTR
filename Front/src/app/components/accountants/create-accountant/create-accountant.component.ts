@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-accountant.component.css']
 })
 export class CreateAccountantComponent implements OnInit {
-  accountantForm!: FormGroup<any>;
+  accountantForm!: FormGroup;
 
   constructor(    
     //dependencias
@@ -18,7 +18,6 @@ export class CreateAccountantComponent implements OnInit {
     private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
-    //validações todas aqui? perguntar sobre a mascara que tinha comentado na quinta
     this.accountantForm = this.formBuilder.group({
       registrationNumber: ['', Validators.compose([
         Validators.required
@@ -28,7 +27,7 @@ export class CreateAccountantComponent implements OnInit {
       ])],
       name: ['', Validators.compose([
         Validators.required,
-        Validators.maxLength(250) //falta fazer mostrar o erro em tela
+        Validators.maxLength(250)
       ])],
       isActive: [true]
     })
@@ -37,7 +36,7 @@ export class CreateAccountantComponent implements OnInit {
   
   async createAccountant() {
     if (this.accountantForm.valid) {
-      await this.service.createAccountant(this.accountantForm.value).toPromise();
+      await this.service.create(this.accountantForm.value).toPromise();
       this.router.navigate(['/listAccountants']);
     }
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountantService } from '../accountants.service';
 
@@ -10,6 +10,7 @@ import { AccountantService } from '../accountants.service';
   styleUrls: ['./edit-accountant.component.css']
 })
 export class EditAccountantComponent implements OnInit {
+  accountantForm!: FormGroup;
 
   constructor(  
     private service: AccountantService,
@@ -19,8 +20,38 @@ export class EditAccountantComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    console.log(id);
-
+    this.service.searchAccountByID(parseInt(id!)).subscribe(accountant => {
+      this.accountantForm = this.formBuilder.group({
+        id: [accountant.id],
+        registrationNumber: [accountant.registrationNumber, Validators.compose([
+          Validators.required
+        ])],
+        accountantCode: [accountant.accountantCode, Validators.compose([
+          Validators.required
+        ])],
+        name: [accountant.name, Validators.compose([
+          Validators.required,
+          Validators.maxLength(250) //falta fazer mostrar o erro em tela
+        ])],
+        isActive: [accountant.isActive]
+      })
+    });
+  }
+  async editAccountant() {
+    if (this.accountantForm.valid) {
+      await this.service.edit(this.accountantForm.value).toPromise();
+      this.router.navigate(['/listAccountants']);
+    }
   }
 
+  btnEnable(): string {
+    if(this.accountantForm.valid) {
+      return 'btn-save'
+    } else {
+      return 'btn-disabled'
+    }
+  }
+  cancelAccountant(){
+    this.router.navigate(['/listAccountants'])
+  }
 }

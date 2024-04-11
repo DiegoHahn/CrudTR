@@ -8,7 +8,7 @@
           <button class="btn-add" routerLink="/createAccountant">Adicionar contador</button>
         </div>
     </div>  
-    <table class="table-section" *ngIf="listAccountants.length > 0; else semPensamentos" >
+    <table class="table-section" *ngIf="listAccountants.length > 0; else noAccountants" >
       <thead class="table-header">
         <tr>
           <th class="table-cell-nome">Nome</th>
@@ -26,18 +26,25 @@
           <td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
           <td class="table-cell-acoes">
             <button class="btn-edit">
-                <img src="../../../../assets/images/edit-btn.png" (click)="mostar()">
-               </button>
-           <button class="btn-delete">
-            <img src="../../../../assets/images/delete-btn.png">
-           </button>
+                <img src="../../../../assets/images/edit-btn.png" alt="Editar" [routerLink]="['/editAccountant', accountant.id]">
+            </button>
+             <button class="btn-delete">
+                <img src="../../../../assets/images/delete-btn.png" alt="Excluir">
+            </button>
           </td>
-        </tr>
-      </tbody>
+
+      
+      <!-- Perguntar sobre essa implementação de ngFor ele gera o <app-accountant> que não deixa o conteudo ser formatado (desacoplamento) 
+        <tbody class="table-form">
+        <ng-container *ngFor="let accountant of listAccountants">
+          <app-accountant [accountant]="accountant"></app-accountant>
+        </ng-container>
+      </tbody> -->
+      
     </table>
   </section>
-  <ng-template #semPensamentos>
-    <div class="ff-inter sem-pensamentos">
+  <ng-template #noAccountants>
+    <div>
       <p>Ainda não há contadores cadastrados!</p>
     </div>
   </ng-template>
