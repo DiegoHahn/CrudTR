@@ -1,14 +1,30 @@
-<tr>
-<td class="table-cell-nome">{{ accountant.name }}</td>
-<td class="table-cell-cpf">{{ accountant.registrationNumber }}</td>
-<td class="table-cell-codigo">{{ accountant.accountantCode }}</td>
-<td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
-<td class="table-cell-acoes">
-  <button class="btn-edit">
-      <img src="../../../../assets/images/edit-btn.png" alt="Editar" (click)="mostar()">
-  </button>
-   <button class="btn-delete">
-      <img src="../../../../assets/images/delete-btn.png" alt="Excluir">
-  </button>
-</td>
-</tr>
+<table class="table-section" *ngIf="listAccountants.length > 0; else noAccountants" >
+  <thead class="table-header">
+    <tr>
+      <th class="table-cell-nome">Nome</th>
+      <th class="table-cell-cpf">CPF</th>
+      <th class="table-cell-codigo">Código</th>
+      <th class="table-cell-situacao">Situação</th>
+      <th class="table-cell-acoes">Ações</th>
+    </tr>
+  </thead>
+  <tbody class="table-form">
+    <tr *ngFor="let accountant of listAccountants">
+      <td class="table-cell-nome">{{ accountant.name }}</td>
+      <td class="table-cell-cpf">{{ accountant.registrationNumber }}</td>
+      <td class="table-cell-codigo">{{ accountant.accountantCode }}</td>
+      <td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
+      <td class="table-cell-acoes">
+        <ng-container *ngIf="actionTemplateRef"
+        [ngTemplateOutlet]="actionTemplateRef"
+                        [ngTemplateOutletContext]="{$implicit:accountant}">
+        </ng-container>
+      </td>
+  </tbody>
+ </table>
+ <ng-template #noAccountants>
+  <div>
+    <p>Ainda não há contadores cadastrados!</p>
+  </div>
+</ng-template>
+

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core';
 import { Accountant } from '../accountant';
 
 @Component({
@@ -8,14 +8,10 @@ import { Accountant } from '../accountant';
 })
 export class AccountantComponent implements OnInit {
 
-  @Input() accountant: Accountant = {
-    id: 0,
-    name: 'modelo3',
-    registrationNumber: '123445678912',
-    accountantCode: '123',
-    isActive: true
-  }
+  @Input() listAccountants: Accountant[] = [];
 
+  @ContentChild('actions', {static: false}) actionTemplateRef: TemplateRef <any>;
+  
   constructor() { }
 
   ngOnInit(): void {
@@ -23,6 +19,5 @@ export class AccountantComponent implements OnInit {
 
   mostar(){
     console.log('Hola');
-    console.log(this.accountant);
   }
 }
