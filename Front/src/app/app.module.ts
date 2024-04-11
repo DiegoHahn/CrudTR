@@ -11,6 +11,7 @@ import { CreateAccountantComponent } from './components/accountants/create-accou
 import { BrowserModule } from '@angular/platform-browser';
 import { ListAccountantsComponent } from './components/accountants/list-accountants/list-accountants.component';
 import { EditAccountantComponent } from './components/accountants/edit-accountant/edit-accountant.component';
+import { DeleteAccountantComponent } from './components/accountants/delete-accountant/delete-accountant.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { EditAccountantComponent } from './components/accountants/edit-accountan
     CreateAccountantComponent,
     ListAccountantsComponent,
     EditAccountantComponent,
+    DeleteAccountantComponent,
   ],
   imports: [
     BrowserModule,

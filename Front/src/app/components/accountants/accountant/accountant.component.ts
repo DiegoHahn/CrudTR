@@ -10,7 +10,7 @@ export class AccountantComponent implements OnInit {
 
   @Input() listAccountants: Accountant[] = [];
 
-  @ContentChild('actions', {static: false}) actionTemplateRef: TemplateRef <any>;
+  @ContentChild('actions', {static: false}) actionTemplateRef: TemplateRef <Accountant>;
   
   constructor() { }
 

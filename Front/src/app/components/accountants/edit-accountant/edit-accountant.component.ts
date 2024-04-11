@@ -19,6 +19,16 @@ export class EditAccountantComponent implements OnInit {
     private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
+
+    //inicia o formulário com os campos vazios porque se não ocorre o erro de instanciar o form antes da resposta do servidor
+    this.accountantForm = this.formBuilder.group({
+      id: [null],
+      registrationNumber: [''],
+      accountantCode: [''],
+      name: [''],
+      isActive: ['']
+    });
+
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchAccountByID(parseInt(id!)).subscribe(accountant => {
       this.accountantForm = this.formBuilder.group({

@@ -16,8 +16,8 @@
       <td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
       <td class="table-cell-acoes">
         <ng-container *ngIf="actionTemplateRef"
-        [ngTemplateOutlet]="actionTemplateRef"
-                        [ngTemplateOutletContext]="{$implicit:accountant}">
+          [ngTemplateOutlet]="actionTemplateRef"
+          [ngTemplateOutletContext]="{$implicit:accountant}">
         </ng-container>
       </td>
   </tbody>
