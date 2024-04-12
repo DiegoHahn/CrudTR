@@ -47,10 +47,17 @@ export class EditAccountantComponent implements OnInit {
       })
     });
   }
-  async editAccountant() {
+
+  editAccountant() {
     if (this.accountantForm.valid) {
-      await this.service.edit(this.accountantForm.value).toPromise();
-      this.router.navigate(['/listAccountants']);
+      this.service.edit(this.accountantForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/listAccountants']);
+        },
+        error: (error) => {
+          console.log(error);
+        }
+      });
     }
   }
 

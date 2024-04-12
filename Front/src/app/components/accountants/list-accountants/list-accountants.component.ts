@@ -1,7 +1,6 @@
+import { Accountant } from './../accountant';
 import { Component, OnInit } from '@angular/core';
 import { AccountantService } from '../accountants.service';
-import { Router } from '@angular/router';
-import { Accountant } from '../accountant';
 
 @Component({
   selector: 'app-list-accountants',
@@ -10,10 +9,11 @@ import { Accountant } from '../accountant';
 })
 export class ListAccountantsComponent implements OnInit {
   listAccountants: Accountant[] = [];
+  showDeleteConfirmation = false;
+  selectedAccountId!: number;
     
   constructor(
-  private service: AccountantService,
-  private router: Router) { }
+    private service: AccountantService) { }
 
   ngOnInit(): void {
     this.loadAccountants();
@@ -22,10 +22,36 @@ export class ListAccountantsComponent implements OnInit {
   loadAccountants(){
     this.service.listAccountant().subscribe(data => {
       this.listAccountants = data;
-      console.log(this.listAccountants);
     });
   }
-  mostar(){
-    console.log('ola');
+
+  renderDeleteConfirmation(accountantID: number) {
+    this.selectedAccountId = accountantID
+    this.showDeleteConfirmation = true;
+  }
+
+  //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete
+  onDeleteConfirm(confirmation: boolean) {
+     if(confirmation) {
+      this.service.delete(this.selectedAccountId).subscribe({
+        next: () => {
+          //quando o delete é feito com sucesso, recarrega a lista de contadores
+          this.loadAccountants();
+        },
+        error: (error) => {
+          //tratamento de erro
+          console.log(error);
+        },
+        complete: () => {
+          //quando o delete é feito com sucesso, fecha o modal de confirmação
+          this.showDeleteConfirmation = false;
+        },
+      });
+    }
+    //se o usuário cancelar a exclusão, fecha o modal de confirmação
+    else {
+      this.showDeleteConfirmation = false;
+    }
   }
 }
+

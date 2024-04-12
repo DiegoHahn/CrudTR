@@ -32,38 +32,55 @@ h1 {
   color: #04405c;
 } 
 
-/*
-.botao__desabilitado {
-  background: #7A7F87;
-  color: #FFFFFF;
-  max-width: 270px;
-  width: 250px;
-  padding: 1rem;
-  margin: 0 auto;
-  border: 2px solid #C4C4C4;
-  border-radius: 10px;
-  transition: 0.5s ease;
+.btn-cancel{
+  width: 120px;
+  padding: 10px 20px;
+  border: none;
+  margin-left: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-save {
+  width: 120px;
+  padding: 10px 20px;
+  border: none;
+  margin-left: 30px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
+.btn-cancel {
+  background-color: #f6766d;
+  color: white;
+}
 
-@media (min-width: 576px) {
-  .container {
-      width: 540px;
-  }
+.btn-save {
+  background-color: #78b77a;
+  color: white;
 }
-@media (min-width: 768px) {
-  .container {
-      width: 720px;
-  }
+
+.confirmation-text{
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin: 20px 0;
 }
-@media (min-width: 992px) {
-  .container {
-      width: 960px;
-  }
+
+.delete-confirmation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-@media (min-width: 1200px) {
-  .container {
-      width: 1140px;
-  }
+
+.delete-confirmation-box {
+  border: red 1px solid;
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
 }
-*/

@@ -16,8 +16,4 @@ export class AccountantComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  mostar(){
-    console.log('Hola');
-  }
 }
