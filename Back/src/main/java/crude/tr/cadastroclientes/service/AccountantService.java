@@ -4,6 +4,8 @@ import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -20,6 +22,7 @@ public class AccountantService {
 
     public Accountant convertToAccountant(AccountantDTO accountantDTO) {
         Accountant accountant = new Accountant();
+        accountant.setId(accountantDTO.getId());
         accountant.setRegistrationNumber(accountantDTO.getRegistrationNumber());
         accountant.setAccountantCode(accountantDTO.getAccountantCode());
         accountant.setName(accountantDTO.getName());
@@ -33,5 +36,26 @@ public class AccountantService {
 
     public Accountant addAccountant(Accountant accountant) {
         return accountantRepository.save(accountant);
+    }
+
+    public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {
+        Optional<Accountant> accountantOptional = seachAccountantByID(id);
+        if (accountantOptional.isPresent()) {
+            Accountant accountant = convertToAccountant(accountantDTO);
+            accountant.setId(id);
+            return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<Void> deleteAccountant(Long id) {
+        Optional<Accountant> accountantOptional = seachAccountantByID(id);
+        if (accountantOptional.isPresent()) {
+            accountantRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

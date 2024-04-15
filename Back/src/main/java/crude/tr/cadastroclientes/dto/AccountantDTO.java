@@ -38,4 +38,8 @@ public class AccountantDTO {
     public void setActive(Boolean active) {
         isActive = active;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

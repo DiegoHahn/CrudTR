@@ -1,12 +1,9 @@
 package crude.tr.cadastroclientes.controller;
 
 import crude.tr.cadastroclientes.dto.AccountantDTO;
-import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Accountant;
-import crude.tr.cadastroclientes.model.Client;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
 import crude.tr.cadastroclientes.service.AccountantService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +16,11 @@ import java.util.Optional;
 public class AccountantController {
 
     private final AccountantService accountantService;
+    private final AccountantRepository accountantRepository;
 
-    @Autowired
-    private AccountantRepository accountantRepository;
-
-    public AccountantController(AccountantService accountantService) {
+    public AccountantController(AccountantService accountantService, AccountantRepository accountantRepository) {
         this.accountantService = accountantService;
+        this.accountantRepository = accountantRepository;
     }
 
     @PostMapping
@@ -36,7 +32,7 @@ public class AccountantController {
 
     @GetMapping
     public List<Accountant> getAllAccountants() {
-        return accountantRepository.findAll(); // Buscando todos os clientes
+        return accountantRepository.findAllAccountantsOrderedByName(); // Buscando todos os clientes
     }
 
     @GetMapping("/{id}")
@@ -44,8 +40,17 @@ public class AccountantController {
         return accountantRepository.findById(id); // Buscando um cliente pelo id
     }
 
-//    @PutMapping("/{id}")
-//
+    @PutMapping("/{id}")
+    //PathVariable = id será passado na URL e RequestBody = corpo da requisição será um objeto cliente
+    public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody AccountantDTO accountantDTO) {
+       return accountantService.updateAccountant(id, accountantDTO);
+        }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) {
+        return accountantService.deleteAccountant(id);
+    }
 }
+
 
 
