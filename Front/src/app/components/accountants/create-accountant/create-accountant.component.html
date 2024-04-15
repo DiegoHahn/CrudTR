@@ -11,16 +11,24 @@
                 formControlName="name"
                 placeholder="Digite o nome contador"
                 >
+                <!-- se o campo for clicado, passa o nome do campo e exibe a mensagem de erro das verificações (teria como fazer mais simplificado evitar repetição?) -->
+                <div *ngIf=" accountantForm.get('name')?.touched && accountantForm.get('name')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('name') }}
+                </div>
             </div>
             <div class="form-group">
                 <label for="registrationNumber" class="form-label">CPF:</label>
                 <input
+                mask="000.000.000-00"
                 type="text"
                 class="form-input"
                 id="registrationNumber"
                 formControlName="registrationNumber"
                 placeholder="Digite o CPF"
                 >
+                <div *ngIf=" accountantForm.get('registrationNumber')?.touched && accountantForm.get('registrationNumber')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('registrationNumber') }}
+                </div>
             </div>
             <div class="form-group">
                 <label for="accountantCode" class="form-label">Código:</label>
@@ -31,6 +39,9 @@
                 formControlName="accountantCode"
                 placeholder="Digite o código do contador"
                 >
+                <div *ngIf=" accountantForm.get('accountantCode')?.touched && accountantForm.get('accountantCode')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('accountantCode') }}
+                </div>
             </div>
             <div class="form-group">
                 <label for="isActive" class="form-label">Situação do contador:</label>

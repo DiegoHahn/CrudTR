@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountantService } from '../accountants.service';
 import { Router } from '@angular/router';
+import { FormValidators } from '../../validators/form-validators';
 
 @Component({
   selector: 'app-create-accountant',
@@ -12,32 +13,36 @@ export class CreateAccountantComponent implements OnInit {
   accountantForm!: FormGroup;
 
   constructor(    
-    //dependencias
-    private service: AccountantService, //configurar as ações do CRUD (criar, deletar)
-    private router: Router, //Redirecionamento
+    private service: AccountantService, 
+    private router: Router,
     private formBuilder: FormBuilder) {}
 
   ngOnInit(): void {
     this.accountantForm = this.formBuilder.group({
       registrationNumber: ['', Validators.compose([
-        Validators.required
-      ])],
-      accountantCode: ['', Validators.compose([
-        Validators.required
-      ])],
+        Validators.required,
+        //validador personalizado
+        FormValidators.cpfValidator],
+      )],
+      accountantCode: ['', Validators.required],
       name: ['', Validators.compose([
         Validators.required,
         Validators.maxLength(250)
       ])],
-      isActive: [true]
-    })
+      isActive: [true, Validators.required]
+    });
   }
 
-  
-  async createAccountant() {
+  createAccountant() {
     if (this.accountantForm.valid) {
-      await this.service.create(this.accountantForm.value).toPromise();
-      this.router.navigate(['/listAccountants']);
+      this.service.create(this.accountantForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/listAccountants']);
+        },
+        error: (error: any) => {
+          console.log(error);
+        }
+      });
     }
   }
 
@@ -48,8 +53,21 @@ export class CreateAccountantComponent implements OnInit {
       return 'btn-disabled'
     }
   }
+
   cancelAccountant(){
     this.router.navigate(['/listAccountants'])
   }
+
+  //recebe o nome do campo do formulário e gera a mensagem de erro
+  getErrorMessage(controlName: string): string | null {
+    const control = this.accountantForm.get(controlName);
+    if (control?.errors?.['required']) {
+      return 'Este campo é obrigatório.';
+    } else if (control?.errors?.['cpfInvalid']) {
+      return 'CPF inválido.';
+    }
+    return null;
+  }
+  
 }
 

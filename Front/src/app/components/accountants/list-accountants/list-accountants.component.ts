@@ -48,7 +48,7 @@ export class ListAccountantsComponent implements OnInit {
         },
       });
     }
-    //se o usuário cancelar a exclusão, fecha o modal de confirmação
+    //se o usuário clicar em cancelar emite o confirmation false e fecha o modal de confirmação
     else {
       this.showDeleteConfirmation = false;
     }

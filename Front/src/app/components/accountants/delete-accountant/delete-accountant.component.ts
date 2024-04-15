@@ -7,6 +7,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class DeleteAccountantComponent {
 
+  //emite um evento para o componente pai para confirmar a exclusão
   @Output() confirmation = new EventEmitter<boolean>();
   constructor() { }
 
