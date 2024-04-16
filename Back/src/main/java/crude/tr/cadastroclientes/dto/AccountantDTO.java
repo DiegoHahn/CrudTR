@@ -1,11 +1,31 @@
 package crude.tr.cadastroclientes.dto;
 
+import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.Pattern;
+
 public class AccountantDTO {
+
     private Long id;
+
+    @NotNull(message = "O número de registro é obrigatório.")
+    @Pattern(regexp = "[0-9]+", message = "O número de registro deve conter apenas dígitos.")
+    @ValidCPF(message = "CPF inválido.")
     private String registrationNumber;
+
+    @NotNull(message = "O código de registro é obrigatório.")
+    @Pattern(regexp = "[0-9]+", message = "O código de registro deve conter apenas numeros.")
     private String accountantCode;
+
+    @NotNull(message = "O campo nome é obrigatório.")
+    @Length(max = 255, message = "O nome deve conter no máximo 250 caracteres.")
     private String name;
+
+    @NotNull(message = "O campo de status é obrigatório.")
     private Boolean isActive;
+
+    public AccountantDTO() {
+    }
 
     public String getRegistrationNumber() {
         return registrationNumber;

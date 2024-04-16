@@ -4,6 +4,7 @@ import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
 import crude.tr.cadastroclientes.service.AccountantService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class AccountantController {
     }
 
     @PostMapping
-    public ResponseEntity<Accountant> addAccountant(@RequestBody AccountantDTO accountantdto) {
+    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) {
         Accountant accountant = accountantService.convertToAccountant(accountantdto);
         Accountant savedAccountant = accountantService.addAccountant(accountant);
         return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
