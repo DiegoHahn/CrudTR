@@ -11,7 +11,7 @@
   <tbody class="table-form">
     <tr *ngFor="let accountant of listAccountants">
       <td class="table-cell-nome">{{ accountant.name }}</td>
-      <td class="table-cell-cpf">{{ accountant.registrationNumber }}</td>
+      <td class="table-cell-cpf" >{{ accountant.registrationNumber | mask: 'CPF_CNPJ'}}</td>
       <td class="table-cell-codigo">{{ accountant.accountantCode }}</td>
       <td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
       <td class="table-cell-acoes">

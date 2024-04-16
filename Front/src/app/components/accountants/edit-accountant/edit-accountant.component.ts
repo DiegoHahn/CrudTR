@@ -41,7 +41,7 @@ export class EditAccountantComponent implements OnInit {
         ])],
         name: [accountant.name, Validators.compose([
           Validators.required,
-          Validators.maxLength(250) //falta fazer mostrar o erro em tela
+          Validators.maxLength(250)
         ])],
         isActive: [accountant.isActive]
       })

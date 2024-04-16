@@ -12,10 +12,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ListAccountantsComponent } from './components/accountants/list-accountants/list-accountants.component';
 import { EditAccountantComponent } from './components/accountants/edit-accountant/edit-accountant.component';
 import { DeleteAccountantComponent } from './components/accountants/delete-accountant/delete-accountant.component';
-import { IConfig, NgxMaskModule } from 'ngx-mask';
+import { NgxMaskModule } from 'ngx-mask';
 
-//trazer as configurações do ngx-mask para o projeto
-export const options: Partial<null|IConfig> | (() => Partial<IConfig>) = null;
+
 
 @NgModule({
   declarations: [
