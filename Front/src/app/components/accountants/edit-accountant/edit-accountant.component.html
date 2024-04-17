@@ -11,6 +11,9 @@
               formControlName="name"
               placeholder="Digite o nome contador"
               >
+              <div *ngIf=" accountantForm.get('name')?.touched && accountantForm.get('name')?.errors" class="invalid-feedback">
+                {{ getErrorMessage('name') }}
+            </div>
           </div>
           <div class="form-group">
               <label for="registrationNumber" class="form-label">CPF:</label>
@@ -22,16 +25,23 @@
               formControlName="registrationNumber"
               placeholder="Digite o CPF"
               >
+              <div *ngIf=" accountantForm.get('registrationNumber')?.touched && accountantForm.get('registrationNumber')?.errors" class="invalid-feedback">
+                {{ getErrorMessage('registrationNumber') }}
+            </div>
           </div>
           <div class="form-group">
               <label for="accountantCode" class="form-label">Código:</label>
               <input
+              mask="0*"
               type="text"
               class="form-input"
               id="accountantCode"
               formControlName="accountantCode"
               placeholder="Digite o código do contador"
               >
+              <div *ngIf=" accountantForm.get('accountantCode')?.touched && accountantForm.get('accountantCode')?.errors" class="invalid-feedback">
+                {{ getErrorMessage('accountantCode') }}
+            </div>
           </div>
           <div class="form-group">
               <label for="isActive" class="form-label">Situação do contador:</label>

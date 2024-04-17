@@ -71,4 +71,15 @@ export class EditAccountantComponent implements OnInit {
   cancelAccountant(){
     this.router.navigate(['/listAccountants'])
   }
+  
+  getErrorMessage(controlName: string): string | null {
+    const control = this.accountantForm.get(controlName);
+    if (control?.errors?.['required']) {
+      return 'Este campo é obrigatório.';
+    } else if (control?.errors?.['cpfInvalid']) {
+      return 'CPF inválido.';
+    }
+    return null;
+  }
+  
 }

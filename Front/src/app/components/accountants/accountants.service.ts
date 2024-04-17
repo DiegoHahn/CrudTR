@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Accountant } from './accountant';
 
@@ -12,8 +12,15 @@ export class AccountantService {
   
   constructor(private http: HttpClient) { }
 
-  listAccountant(): Observable<Accountant[]> {
-    return this.http.get<Accountant[]>(this.API)
+  listAccountant(nameFilter:string): Observable<Accountant[]> {
+
+    let params = new HttpParams()
+
+    if(nameFilter.length > 3){
+      params = params.set('?name', nameFilter)
+    }
+    
+    return this.http.get<Accountant[]>(this.API, {params})
   }
 
   create(accountant: Accountant):any {

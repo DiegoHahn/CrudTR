@@ -1,6 +1,7 @@
 import { Accountant } from './../accountant';
 import { Component, OnInit } from '@angular/core';
 import { AccountantService } from '../accountants.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-list-accountants',
@@ -8,19 +9,20 @@ import { AccountantService } from '../accountants.service';
   styleUrls: ['./list-accountants.component.css']
 })
 export class ListAccountantsComponent implements OnInit {
+
+  nameFilter: string = '';
   listAccountants: Accountant[] = [];
   showDeleteConfirmation = false;
   selectedAccountId!: number;
     
-  constructor(
-    private service: AccountantService) { }
+  constructor(private service: AccountantService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadAccountants();
   };
 
   loadAccountants(){
-    this.service.listAccountant().subscribe(data => {
+    this.service.listAccountant(this.nameFilter).subscribe(data => {
       this.listAccountants = data;
     });
   }
@@ -52,6 +54,12 @@ export class ListAccountantsComponent implements OnInit {
     else {
       this.showDeleteConfirmation = false;
     }
+  }
+
+  filterByName() {
+    this.service.listAccountant(this.nameFilter).subscribe(data => {
+      this.listAccountants = data;
+    });
   }
 }
 
