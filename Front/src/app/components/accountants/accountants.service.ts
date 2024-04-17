@@ -12,7 +12,7 @@ export class AccountantService {
   
   constructor(private http: HttpClient) { }
 
-  listAccountant(nameFilter:string): Observable<Accountant[]> {
+  listAccountant(nameFilter:string, paginaAtual:number): Observable<Accountant[]> {
 
     let params = new HttpParams()
 

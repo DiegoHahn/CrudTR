@@ -31,9 +31,10 @@ public class AccountantController {
         return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
     }
 
+    //Passa o filtro de nome para a query mas pode ser vazio
     @GetMapping
-    public List<Accountant> getAllAccountants() {
-        return accountantRepository.findAllAccountantsOrderedByName(); // Buscando todos os clientes
+    public List<Accountant> getAllAccountants(@RequestParam(required = false) String name) {
+        return accountantRepository.findAllAccountantsOrderedByName(name); // Buscando todos os clientes
     }
 
     @GetMapping("/{id}")

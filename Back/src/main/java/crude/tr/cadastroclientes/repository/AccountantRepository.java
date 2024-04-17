@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AccountantRepository extends JpaRepository<Accountant, Long> {
-    @Query("SELECT a FROM Accountant a ORDER BY a.name ASC")
-    List<Accountant> findAllAccountantsOrderedByName();
+    @Query("SELECT a FROM Accountant a WHERE (:name is null or :name = '' or lower(a.name) like lower(concat('%', :name,'%'))) ORDER BY a.name ASC")
+    List<Accountant> findAllAccountantsOrderedByName(String name);
 }
