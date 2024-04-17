@@ -37,6 +37,11 @@ public class AccountantController {
         return accountantRepository.findAllAccountantsOrderedByName(name); // Buscando todos os clientes
     }
 
+    @GetMapping("/totalRecords")
+    public Long getTotalRecords() {
+        return accountantRepository.count(); // Contando o total de clientes
+    }
+
     @GetMapping("/{id}")
     public Optional<Accountant> getAccountantById(@PathVariable Long id) {
         return accountantRepository.findById(id); // Buscando um cliente pelo id

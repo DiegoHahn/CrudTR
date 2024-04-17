@@ -12,11 +12,11 @@ export class AccountantService {
   
   constructor(private http: HttpClient) { }
 
-  listAccountant(nameFilter:string, paginaAtual:number): Observable<Accountant[]> {
+  listAccountant(nameFilter:string): Observable<Accountant[]> {
 
     let params = new HttpParams()
 
-    if(nameFilter.length > 3){
+    if(nameFilter.length >= 3){
       params = params.set('name', nameFilter)
     }
 
@@ -43,4 +43,9 @@ export class AccountantService {
     return this.http.get<Accountant>(url)
   }
 
+  //retorna o número total de registros para ser usado na paginação
+  getTotalRecordsNumber(): Observable<number> {
+    return this.http.get<number>(this.API + '/totalRecords');
+  }
+  
 }

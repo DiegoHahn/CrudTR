@@ -10,7 +10,7 @@ import { Accountant } from './../accountant';
 })
 export class ListAccountantsComponent implements OnInit {
 
-  currentPage: number = 1;
+  totalItems: number;
   nameFilter: string = '';
   listAccountants: Accountant[] = [];
   showDeleteConfirmation = false;
@@ -19,11 +19,14 @@ export class ListAccountantsComponent implements OnInit {
   constructor(private service: AccountantService) { }
 
   ngOnInit(): void {
-    this.loadAccountants();
+    this.loadAccountants()
+    this.service.getTotalRecordsNumber().subscribe((total: number) => {
+      this.totalItems = total;
+    });
   };
 
   loadAccountants(){
-    this.service.listAccountant(this.nameFilter, this.currentPage).subscribe(data => {
+    this.service.listAccountant(this.nameFilter).subscribe(data => {
       this.listAccountants = data;
     });
   }
@@ -40,6 +43,9 @@ export class ListAccountantsComponent implements OnInit {
         next: () => {
           //quando o delete é feito com sucesso, recarrega a lista de contadores
           this.loadAccountants();
+          this.service.getTotalRecordsNumber().subscribe((total: number) => {
+            this.totalItems = total;
+          });
         },
         error: (error) => {
           //tratamento de erro

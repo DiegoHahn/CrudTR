@@ -13,6 +13,7 @@ import { ListAccountantsComponent } from './components/accountants/list-accounta
 import { EditAccountantComponent } from './components/accountants/edit-accountant/edit-accountant.component';
 import { DeleteAccountantComponent } from './components/accountants/delete-accountant/delete-accountant.component';
 import { NgxMaskModule } from 'ngx-mask';
+import {MatPaginatorModule} from '@angular/material/paginator'; 
 
 
 
@@ -33,7 +34,8 @@ import { NgxMaskModule } from 'ngx-mask';
     FormsModule,
     NgxMaskModule.forRoot(),
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatPaginatorModule
   ],
   providers:[],
   bootstrap: [AppComponent]
