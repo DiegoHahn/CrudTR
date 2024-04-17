@@ -17,9 +17,9 @@ export class AccountantService {
     let params = new HttpParams()
 
     if(nameFilter.length > 3){
-      params = params.set('?name', nameFilter)
+      params = params.set('name', nameFilter)
     }
-    
+
     return this.http.get<Accountant[]>(this.API, {params})
   }
 

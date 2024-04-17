@@ -84,9 +84,18 @@ h1 {
   border-radius: 5px;
   text-align: center;
 }
+
 .invalid-feedback{
   margin-left: 10px;
   color: red;
   font-size: 14px;
   margin-top: 5px;
+}
+
+.no-entrys{
+  border: #04405c 1px solid;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  margin-top: 20px;
 }
