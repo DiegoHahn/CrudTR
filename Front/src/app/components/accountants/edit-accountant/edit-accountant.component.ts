@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AccountantService } from '../accountants.service';
+import { FormValidators } from '../../validators/form-validators';
 
 
 @Component({
@@ -34,7 +35,8 @@ export class EditAccountantComponent implements OnInit {
       this.accountantForm = this.formBuilder.group({
         id: [accountant.id],
         registrationNumber: [accountant.registrationNumber, Validators.compose([
-          Validators.required
+          Validators.required,
+          FormValidators.cpfValidator
         ])],
         accountantCode: [accountant.accountantCode, Validators.compose([
           Validators.required

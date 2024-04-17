@@ -44,7 +44,7 @@ public class AccountantController {
 
     @PutMapping("/{id}")
     //PathVariable = id será passado na URL e RequestBody = corpo da requisição será um objeto cliente
-    public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody AccountantDTO accountantDTO) {
+    public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody @Valid AccountantDTO accountantDTO) {
        return accountantService.updateAccountant(id, accountantDTO);
         }
 
