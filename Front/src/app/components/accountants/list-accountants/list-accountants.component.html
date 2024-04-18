@@ -5,7 +5,7 @@
           <div class="search-box">
             <input type="text" class="search-bar" placeholder="Procurar por nome"
             [(ngModel)] = "nameFilter"
-            (keyup)="filterByName()">
+            (keyup)="onKeyDown.next($event)">
             <img class="search-icon" src="../../../../assets/images/search-btn.png" alt="Lupa">
           </div>
           <button class="btn-add" routerLink="/createAccountant">Adicionar contador</button>

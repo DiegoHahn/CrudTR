@@ -15,10 +15,9 @@ export class AccountantService {
   listAccountant(nameFilter:string): Observable<Accountant[]> {
 
     let params = new HttpParams()
-
-    if(nameFilter.length >= 3){
+    
       params = params.set('name', nameFilter)
-    }
+    
 
     return this.http.get<Accountant[]>(this.API, {params})
   }

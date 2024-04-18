@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountantService } from '../accountants.service';
 import { Accountant } from './../accountant';
+import { Subject, debounceTime } from 'rxjs';
 
 
 @Component({
@@ -15,13 +16,17 @@ export class ListAccountantsComponent implements OnInit {
   listAccountants: Accountant[] = [];
   showDeleteConfirmation = false;
   selectedAccountId!: number;
-    
+  onKeyDown = new Subject<KeyboardEvent>();  
+
   constructor(private service: AccountantService) { }
 
   ngOnInit(): void {
     this.loadAccountants()
-    this.service.getTotalRecordsNumber().subscribe((total: number) => {
-      this.totalItems = total;
+    this.service.getTotalRecordsNumber().subscribe((totalItems: number) => {
+      this.totalItems = totalItems;
+    });
+    this.onKeyDown.pipe(debounceTime(2000)).subscribe(_ => {
+      this.filterByName();
     });
   };
 
