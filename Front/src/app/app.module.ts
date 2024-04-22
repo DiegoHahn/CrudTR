@@ -14,8 +14,7 @@ import { EditAccountantComponent } from './components/accountants/edit-accountan
 import { DeleteAccountantComponent } from './components/accountants/delete-accountant/delete-accountant.component';
 import { NgxMaskModule } from 'ngx-mask';
 import {MatPaginatorModule} from '@angular/material/paginator'; 
-
-
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -35,7 +34,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     NgxMaskModule.forRoot(),
     HttpClientModule,
     ReactiveFormsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NoopAnimationsModule
   ],
   providers:[],
   bootstrap: [AppComponent]

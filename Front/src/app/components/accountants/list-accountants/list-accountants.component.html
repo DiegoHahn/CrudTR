@@ -26,7 +26,8 @@
       <!-- lógica de deletar fica na lista, porque eu não estou roteando para outra pagina-->
     <app-delete-accountant *ngIf="showDeleteConfirmation" (confirmation)="onDeleteConfirm($event)"></app-delete-accountant>
     <mat-paginator
-      [length]="totalItems"
-      [pageSize]="10">
+      [length]="totalElements"
+      [pageSize]="10"
+      (page)="changePage($event)">
     </mat-paginator>
   </section>

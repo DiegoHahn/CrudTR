@@ -1,7 +1,9 @@
+import { AccountantResponse } from './../accountant-response';
 import { Component, OnInit } from '@angular/core';
 import { AccountantService } from '../accountants.service';
 import { Accountant } from './../accountant';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, map } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 
 @Component({
@@ -11,7 +13,9 @@ import { Subject, debounceTime } from 'rxjs';
 })
 export class ListAccountantsComponent implements OnInit {
 
-  totalItems: number;
+  pageIndex: number = 1;
+  pageSize: number = 10;
+  totalElements: number;
   nameFilter: string = '';
   listAccountants: Accountant[] = [];
   showDeleteConfirmation = false;
@@ -21,19 +25,17 @@ export class ListAccountantsComponent implements OnInit {
   constructor(private service: AccountantService) { }
 
   ngOnInit(): void {
-    this.loadAccountants()
-    this.service.getTotalRecordsNumber().subscribe((totalItems: number) => {
-      this.totalItems = totalItems;
-    });
-    this.onKeyDown.pipe(debounceTime(2000)).subscribe(_ => {
+    this.loadAccountants(this.pageIndex, this.pageSize);
+    this.onKeyDown.pipe(debounceTime(800)).subscribe(_ => {
       this.filterByName();
     });
   };
 
-  loadAccountants(){
-    this.service.listAccountant(this.nameFilter).subscribe(data => {
-      this.listAccountants = data;
-    });
+  loadAccountants(pageIndex: number, pageSize: number){
+    this.service.listAccountantsData(this.nameFilter, pageIndex, pageSize ).subscribe((response: AccountantResponse) => {
+      this.listAccountants = response.content;
+      this.totalElements = response.totalElements;
+    })
   }
 
   renderDeleteConfirmation(accountantID: number) {
@@ -41,36 +43,38 @@ export class ListAccountantsComponent implements OnInit {
     this.showDeleteConfirmation = true;
   }
 
-  //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete
-  onDeleteConfirm(confirmation: boolean) {
-     if(confirmation) {
-      this.service.delete(this.selectedAccountId).subscribe({
-        next: () => {
-          //quando o delete é feito com sucesso, recarrega a lista de contadores
-          this.loadAccountants();
-          this.service.getTotalRecordsNumber().subscribe((total: number) => {
-            this.totalItems = total;
-          });
-        },
-        error: (error) => {
-          //tratamento de erro
-          console.log(error);
-        },
-        complete: () => {
-          //quando o delete é feito com sucesso, fecha o modal de confirmação
-          this.showDeleteConfirmation = false;
-        },
-      });
-    }
-    //se o usuário clicar em cancelar emite o confirmation false e fecha o modal de confirmação
-    else {
-      this.showDeleteConfirmation = false;
-    }
+  filterByName() {
+   this.loadAccountants(0, this.pageSize);
+  };
+
+  changePage($event: PageEvent) {
+    this.loadAccountants($event.pageIndex, $event.pageSize);
+    console.log($event.pageIndex, $event.pageSize);
   }
 
-  filterByName() {
-   this.loadAccountants();
-  };
+  //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete
+  onDeleteConfirm(confirmation: boolean) {
+    if(confirmation) {
+     this.service.delete(this.selectedAccountId).subscribe({
+       next: () => {
+         //quando o delete é feito com sucesso, recarrega a lista de contadores
+         this.loadAccountants(this.pageIndex, this.pageSize);
+       },
+       error: (error) => {
+         //tratamento de erro
+         console.log(error);
+       },
+       complete: () => {
+         //quando o delete é feito com sucesso, fecha o modal de confirmação
+         this.showDeleteConfirmation = false;
+       },
+     });
+   }
+   //se o usuário clicar em cancelar emite o confirmation false e fecha o modal de confirmação
+   else {
+     this.showDeleteConfirmation = false;
+   }
+ }
 }
 
 

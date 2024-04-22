@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Accountant } from './accountant';
+import { AccountantResponse } from './accountant-response';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,13 @@ export class AccountantService {
   
   constructor(private http: HttpClient) { }
 
-  listAccountant(nameFilter:string): Observable<Accountant[]> {
-
+  listAccountantsData(nameFilter:string, pageIndex:number, pageSize:number): Observable<AccountantResponse> {
     let params = new HttpParams()
-    
-      params = params.set('name', nameFilter)
-    
-
-    return this.http.get<Accountant[]>(this.API, {params})
+    params = params
+      .set('name', nameFilter)
+      .set('page', pageIndex.toString())
+      .set('size', pageSize.toString());
+    return this.http.get<AccountantResponse>(this.API, {params})
   }
 
   create(accountant: Accountant):any {
@@ -27,7 +27,6 @@ export class AccountantService {
     }
 
   edit(accountant: Accountant): Observable<Accountant> {
-    console.log(accountant)
     const url = `${this.API}/${accountant.id}`
     return this.http.put<Accountant>(url, accountant )
   }
@@ -41,10 +40,4 @@ export class AccountantService {
     const url = `${this.API}/${id}`
     return this.http.get<Accountant>(url)
   }
-
-  //retorna o número total de registros para ser usado na paginação
-  getTotalRecordsNumber(): Observable<number> {
-    return this.http.get<number>(this.API + '/totalRecords');
-  }
-  
 }

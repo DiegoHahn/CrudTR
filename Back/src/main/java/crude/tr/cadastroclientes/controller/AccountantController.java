@@ -5,11 +5,14 @@ import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
 import crude.tr.cadastroclientes.service.AccountantService;
 import jakarta.validation.Valid;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -31,15 +34,17 @@ public class AccountantController {
         return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
     }
 
-    //Passa o filtro de nome para a query mas pode ser vazio
     @GetMapping
-    public List<Accountant> getAllAccountants(@RequestParam(required = false) String name) {
-        return accountantRepository.findAllAccountantsOrderedByName(name); // Buscando todos os clientes
-    }
+    public ResponseEntity<Page<Accountant>> listAccountants(
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int pageIndex,
+            @RequestParam(defaultValue = "10") int pageSize) {
 
-    @GetMapping("/totalRecords")
-    public Long getTotalRecords() {
-        return accountantRepository.count(); // Contando o total de clientes
+        //Criando um objeto Pageable com os parametros passados, vai transformar em page e size que é o que o JPA precisa
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+
+        Page<Accountant> accountantPage = accountantService.findAccountantsOrderedByName(name, pageable);
+        return new ResponseEntity<>(accountantPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

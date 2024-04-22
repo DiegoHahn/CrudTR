@@ -1,8 +1,8 @@
 package crude.tr.cadastroclientes.dto;
 
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.Length;
 
 public class AccountantDTO {
 
