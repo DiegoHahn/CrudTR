@@ -1,9 +1,9 @@
 import { AccountantResponse } from './../accountant-response';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AccountantService } from '../accountants.service';
 import { Accountant } from './../accountant';
 import { Subject, debounceTime, map } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 
 @Component({
@@ -13,7 +13,9 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class ListAccountantsComponent implements OnInit {
 
-  pageIndex: number = 1;
+  //ViewChild para manipular o paginator
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  pageIndex: number = 0;
   pageSize: number = 10;
   totalElements: number;
   nameFilter: string = '';
@@ -32,10 +34,10 @@ export class ListAccountantsComponent implements OnInit {
   };
 
   loadAccountants(pageIndex: number, pageSize: number){
-    this.service.listAccountantsData(this.nameFilter, pageIndex, pageSize ).subscribe((response: AccountantResponse) => {
+    this.service.listAccountantsData(this.nameFilter, pageIndex, pageSize).subscribe((response: AccountantResponse) => {
       this.listAccountants = response.content;
       this.totalElements = response.totalElements;
-    })
+    });
   }
 
   renderDeleteConfirmation(accountantID: number) {
@@ -44,12 +46,16 @@ export class ListAccountantsComponent implements OnInit {
   }
 
   filterByName() {
-   this.loadAccountants(0, this.pageSize);
-  };
+    this.pageIndex = 0;
+    this.loadAccountants(this.pageIndex, this.pageSize);
+    //precisei utilizar o paginator pois quando eu fazia uma pesquisa na pagina 2 o paginator não retornava para o indice 0
+    this.paginator.pageIndex = 0; 
 
+  };
+  
+  //passa o evento de paginação para o metodo loadAccountants com o pageIndex e pageSize atualizados
   changePage($event: PageEvent) {
     this.loadAccountants($event.pageIndex, $event.pageSize);
-    console.log($event.pageIndex, $event.pageSize);
   }
 
   //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete

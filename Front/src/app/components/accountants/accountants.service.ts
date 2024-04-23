@@ -17,8 +17,8 @@ export class AccountantService {
     let params = new HttpParams()
     params = params
       .set('name', nameFilter)
-      .set('page', pageIndex.toString())
-      .set('size', pageSize.toString());
+      .set('page', pageIndex)
+      .set('size', pageSize);
     return this.http.get<AccountantResponse>(this.API, {params})
   }
 

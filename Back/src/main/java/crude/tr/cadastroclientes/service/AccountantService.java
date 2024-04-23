@@ -2,8 +2,10 @@ package crude.tr.cadastroclientes.service;
 
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
+import crude.tr.cadastroclientes.model.Exceptions;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -42,7 +44,10 @@ public class AccountantService {
     }
 
     public Accountant addAccountant(Accountant accountant) {
-        return accountantRepository.save(accountant);
+        try {
+            return accountantRepository.save(accountant);
+        } catch (DataIntegrityViolationException e) {
+            throw new Exceptions("Registro duplicado");        }
     }
 
     public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {

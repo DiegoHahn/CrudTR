@@ -37,12 +37,10 @@ public class AccountantController {
     @GetMapping
     public ResponseEntity<Page<Accountant>> listAccountants(
             @RequestParam(required = false) String name,
-            @RequestParam(defaultValue = "0") int pageIndex,
-            @RequestParam(defaultValue = "10") int pageSize) {
-
+            @RequestParam int page,
+            @RequestParam int size) {
         //Criando um objeto Pageable com os parametros passados, vai transformar em page e size que é o que o JPA precisa
-        Pageable pageable = PageRequest.of(pageIndex, pageSize);
-
+        Pageable pageable = PageRequest.of(page, size);
         Page<Accountant> accountantPage = accountantService.findAccountantsOrderedByName(name, pageable);
         return new ResponseEntity<>(accountantPage, HttpStatus.OK);
     }
