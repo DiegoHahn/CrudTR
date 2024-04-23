@@ -11,9 +11,7 @@ public class Accountant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true) //Parei aqui nessa anotação mas não esta funcionando
     private String registrationNumber;
-    @Column(unique = true)
     private String accountantCode;
     private String name;
     private Boolean isActive;

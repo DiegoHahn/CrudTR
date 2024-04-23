@@ -44,7 +44,7 @@ public class AccountantService {
     }
 
     public Accountant addAccountant(Accountant accountant) {
-        try {
+        try {//if
             return accountantRepository.save(accountant);
         } catch (DataIntegrityViolationException e) {
             throw new Exceptions("Registro duplicado");        }
