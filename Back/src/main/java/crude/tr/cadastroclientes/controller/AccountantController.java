@@ -2,10 +2,8 @@ package crude.tr.cadastroclientes.controller;
 
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
-import crude.tr.cadastroclientes.repository.AccountantRepository;
 import crude.tr.cadastroclientes.service.AccountantService;
 import jakarta.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,18 +18,10 @@ import java.util.Optional;
 public class AccountantController {
 
     private final AccountantService accountantService;
-    private final AccountantRepository accountantRepository;
 
-    public AccountantController(AccountantService accountantService, AccountantRepository accountantRepository) {
+
+    public AccountantController(AccountantService accountantService) {
         this.accountantService = accountantService;
-        this.accountantRepository = accountantRepository;
-    }
-
-    @PostMapping
-    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) {
-        Accountant accountant = accountantService.convertToAccountant(accountantdto);
-        Accountant savedAccountant = accountantService.addAccountant(accountant);
-        return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -47,7 +37,14 @@ public class AccountantController {
 
     @GetMapping("/{id}")
     public Optional<Accountant> getAccountantById(@PathVariable Long id) {
-        return accountantRepository.findById(id); // Buscando um cliente pelo id
+        return accountantService.findAccountantByID(id); // Buscando um cliente pelo id
+    }
+
+    @PostMapping
+    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) {
+        Accountant accountant = accountantService.convertToAccountant(accountantdto);
+        Accountant savedAccountant = accountantService.addAccountant(accountant);
+        return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

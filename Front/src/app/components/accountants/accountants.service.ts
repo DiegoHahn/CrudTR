@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError } from 'rxjs';
 import { Accountant } from './accountant';
 import { AccountantResponse } from './accountant-response';
 
@@ -20,6 +20,9 @@ export class AccountantService {
       .set('page', pageIndex)
       .set('size', pageSize);
     return this.http.get<AccountantResponse>(this.API, {params})
+      .pipe(catchError(error => {
+        return throwError(() => new Error(error));
+      }));
   }
 
   create(accountant: Accountant):any {

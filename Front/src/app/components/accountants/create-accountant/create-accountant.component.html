@@ -68,6 +68,10 @@
                 Salvar
                 </button>
             </div>
+            <!-- mensagem genérica por enquanto -->
+            <div *ngIf="errorMessage" class="invalid-feedback">
+                {{ errorMessage }}
+            </div>
         </form>
     </section>
 </div>

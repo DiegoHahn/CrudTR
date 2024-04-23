@@ -12,6 +12,8 @@ import { FormValidators } from '../../validators/form-validators';
 export class CreateAccountantComponent implements OnInit {
   accountantForm!: FormGroup;
 
+  errorMessage: string = '';
+
   constructor(    
     private service: AccountantService, 
     private router: Router,
@@ -40,7 +42,8 @@ export class CreateAccountantComponent implements OnInit {
           this.router.navigate(['/listAccountants']);
         },
         error: (error: any) => {
-          console.log(error);
+          this.errorMessage = "Campo duplicado";
+          return error.message;
         }
       });
     }

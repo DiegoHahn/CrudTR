@@ -18,7 +18,6 @@ import java.util.Optional;
 public class AccountantService {
     private final AccountantRepository accountantRepository;
 
-
     @Autowired
     public AccountantService(AccountantRepository accountantRepository) {
         this.accountantRepository = accountantRepository;
@@ -39,19 +38,22 @@ public class AccountantService {
         return accountantRepository.findAccountantsByName(name, pageable);
     }
 
-    public Optional<Accountant> seachAccountantByID(Long id) {
+    public Optional<Accountant> findAccountantByID(Long id) {
         return accountantRepository.findById(id);
     }
 
     public Accountant addAccountant(Accountant accountant) {
-        try {//if
+        Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
+        if (existingAccountant.isPresent()) {
+            throw new Exceptions("Registro duplicado");
+        } else {
             return accountantRepository.save(accountant);
-        } catch (DataIntegrityViolationException e) {
-            throw new Exceptions("Registro duplicado");        }
+        }
     }
 
+
     public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {
-        Optional<Accountant> accountantOptional = seachAccountantByID(id);
+        Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
             Accountant accountant = convertToAccountant(accountantDTO);
             return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
@@ -61,7 +63,7 @@ public class AccountantService {
     }
 
     public ResponseEntity<Void> deleteAccountant(Long id) {
-        Optional<Accountant> accountantOptional = seachAccountantByID(id);
+        Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
             accountantRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -69,6 +71,4 @@ public class AccountantService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
 }
