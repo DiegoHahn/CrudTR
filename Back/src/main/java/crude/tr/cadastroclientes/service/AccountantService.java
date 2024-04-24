@@ -2,12 +2,12 @@ package crude.tr.cadastroclientes.service;
 
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
-import crude.tr.cadastroclientes.model.Exceptions;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
+import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -42,15 +42,18 @@ public class AccountantService {
         return accountantRepository.findById(id);
     }
 
-    public Accountant addAccountant(Accountant accountant) {
+   public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
+    try {
         Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
         if (existingAccountant.isPresent()) {
-            throw new Exceptions("Registro duplicado");
+            throw new RuntimeException("Registro duplicado");
         } else {
-            return accountantRepository.save(accountant);
+            return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
         }
+    } catch (RuntimeException e) {
+        return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
     }
-
+}
 
     public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {
         Optional<Accountant> accountantOptional = findAccountantByID(id);

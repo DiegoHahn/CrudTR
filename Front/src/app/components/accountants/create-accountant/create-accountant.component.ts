@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AccountantService } from '../accountants.service';
 import { Router } from '@angular/router';
 import { FormValidators } from '../../validators/form-validators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-accountant',
@@ -41,9 +42,13 @@ export class CreateAccountantComponent implements OnInit {
         next: () => {
           this.router.navigate(['/listAccountants']);
         },
-        error: (error: any) => {
-          this.errorMessage = "Campo duplicado";
-          return error.message;
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          if (error.status === 409) {
+            this.errorMessage = "Registro duplicado";
+          } else {
+            this.errorMessage = "Erro inesperado";
+          }
         }
       });
     }

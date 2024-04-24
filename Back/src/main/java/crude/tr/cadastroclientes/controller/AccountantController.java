@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -43,8 +44,11 @@ public class AccountantController {
     @PostMapping
     public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) {
         Accountant accountant = accountantService.convertToAccountant(accountantdto);
-        Accountant savedAccountant = accountantService.addAccountant(accountant);
-        return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
+        ResponseEntity<Accountant> responseEntity = accountantService.addAccountant(accountant);
+        if (responseEntity.getStatusCode() == HttpStatus.CONFLICT) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Registro duplicado");
+        }
+        return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
