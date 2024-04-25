@@ -1,34 +1,26 @@
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { BrowserModule } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxMaskModule } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HeaderComponent } from './components/header/header.component';
+import { AccountantModule } from './components/accountants/accountant.module';
 import { FooterComponent } from './components/footer/footer.component';
-import { AccountantComponent } from './components/accountants/accountant/accountant.component';
-import { CreateAccountantComponent } from './components/accountants/create-accountant/create-accountant.component';
-import { BrowserModule } from '@angular/platform-browser';
-import { ListAccountantsComponent } from './components/accountants/list-accountants/list-accountants.component';
-import { EditAccountantComponent } from './components/accountants/edit-accountant/edit-accountant.component';
-import { DeleteAccountantComponent } from './components/accountants/delete-accountant/delete-accountant.component';
-import { NgxMaskModule } from 'ngx-mask';
-import {MatPaginatorModule} from '@angular/material/paginator'; 
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { HeaderComponent } from './components/header/header.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent,
     FooterComponent,
-    AccountantComponent,
-    CreateAccountantComponent,
-    ListAccountantsComponent,
-    EditAccountantComponent,
-    DeleteAccountantComponent
+    HeaderComponent
   ],
   imports: [
     BrowserModule,
+    AccountantModule,
     AppRoutingModule,
     FormsModule,
     NgxMaskModule.forRoot(),
