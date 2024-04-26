@@ -7,7 +7,7 @@ import { ListAccountantsComponent } from './list-accountants/list-accountants.co
 
 const routes: Routes = [
   {
-    path:'list',
+    path:'listAccountants',
     component: ListAccountantsComponent
   },
   {
