@@ -15,7 +15,6 @@
       <td class="table-cell-codigo">{{ accountant.accountantCode }}</td>
       <td class="table-cell-situacao">{{ accountant.isActive ? 'Ativo' : 'Inativo' }}</td>
       <td class="table-cell-acoes">
-        <!-- Estudar esse trecho para fazer o mesmo com os clientes -->
         <ng-container *ngIf="actionTemplateRef"
           [ngTemplateOutlet]="actionTemplateRef"
           [ngTemplateOutletContext]="{$implicit:accountant}">

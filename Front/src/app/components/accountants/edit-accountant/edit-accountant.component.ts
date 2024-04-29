@@ -54,7 +54,7 @@ export class EditAccountantComponent implements OnInit {
     if (this.accountantForm.valid) {
       this.service.edit(this.accountantForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/listAccountants']);
+          this.router.navigate(['/accountants','listAccountants']);
         },
         error: (error) => {
           console.log(error);
@@ -71,7 +71,7 @@ export class EditAccountantComponent implements OnInit {
     }
   }
   cancelAccountant(){
-    this.router.navigate(['/listAccountants'])
+    this.router.navigate(['/accountants','listAccountants'])
   }
   
   getErrorMessage(controlName: string): string | null {

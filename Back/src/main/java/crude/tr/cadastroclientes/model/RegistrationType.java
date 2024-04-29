@@ -19,7 +19,3 @@ public enum RegistrationType {
         throw new IllegalArgumentException("Nenhum tipo de cadastro encontrado para a string fornecida: " + text);
     }
 }
-//public enum RegistrationType {
-//    CPF,
-//    CNPJ;
-//}

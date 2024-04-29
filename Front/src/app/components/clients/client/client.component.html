@@ -1,0 +1,37 @@
+<table class="table-section" *ngIf="listClients.length > 0; else noClients" >
+    <thead class="table-header">
+        <tr>
+        <th class="table-cell-registro">Tipo de Registro</th>
+        <th class="table-cell-numero">Número do Registro</th>
+        <th class="table-cell-codigo">Código</th>
+        <th class="table-cell-nome">Nome</th>
+        <th class="table-cell-nome-fantasia">Nome Fantasia</th>
+        <th class="table-cell-data">Data de Registro</th>
+        <th class="table-cell-status">Status</th>
+        <th class="table-cell-contador">Id Contador</th>
+        <th class="table-cell-acoes">Ações</th>
+        </tr>
+    </thead>
+    <tbody class="table-form">
+        <tr *ngFor="let client of listClients">
+        <td class="table-cell-registro">{{ client.registrationType }}</td>
+        <td class="table-cell-numero">{{ client.registrationNumber}}</td>
+        <td class="table-cell-codigo">{{ client.clientCode }}</td>
+        <td class="table-cell-nome">{{ client.name}}</td>
+        <td class="table-cell-nome-fantasia">{{ client?.fantasyName}}</td>
+        <td class="table-cell-data">{{ client.registrationDate}}</td>
+        <td class="table-cell-status">{{ client.companyStatus ? 'Ativo' : 'Inativo'}}</td>
+        <td class="table-cell-contador">{{ client.accountantId }}</td>
+        <td class="table-cell-acoes">
+            <ng-container *ngIf="actionTemplateRef"
+            [ngTemplateOutlet]="actionTemplateRef"
+            [ngTemplateOutletContext]="{$implicit:client}">
+            </ng-container>
+        </td>
+    </tbody>
+    </table>
+    <ng-template #noClients>
+    <div class="no-entrys">
+        <p>Nenhum cliente encontrado</p>
+    </div>
+</ng-template>

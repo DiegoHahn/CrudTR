@@ -1,9 +1,9 @@
-import { AccountantResponse } from './../accountant-response';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Subject, debounceTime } from 'rxjs';
 import { AccountantService } from '../accountants.service';
 import { Accountant } from './../accountant';
-import { Subject, debounceTime, map } from 'rxjs';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { AccountantResponse } from './../accountant-response';
 
 
 @Component({
@@ -13,7 +13,6 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 })
 export class ListAccountantsComponent implements OnInit {
 
-  //ViewChild para manipular o paginator
   @ViewChild(MatPaginator) paginator: MatPaginator;
   pageIndex: number = 0;
   pageSize: number = 10;

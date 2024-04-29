@@ -2,7 +2,6 @@ package crude.tr.cadastroclientes.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.servlet.Registration;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;

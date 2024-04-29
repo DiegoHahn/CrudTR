@@ -40,7 +40,7 @@ export class CreateAccountantComponent implements OnInit {
     if (this.accountantForm.valid) {
       this.service.create(this.accountantForm.value).subscribe({
         next: () => {
-          this.router.navigate(['/listAccountants']);
+          this.router.navigate(['/accountants','listAccountants']);
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -63,7 +63,7 @@ export class CreateAccountantComponent implements OnInit {
   }
 
   cancelAccountant(){
-    this.router.navigate(['/listAccountants'])
+    this.router.navigate(['/accountants','listAccountants'])
   }
 
   //recebe o nome do campo do formulário e gera a mensagem de erro

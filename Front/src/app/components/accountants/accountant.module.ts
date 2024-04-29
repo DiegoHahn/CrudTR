@@ -14,7 +14,6 @@ import { ListAccountantsComponent } from './list-accountants/list-accountants.co
 
 @NgModule({
   declarations: [
-
     AccountantComponent,
     CreateAccountantComponent,
     ListAccountantsComponent,
