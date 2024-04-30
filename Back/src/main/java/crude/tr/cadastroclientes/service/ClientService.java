@@ -7,10 +7,15 @@ import crude.tr.cadastroclientes.repository.AccountantRepository;
 import crude.tr.cadastroclientes.repository.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Service
 public class ClientService {
@@ -41,6 +46,14 @@ public class ClientService {
         return client;
     }
 
+    public Page<Client> findClientsOrderedByName(String name, Pageable pageable) {
+        return clientRepository.findClientsByName(name, pageable);
+    }
+
+    public Optional<Client> findCLientById(Long id) {
+        return clientRepository.findById(id);
+    }
+
     //Conversor de Datas (é aqui o lugar dessa classe?)
     public static class DateUtil {
 
@@ -61,12 +74,22 @@ public class ClientService {
     //Salva um cliente associado a um contador
     public Client addClient(Client client) {
         //verifica se está sendo passado um contador no corpo da requisição
-        if (client.getAccountant() != null && client.getAccountant().getAccountantCode() != null) {
-            Long accountantId = client.getAccountant().getId(); // PERGUNTAR SE DEVE SALVAR O ID OU O accountantCode
+        if (client.getAccountant() != null) {
+            Long accountantId = client.getAccountant().getId();
             Accountant accountant = accountantRepository.findById(accountantId)
                     .orElseThrow(() -> new EntityNotFoundException("Accountant not found with id: " + accountantId));
             client.setAccountant(accountant);
         }
         return clientRepository.save(client);
+    }
+
+    public ResponseEntity<Void> deleteClient(Long id) {
+        Optional<Client> clientOptional = findCLientById(id);
+        if (clientOptional.isPresent()) {
+            clientRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

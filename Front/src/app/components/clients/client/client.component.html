@@ -8,7 +8,6 @@
         <th class="table-cell-nome-fantasia">Nome Fantasia</th>
         <th class="table-cell-data">Data de Registro</th>
         <th class="table-cell-status">Status</th>
-        <th class="table-cell-contador">Id Contador</th>
         <th class="table-cell-acoes">Ações</th>
         </tr>
     </thead>
@@ -21,7 +20,6 @@
         <td class="table-cell-nome-fantasia">{{ client?.fantasyName}}</td>
         <td class="table-cell-data">{{ client.registrationDate}}</td>
         <td class="table-cell-status">{{ client.companyStatus ? 'Ativo' : 'Inativo'}}</td>
-        <td class="table-cell-contador">{{ client.accountantId }}</td>
         <td class="table-cell-acoes">
             <ng-container *ngIf="actionTemplateRef"
             [ngTemplateOutlet]="actionTemplateRef"

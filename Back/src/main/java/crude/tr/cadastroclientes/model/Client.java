@@ -31,7 +31,8 @@ public class Client {
     public Client() {
     }
 
-    public Client(RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, LocalDate registrationDate, CompanyStatus companyStatus, Accountant accountant) {
+    public Client(Long id, RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, LocalDate registrationDate, CompanyStatus companyStatus, Accountant accountant) {
+        this.id = id;
         this.registrationType = registrationType;
         this.registrationNumber = registrationNumber;
         this.clientCode = clientCode;
@@ -40,6 +41,14 @@ public class Client {
         this.registrationDate = registrationDate;
         this.companyStatus = companyStatus;
         this.accountant = accountant;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public RegistrationType getRegistrationType() {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Client } from './client';
+import { ClientResponse } from './client.response';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,13 @@ export class ClientService {
 
   constructor(private http: HttpClient) { }
 
-  listClientsData(): Observable<Client[]> {
-    // let params = new HttpParams()
-    // params = params
-    //   .set('name', nameFilter)
-    //   .set('page', pageIndex)
-    //   .set('size', pageSize);
-    return this.http.get<Client[]>(this.API)
+  listClientsData(nameFilter:string, pageIndex:number, pageSize:number): Observable<ClientResponse> {
+    let params = new HttpParams()
+    params = params
+      .set('name', nameFilter)
+      .set('page', pageIndex)
+      .set('size', pageSize);
+    return this.http.get<ClientResponse>(this.API, {params})
       .pipe(catchError(error => {
         return throwError(() => new Error(error));
       }));
@@ -33,10 +34,10 @@ export class ClientService {
 //     return this.http.put<Client>(url, client )
 //   }
 
-//   delete(id: number): Observable<Client> {
-//     const url = `${this.API}/${id}`
-//     return this.http.delete<Client>(url)
-//   }
+  delete(id: number): Observable<Client> {
+    const url = `${this.API}/${id}`
+    return this.http.delete<Client>(url)
+  }
 
 //   searchAccountByID(id: number): Observable<Client> {
 //     const url = `${this.API}/${id}`

@@ -8,11 +8,13 @@ import { ClientComponent } from './client/client.component';
 import { ClientRoutingModule } from './client.routing.module';
 import { ClientService } from './clients.service';
 import { ListClientsComponent } from './list-clients/list-clients.component';
+import { DeleteClientComponent } from './delete-client/delete-client.component';
 
 @NgModule({
   declarations: [
     ClientComponent,
-    ListClientsComponent
+    ListClientsComponent,
+    DeleteClientComponent
   ],
   imports: [
     CommonModule,

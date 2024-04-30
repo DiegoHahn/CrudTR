@@ -1,23 +1,32 @@
 <section class="container">
-    <div>
-        <h1>Lista de contadores</h1>
-        <div class="page-header">
-          <div class="search-box">
-            <input type="text" class="search-bar" placeholder="Procurar por nome">
-            <img class="search-icon" src="../../../../assets/images/search-btn.png" alt="Lupa">
-          </div>
-          <button class="btn-add" >Adicionar Cliente</button>
+  <div>
+      <h1>Lista de contadores</h1>
+      <div class="page-header">
+        <div class="search-box">
+          <input type="text" class="search-bar" placeholder="Procurar por nome"
+          [(ngModel)] = "nameFilter"
+          (keyup)="onKeyDown.next($event)">
+          <img class="search-icon" src="../../../../assets/images/search-btn.png" alt="Lupa">
         </div>
-    </div>  
-    <app-client [listClients]="listClients">
-      <ng-template let-client #actions>  
-         <button class="btn-edit">
-            <img src="../../../../assets/images/edit-btn.png" alt="Editar">
-        </button>
-        <button class="btn-delete">
-            <img src="../../../../assets/images/delete-btn.png">
-        </button>
-      </ng-template>
-    </app-client>
-      <!-- lógica de deletar fica na lista, porque eu não estou roteando para outra pagina-->
-  </section>
+        <button class="btn-add" >Adicionar Cliente</button>
+      </div>
+  </div>  
+  <app-client [listClients]="listClients">
+    <ng-template let-client #actions>  
+        <button class="btn-edit">
+          <img src="../../../../assets/images/edit-btn.png" alt="Editar">
+      </button>
+      <button class="btn-delete">
+          <img src="../../../../assets/images/delete-btn.png"
+          (click)="renderDeleteConfirmation(client.id)">
+      </button>
+    </ng-template>
+  </app-client>
+  <app-delete-client *ngIf="showDeleteConfirmation" (confirmation)="onDeleteConfirm($event)"></app-delete-client>
+  <mat-paginator
+    [length]="totalElements"
+    [pageSize]="10"
+    [pageIndex] = "pageIndex" 
+    (page)="changePage($event)">
+  </mat-paginator>
+</section>

@@ -8,6 +8,7 @@ public class ClientDTO {
         this.registrationType = registrationType;
     }
 
+    private Long id;
     private RegistrationType registrationType;
     private String registrationNumber;
     private String clientCode;
@@ -15,7 +16,7 @@ public class ClientDTO {
     private String fantasyName;
     private String registrationDate; // Recebe String para simplificar a entrada, mas precisa converter depois
     private CompanyStatus companyStatus;
-    private Long accountantId; // ID do contador em vez do objeto inteiro
+    private Long accountantId;
 
     public String getRegistrationNumber() {
         return registrationNumber;

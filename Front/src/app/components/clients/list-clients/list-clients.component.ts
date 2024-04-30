@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Subject, debounceTime } from 'rxjs';
-import { Client } from '../client';
+import { ClientResponse } from '../client.response';
 import { ClientService } from '../clients.service';
+import { Client } from './../client';
 
 @Component({
   selector: 'app-list-clients',
@@ -11,70 +12,67 @@ import { ClientService } from '../clients.service';
 })
 export class ListClientsComponent implements OnInit {
 
-  // @ViewChild(MatPaginator) paginator: MatPaginator;
-  // pageIndex: number = 0;
-  // pageSize: number = 10;
-  // totalElements: number;
-  // nameFilter: string = '';
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  totalElements: number;
+  nameFilter: string = '';
   listClients: Client[] = [];
-  //showDeleteConfirmation = false;
-  // selectedAccountId!: number;
-  // onKeyDown = new Subject<KeyboardEvent>();  
+  showDeleteConfirmation = false;
+  selectedClientId!: number;
+  onKeyDown = new Subject<KeyboardEvent>();  
 
 
   constructor(private service: ClientService) { }
 
   ngOnInit(): void {
-    this.loadClients();
+    this.loadClients(this.pageIndex, this.pageSize);
+    this.onKeyDown.pipe(debounceTime(800)).subscribe(_ => {
+      this.filterByName();
+    });
   };
 
-  loadClients(){
-    this.service.listClientsData().subscribe((response: Client[]) => {
-      this.listClients  = response;
+  loadClients(pageIndex: number, pageSize: number){
+    this.service.listClientsData(this.nameFilter, pageIndex, pageSize).subscribe((response: ClientResponse) => {
+      this.listClients = response.content;
+      this.totalElements = response.totalElements;
     }); 
   }
 
-//   renderDeleteConfirmation(accountantID: number) {
-//     this.selectedAccountId = accountantID
-//     this.showDeleteConfirmation = true;
-//   }
+  renderDeleteConfirmation(clientID: number) {
+    this.selectedClientId = clientID
+    this.showDeleteConfirmation = true;
+  }
 
-//   filterByName() {
-//     this.pageIndex = 0;
-//     this.loadAccountants(this.pageIndex, this.pageSize);
-    
-//     this.paginator.pageIndex = 0; 
-
-//   };
+  filterByName() {
+    this.pageIndex = 0;
+    this.loadClients(this.pageIndex, this.pageSize);
+    this.paginator.pageIndex = 0; 
+  };
   
-//   //passa o evento de paginação para o metodo loadAccountants com o pageIndex e pageSize atualizados
-//   changePage($event: PageEvent) {
-//     this.loadAccountants($event.pageIndex, $event.pageSize);
-//   }
+  changePage($event: PageEvent) {
+    this.loadClients($event.pageIndex, $event.pageSize);
+  }
 
-//   //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete
-//   onDeleteConfirm(confirmation: boolean) {
-//     if(confirmation) {
-//      this.service.delete(this.selectedAccountId).subscribe({
-//        next: () => {
-//          //quando o delete é feito com sucesso, recarrega a lista de contadores
-//          this.loadAccountants(this.pageIndex, this.pageSize);
-//        },
-//        error: (error) => {
-//          //tratamento de erro
-//          console.log(error);
-//        },
-//        complete: () => {
-//          //quando o delete é feito com sucesso, fecha o modal de confirmação
-//          this.showDeleteConfirmation = false;
-//        },
-//      });
-//    }
-//    //se o usuário clicar em cancelar emite o confirmation false e fecha o modal de confirmação
-//    else {
-//      this.showDeleteConfirmation = false;
-//    }
-//  }
+  onDeleteConfirm(confirmation: boolean) {
+    if(confirmation) {
+    console.log("aqui +",this.selectedClientId)
+     this.service.delete(this.selectedClientId).subscribe({
+       next: () => {
+         this.loadClients(this.pageIndex, this.pageSize);
+       },
+       error: (error) => {
+         console.log(error);
+       },
+       complete: () => {
+         this.showDeleteConfirmation = false;
+       },
+     });
+   }
+   else {
+     this.showDeleteConfirmation = false;
+   }
+ }
 }
 
 
