@@ -17,14 +17,16 @@
           <img src="../../../../assets/images/edit-btn.png" alt="Editar" [routerLink]="['/accountants', 'editAccountant', accountant.id]">
       </button>
       <button class="btn-delete">
-        <!-- passa o valor de id para a confirmação do delete -->
           <img src="../../../../assets/images/delete-btn.png"
           (click)="renderDeleteConfirmation(accountant.id)">
       </button>
     </ng-template>
   </app-accountant>
-    <!-- lógica de deletar fica na lista, porque eu não estou roteando para outra pagina-->
-  <app-delete-accountant *ngIf="showDeleteConfirmation" (confirmation)="onDeleteConfirm($event)"></app-delete-accountant>
+  <app-delete-accountant *ngIf="showDeleteConfirmation" [errorMessage]="errorMessage" (confirmation)="onDeleteConfirm($event)">
+    <div *ngIf="errorMessage" class="invalid-feedback">
+      {{ errorMessage }}
+    </div>
+  </app-delete-accountant>
   <mat-paginator
     [length]="totalElements"
     [pageSize]="10"

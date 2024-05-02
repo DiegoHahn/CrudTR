@@ -4,6 +4,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { AccountantService } from '../accountants.service';
 import { Accountant } from './../accountant';
 import { AccountantResponse } from './../accountant-response';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class ListAccountantsComponent implements OnInit {
   showDeleteConfirmation = false;
   selectedAccountId!: number;
   onKeyDown = new Subject<KeyboardEvent>();  
+  errorMessage: string;
 
   constructor(private service: AccountantService) { }
 
@@ -65,10 +67,14 @@ export class ListAccountantsComponent implements OnInit {
          //quando o delete é feito com sucesso, recarrega a lista de contadores
          this.loadAccountants(this.pageIndex, this.pageSize);
        },
-       error: (error) => {
-         //tratamento de erro
-         console.log(error);
-       },
+       error: (error: HttpErrorResponse) => {
+        console.log(error);
+        if (error.status === 409) {
+          this.errorMessage = "Esse contador não pode ser excluído pois está vinculado a um cliente";
+        } else {
+          this.errorMessage = "Erro inesperado";
+        }
+      },
        complete: () => {
          //quando o delete é feito com sucesso, fecha o modal de confirmação
          this.showDeleteConfirmation = false;
@@ -78,6 +84,7 @@ export class ListAccountantsComponent implements OnInit {
    //se o usuário clicar em cancelar emite o confirmation false e fecha o modal de confirmação
    else {
      this.showDeleteConfirmation = false;
+     this.errorMessage = '';
    }
  }
 }

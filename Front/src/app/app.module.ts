@@ -15,7 +15,6 @@ import { HeaderComponent } from './components/header/header.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    //erro estava nesse modulo que serve para animações da pagina
     BrowserAnimationsModule
   ],
   providers:[],
