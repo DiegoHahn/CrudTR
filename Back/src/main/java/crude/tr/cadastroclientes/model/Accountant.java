@@ -18,7 +18,7 @@ public class Accountant {
 
     //Não carrerga a lista de clientes quando buscar um contador
     @JsonIgnore
-    @OneToMany(mappedBy = "accountant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "accountant", cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
     private List<Client> clients;
 
     public Accountant() {
