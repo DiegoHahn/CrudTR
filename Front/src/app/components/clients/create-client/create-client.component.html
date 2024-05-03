@@ -1,0 +1,123 @@
+<div class="container">
+    <section class="form-section">
+        <header class="form-header">Adicionar novo Cliente</header>
+        <form [formGroup]="clientForm" class="client-form">
+            <div class="form-group">
+                <label for="name" class="form-label">Nome:</label>
+                <input
+                type="text"
+                class="form-input"
+                id="name"
+                formControlName="name"
+                placeholder="Digite o nome cliente"
+                >
+                <div *ngIf=" clientForm.get('name')?.touched && clientForm.get('name')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('name') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fantasyName" class="form-label">Nome fantasia:</label>
+                <input
+                type="text"
+                class="form-input"
+                id="fantasyName"
+                formControlName="fantasyName"
+                placeholder="Digite o nome fantasia se houver">
+            </div>
+            <div class="form-group">
+                <label for="registrationType" class="form-label">Tipo de registro:</label>
+                <select 
+                class="form-input" 
+                id="registrationType"
+                formControlName="registrationType" 
+                [(ngModel)]="registrationType" (ngModelChange)="onRegistrationTypeChange($event)">
+                    <option value="CNPJ">CNPJ</option>
+                    <option value="CPF">CPF</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="registrationNumber" class="form-label">Número do registro:</label>
+                <input
+                [mask]="mask" 
+                type="text"
+                class="form-input"
+                id="registrationNumber"
+                formControlName="registrationNumber"
+                [placeholder]="registrationPlaceholder"
+                >
+                <div *ngIf=" clientForm.get('registrationNumber')?.touched && clientForm.get('registrationNumber')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('registrationNumber') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="clientCode" class="form-label">Código:</label>
+                <input
+                mask="0*"
+                type="text"
+                class="form-input"
+                id="clientCode"
+                formControlName="clientCode"
+                placeholder="Digite o código do contador"
+                >
+                <div *ngIf=" clientForm.get('clientCode')?.touched && clientForm.get('clientCode')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('clientCode') }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="registrationDate" class="form-label">Data da abertura:</label>
+                <input matInput [matDatepicker]="picker" class="box" mask="d0/M00/0000">
+                <mat-hint class="hint">Selecione:</mat-hint>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <!-- <div *ngIf=" clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('clientCode') }}
+                </div> -->
+            </div>
+            <div class="form-group">
+                <label for="companyStatus" class="form-label">Status do cliente:</label>
+                <select 
+                class="form-input" id="companyStatus"
+                formControlName="companyStatus"
+                [ngModel]="companyStatus">
+                    <option value="Ativo">Ativo</option>
+                    <option value="Inativo">Inativo</option>
+                    <option value="Suspenso">Suspenso</option>
+                </select>
+            </div>
+            <div class="form-group">    
+                <label for="companyStatus" class="form-label">Status do cliente:</label>
+                <input
+                mask="0*"
+                type="text"
+                class="form-input"
+                id="companyStatus"
+                formControlName="companyStatus"
+                placeholder="Digite o Status"
+                >
+                <div *ngIf=" clientForm.get('companyStatus')?.touched && clientForm.get('companyStatus')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('companyStatus') }}
+                </div>
+            </div>
+  
+            <!-- <div class="form-actions">
+                <button 
+                class="btn-cancel"
+                (click)="cancelclient()">
+                Cancelar
+                </button>
+
+                <button
+                class="btn-salvar"
+                [disabled]="!clientForm.valid"
+                (click)="createclient()"
+                [ngClass]="btnEnable()">
+                Salvar
+                </button>
+            </div> -->
+            <!-- mensagem genérica por enquanto -->
+            <!-- <div *ngIf="errorMessage" class="invalid-feedback">
+                {{ errorMessage }}
+            </div> -->
+        </form>
+    </section>
+</div>

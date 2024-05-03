@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE (:name is null or :name = '' or lower(c.name) like lower(concat('%', :name,'%'))) ORDER BY c.name ASC")
-    Page<Client> findClientsByName(String name, Pageable pageable);
+    Page<Client>    findClientsByName(String name, Pageable pageable);
 
     Optional<Client> findByRegistrationNumber(String registrationNumber);
 }

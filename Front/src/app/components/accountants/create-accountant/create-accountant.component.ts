@@ -12,7 +12,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class CreateAccountantComponent implements OnInit {
   accountantForm!: FormGroup;
-
   errorMessage: string = '';
 
   constructor(    

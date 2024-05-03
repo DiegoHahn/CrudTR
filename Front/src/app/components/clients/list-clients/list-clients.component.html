@@ -8,7 +8,7 @@
           (keyup)="onKeyDown.next($event)">
           <img class="search-icon" src="../../../../assets/images/search-btn.png" alt="Lupa">
         </div>
-        <button class="btn-add" >Adicionar Cliente</button>
+        <button class="btn-add" [routerLink]="['/clients', 'createClient']">Adicionar Cliente</button>
       </div>
   </div>  
   <app-client [listClients]="listClients">

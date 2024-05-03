@@ -9,23 +9,31 @@ import { ClientRoutingModule } from './client.routing.module';
 import { ClientService } from './clients.service';
 import { ListClientsComponent } from './list-clients/list-clients.component';
 import { DeleteClientComponent } from './delete-client/delete-client.component';
+import { CreateClientComponent } from './create-client/create-client.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material';
 
 @NgModule({
   declarations: [
     ClientComponent,
     ListClientsComponent,
-    DeleteClientComponent
+    DeleteClientComponent,
+    CreateClientComponent
   ],
   imports: [
     CommonModule,
     ClientRoutingModule,
     FormsModule,
+    MatDatepickerModule ,
+    MatFormFieldModule,
+    MatNativeDateModule,
     NgxMaskModule.forRoot(),
     HttpClientModule,
     ReactiveFormsModule,    
     MatPaginatorModule
   ],
-  providers:[ClientService]
+  providers:[ClientService, { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }]
 })
 export class ClientModule { }
 
