@@ -30,7 +30,7 @@
                 class="form-input" 
                 id="registrationType"
                 formControlName="registrationType" 
-                [(ngModel)]="registrationType" (ngModelChange)="onRegistrationTypeChange($event)">
+                (ngModelChange)="onRegistrationTypeChange($event)">
                     <option value="CNPJ">CNPJ</option>
                     <option value="CPF">CPF</option>
                 </select>
@@ -65,55 +65,52 @@
             </div>
             <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
-                <input matInput [matDatepicker]="picker" class="box" mask="d0/M00/0000">
+                <input matInput [matDatepicker]="picker" class="box" mask="d0/M0/0000">
+                <input type="hidden" formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <!-- <div *ngIf=" clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
-                    {{ getErrorMessage('clientCode') }}
-                </div> -->
+                <div *ngIf=" clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('registrationDate') }}
+                </div>
             </div>
             <div class="form-group">
-                <label for="companyStatus" class="form-label">Status do cliente:</label>
+                <label for="companyStatus" class="form-label">Situação do cliente:</label>
                 <select 
                 class="form-input" id="companyStatus"
-                formControlName="companyStatus"
-                [ngModel]="companyStatus">
+                formControlName="companyStatus">
                     <option value="Ativo">Ativo</option>
                     <option value="Inativo">Inativo</option>
                     <option value="Suspenso">Suspenso</option>
                 </select>
             </div>
             <div class="form-group">    
-                <label for="companyStatus" class="form-label">Status do cliente:</label>
-                <input
-                mask="0*"
-                type="text"
-                class="form-input"
-                id="companyStatus"
-                formControlName="companyStatus"
-                placeholder="Digite o Status"
-                >
-                <div *ngIf=" clientForm.get('companyStatus')?.touched && clientForm.get('companyStatus')?.errors" class="invalid-feedback">
-                    {{ getErrorMessage('companyStatus') }}
+                <label for="accountant" class="form-label">Contador:</label>
+                <select 
+                class="form-input" id="accountant"
+                formControlName="accountant">
+                <option *ngFor="let accountant of accountants" value="{{ accountant }}" class="box-option">{{ accountant.name }}</option>
+                </select>
+                <div *ngIf=" clientForm.get('accountant')?.touched && clientForm.get('accountant')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('accountant') }}
                 </div>
             </div>
   
-            <!-- <div class="form-actions">
+            <div class="form-actions">
                 <button 
                 class="btn-cancel"
-                (click)="cancelclient()">
+                (click)="cancelClient()">
                 Cancelar
                 </button>
 
                 <button
                 class="btn-salvar"
                 [disabled]="!clientForm.valid"
-                (click)="createclient()"
+                (click)="createClient()"
                 [ngClass]="btnEnable()">
-                Salvar
+                Salvars
                 </button>
-            </div> -->
+            </div>
             <!-- mensagem genérica por enquanto -->
             <!-- <div *ngIf="errorMessage" class="invalid-feedback">
                 {{ errorMessage }}

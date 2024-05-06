@@ -7,8 +7,7 @@ import { ClientService } from '../clients.service';
 import { CompanyStatus } from '../companyStatus';
 import { RegistrationType } from '../registrationType';
 import { DateAdapter } from '@angular/material/core';
-
-
+import { Accountant } from '../../accountants/accountant';
 
 @Component({
   selector: 'app-create-client',
@@ -19,31 +18,39 @@ export class CreateClientComponent implements OnInit {
 
   clientForm!: FormGroup;
   registrationType: RegistrationType = RegistrationType.CNPJ;
-  registrationPlaceholder: string;
+  registrationPlaceholder: string = 'Digite o CNPJ';
   mask: string;
   companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
   picker: string = 'picker';
-  registrationDate = new Date();
-  // registrationDateString: string = this.registrationDate.toISOString().split('T')[0];
+  accountants: Accountant[] = [];
+  errorMessage: string = '';
+  registrationDate: Date = new Date();
 
   constructor(
     private service: ClientService, 
     private router: Router,
     private formBuilder: FormBuilder,
     //formatar a data para o padrão brasileiro
-    private adapter: DateAdapter<any>
+    private adapter: DateAdapter<Date>
   ) {
     this.adapter.setLocale('pt-BR');
   }
 
   ngOnInit(): void {
+
+    this.service.getAccountants().subscribe(
+      (data) => {
+        this.accountants = data;
+      });
+
     this.clientForm = this.formBuilder.group({
-      registrationType: ['', Validators.compose([
-        Validators.required,
-        FormValidators.cpfValidator],
+      registrationType: [RegistrationType.CNPJ, Validators.compose([
+        Validators.required],
       )],
       registrationNumber: ['', Validators.compose([
-        Validators.required],
+        Validators.required,
+        FormValidators.cnpjValidator
+        ],
       )],
       clientCode: ['', Validators.required],
       name: ['', Validators.compose([
@@ -54,12 +61,15 @@ export class CreateClientComponent implements OnInit {
         Validators.required,
         Validators.maxLength(250)
       ])],
-      registrationDate: ['', Validators.compose([
+      registrationDate: [this.registrationDate, Validators.compose([
         Validators.required,
       ])],
-      companyStatus: ['', Validators.compose([
+      companyStatus: [this.companyStatus, Validators.compose([
         Validators.required,
-      ])]
+      ])],
+      accountant: ['', Validators.compose([
+        Validators.required,
+      ])],
     });
   }
 
@@ -73,7 +83,6 @@ export class CreateClientComponent implements OnInit {
       type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
     ]);
   }
-
 
   getErrorMessage(controlName: string): string | null {
     const control = this.clientForm.get(controlName)
@@ -92,49 +101,36 @@ export class CreateClientComponent implements OnInit {
         return null;
     }
   }
+
+  btnEnable(): string {
+    if(this.clientForm.valid) {
+      return 'btn-save'
+    } else {
+      return 'btn-disabled'
+    }
+  }
+
+  createClient() {
+    if (this.clientForm.valid) {
+      this.service.create(this.clientForm.value).subscribe({
+        next: () => {
+          this.router.navigate(['/clients','listClients']);
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          if (error.status === 409) {
+            this.errorMessage = "Registro duplicado";
+          } else {
+            this.errorMessage = "Erro inesperado";
+          }
+        }
+      });
+    }
+  }
+
+  cancelClient(){
+    this.router.navigate(['/clients','listClients'])
+  }
 }
 
-
-//   createAccountant() {
-//     if (this.accountantForm.valid) {
-//       this.service.create(this.accountantForm.value).subscribe({
-//         next: () => {
-//           this.router.navigate(['/accountants','listAccountants']);
-//         },
-//         error: (error: HttpErrorResponse) => {
-//           console.log(error);
-//           if (error.status === 409) {
-//             this.errorMessage = "Registro duplicado";
-//           } else {
-//             this.errorMessage = "Erro inesperado";
-//           }
-//         }
-//       });
-//     }
-//   }
-
-//   btnEnable(): string {
-//     if(this.accountantForm.valid) {
-//       return 'btn-save'
-//     } else {
-//       return 'btn-disabled'
-//     }
-//   }
-
-//   cancelAccountant(){
-//     this.router.navigate(['/accountants','listAccountants'])
-//   }
-
-//   //recebe o nome do campo do formulário e gera a mensagem de erro
-//   getErrorMessage(controlName: string): string | null {
-//     const control = this.accountantForm.get(controlName);
-//     if (control?.errors?.['required']) {
-//       return 'Este campo é obrigatório.';
-//     } else if (control?.errors?.['cpfInvalid']) {
-//       return 'CPF inválido.';
-//     }
-//     return null;
-//   }
-  
-// }
 

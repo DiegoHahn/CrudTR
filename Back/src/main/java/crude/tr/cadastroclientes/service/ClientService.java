@@ -40,7 +40,7 @@ public class ClientService {
         //Passar o ID diretamente na requisição, pode ser que eu precise passar o objeto inteiro do front-end
         if (clientDTO.getAccountantId() != null) {
             Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
-                    .orElseThrow(() -> new EntityNotFoundException("Accountant not found with id: " + clientDTO.getAccountantId()));
+                    .orElseThrow(() -> new EntityNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
             client.setAccountant(accountant);
         }
         return client;
@@ -77,7 +77,7 @@ public class ClientService {
         if (client.getAccountant() != null) {
             Long accountantId = client.getAccountant().getId();
             Accountant accountant = accountantRepository.findById(accountantId)
-                    .orElseThrow(() -> new EntityNotFoundException("Accountant not found with id: " + accountantId));
+                    .orElseThrow(() -> new EntityNotFoundException("Contador não encontrado com o id: " + accountantId));
             client.setAccountant(accountant);
         }
         return clientRepository.save(client);

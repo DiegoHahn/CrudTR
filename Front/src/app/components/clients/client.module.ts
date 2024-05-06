@@ -2,17 +2,18 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule, MatSelectModule } from '@angular/material';
+import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NgxMaskModule } from 'ngx-mask';
-import { ClientComponent } from './client/client.component';
 import { ClientRoutingModule } from './client.routing.module';
+import { ClientComponent } from './client/client.component';
 import { ClientService } from './clients.service';
-import { ListClientsComponent } from './list-clients/list-clients.component';
-import { DeleteClientComponent } from './delete-client/delete-client.component';
 import { CreateClientComponent } from './create-client/create-client.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material';
+import { DeleteClientComponent } from './delete-client/delete-client.component';
+import { ListClientsComponent } from './list-clients/list-clients.component';
+
 
 @NgModule({
   declarations: [
@@ -28,12 +29,14 @@ import { MatFormFieldModule } from '@angular/material';
     MatDatepickerModule ,
     MatFormFieldModule,
     MatNativeDateModule,
+    MatSelectModule,
     NgxMaskModule.forRoot(),
     HttpClientModule,
     ReactiveFormsModule,    
     MatPaginatorModule
   ],
-  providers:[ClientService, { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }]
+  providers:[ClientService,
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },]
 })
 export class ClientModule { }
 

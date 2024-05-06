@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,10 @@ public class AccountantService {
 
     public Optional<Accountant> findAccountantByID(Long id) {
         return accountantRepository.findById(id);
+    }
+
+    public List<Accountant> findAllAccountants() {
+        return accountantRepository.findAllByOrderByNameAsc();
     }
 
    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {

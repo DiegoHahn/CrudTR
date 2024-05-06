@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 //Passando um obeto Pageable a JPA fará a paginação automaticamente com o page e size
@@ -14,4 +15,7 @@ public interface AccountantRepository extends JpaRepository<Accountant, Long> {
     Page<Accountant> findAccountantsByName(String name, Pageable pageable);
 
     Optional<Accountant> findByRegistrationNumber(String registrationNumber);
+
+    List<Accountant> findAllByOrderByNameAsc();
+
 }

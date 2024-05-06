@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -38,6 +39,11 @@ public class AccountantController {
     @GetMapping("/{id}")
     public Optional<Accountant> getAccountantById(@PathVariable Long id) {
         return accountantService.findAccountantByID(id); // Buscando um cliente pelo id
+    }
+
+    @GetMapping("/all")
+    public List<Accountant> getAllAccountants() {
+        return accountantService.findAllAccountants();
     }
 
     @PostMapping

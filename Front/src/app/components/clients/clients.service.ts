@@ -3,13 +3,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Client } from './client';
 import { ClientResponse } from './client.response';
+import { Accountant } from '../accountants/accountant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClientService {
+  
+  private readonly clientAPI = 'http://localhost:8080/clients'
+  private readonly accountantAPI = 'http://localhost:8080/accountants'
 
-  private readonly API = 'http://localhost:8080/clients'
 
   constructor(private http: HttpClient) { }
 
@@ -19,15 +22,20 @@ export class ClientService {
       .set('name', nameFilter)
       .set('page', pageIndex)
       .set('size', pageSize);
-    return this.http.get<ClientResponse>(this.API, {params})
+    return this.http.get<ClientResponse>(this.clientAPI, {params})
       .pipe(catchError(error => {
         return throwError(() => new Error(error));
       }));
   }
 
-//   create(client: Client):any {
-//       return this.http.post<Client>(this.API, client)
-//     }
+  getAccountants(): Observable<Accountant[]> {
+    const url = `${this.accountantAPI}/all`
+     return this.http.get<Accountant[]>(url);
+  }
+
+  create(client: Client):any {
+      return this.http.post<Client>(this.clientAPI, client)
+    }
 
 //   edit(client: Client): Observable<Client> {
 //     const url = `${this.API}/${client.id}`
@@ -35,7 +43,7 @@ export class ClientService {
 //   }
 
   delete(id: number): Observable<Client> {
-    const url = `${this.API}/${id}`
+    const url = `${this.clientAPI}/${id}`
     return this.http.delete<Client>(url)
   }
 

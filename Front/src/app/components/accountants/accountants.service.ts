@@ -8,7 +8,6 @@ import { AccountantResponse } from './accountant-response';
   providedIn: 'root'
 })
 export class AccountantService {
-
   private readonly API = 'http://localhost:8080/accountants'
   
   constructor(private http: HttpClient) { }
