@@ -8,6 +8,8 @@ import { CompanyStatus } from '../companyStatus';
 import { RegistrationType } from '../registrationType';
 import { DateAdapter } from '@angular/material/core';
 import { Accountant } from '../../accountants/accountant';
+import { BehaviorSubject, Observable, scan } from 'rxjs';
+import { AccountantResponse } from '../../accountants/accountant-response';
 
 @Component({
   selector: 'app-create-client',
@@ -22,9 +24,15 @@ export class CreateClientComponent implements OnInit {
   mask: string = '00.000.000/0000-00';
   companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
   picker: string = 'picker';
-  accountants: Accountant[] = [];
   errorMessage: string = '';
-  registrationDate: Date = new Date();
+  registrationDate: Date;
+
+  total = 12;
+  data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
+  limit = 10;
+  offset = 0;
+  accountants = new BehaviorSubject<Accountant[]>([]);
+  accountants$: Observable<Accountant[]>;
 
   constructor(
     private service: ClientService, 
@@ -33,16 +41,16 @@ export class CreateClientComponent implements OnInit {
     //formatar a data para o padrão brasileiro
     private adapter: DateAdapter<Date>
   ) {
+    this.accountants$ = this.accountants.asObservable().pipe(
+      scan((acc:Accountant[], curr:Accountant[]) => {
+        return [...acc, ...curr];
+      }, [])
+    ),
     this.adapter.setLocale('pt-BR');
   }
 
   ngOnInit(): void {
-
-    this.service.getAccountants().subscribe(
-      (data) => {
-        this.accountants = data;
-      });
-
+    this.getNextBatch();
     this.clientForm = this.formBuilder.group({
       registrationType: [RegistrationType.CNPJ, Validators.compose([
         Validators.required],
@@ -130,6 +138,14 @@ export class CreateClientComponent implements OnInit {
 
   cancelClient(){
     this.router.navigate(['/clients','listClients'])
+  }
+
+  getNextBatch() {
+    this.service.listAccountantsData('', this.offset, this.limit).subscribe(response => {
+      this.accountants.next(response.content);
+      this.offset += this.limit;
+      this.total = response.totalElements;
+    });
   }
 }
 

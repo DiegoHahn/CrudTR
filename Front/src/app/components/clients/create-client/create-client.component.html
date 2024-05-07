@@ -86,19 +86,13 @@
             </div>
             <div class="form-group">    
                 <label for="accountant" class="form-label">Contador:</label>
-                <select 
-                class="form-input" id="accountant"
-                formControlName="accountant">
-                <option *ngFor="let accountant of accountants" value="{{ accountant }}" class="box-option">{{ accountant.name }}</option>
-                </select>
-
-                <!-- <mat-form-field appearance="outline">
-                    <mat-label>Select</mat-label>
+                <mat-form-field appearance="outline">
+                    <mat-label>Selecione</mat-label>
                     <mat-select msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="offset === data.length">
-                      <mat-option *ngFor="let accountant of accountants | async" [value]="accountant">{{accountant.name}}</mat-option>
+                        <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant">{{accountant.name}}</mat-option>
                     </mat-select>
                   </mat-form-field>
- -->
+
 
                 <div *ngIf=" clientForm.get('accountant')?.touched && clientForm.get('accountant')?.errors" class="invalid-feedback">
                     {{ getErrorMessage('accountant') }}

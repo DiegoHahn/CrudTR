@@ -4,6 +4,7 @@ import { Observable, catchError, throwError } from 'rxjs';
 import { Client } from './client';
 import { ClientResponse } from './client.response';
 import { Accountant } from '../accountants/accountant';
+import { AccountantResponse } from '../accountants/accountant-response';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,15 @@ export class ClientService {
       .pipe(catchError(error => {
         return throwError(() => new Error(error));
       }));
+  }
+  
+  listAccountantsData(nameFilter:string, pageIndex:number, pageSize:number): Observable<AccountantResponse> {
+    let params = new HttpParams()
+    params = params
+      .set('name', nameFilter)
+      .set('page', pageIndex)
+      .set('size', pageSize);
+    return this.http.get<AccountantResponse>(this.accountantAPI, {params})
   }
 
   getAccountants(): Observable<Accountant[]> {
