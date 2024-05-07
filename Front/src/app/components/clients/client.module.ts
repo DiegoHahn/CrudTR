@@ -13,6 +13,7 @@ import { ClientService } from './clients.service';
 import { CreateClientComponent } from './create-client/create-client.component';
 import { DeleteClientComponent } from './delete-client/delete-client.component';
 import { ListClientsComponent } from './list-clients/list-clients.component';
+import { MatSelectInfiniteScrollModule } from 'ng-mat-select-infinite-scroll';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { ListClientsComponent } from './list-clients/list-clients.component';
     FormsModule,
     MatDatepickerModule ,
     MatFormFieldModule,
+    MatSelectInfiniteScrollModule,
     MatNativeDateModule,
     MatSelectModule,
     NgxMaskModule.forRoot(),

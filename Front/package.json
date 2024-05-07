@@ -22,6 +22,7 @@
     "angular": "^1.8.3",
     "cli": "^1.0.1",
     "install": "^0.13.0",
+    "ng-mat-select-infinite-scroll": "^4.0.0",
     "ngx-mask": "^10.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.6.2",

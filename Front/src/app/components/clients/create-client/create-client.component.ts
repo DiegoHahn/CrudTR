@@ -19,7 +19,7 @@ export class CreateClientComponent implements OnInit {
   clientForm!: FormGroup;
   registrationType: RegistrationType = RegistrationType.CNPJ;
   registrationPlaceholder: string = 'Digite o CNPJ';
-  mask: string;
+  mask: string = '00.000.000/0000-00';
   companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
   picker: string = 'picker';
   accountants: Accountant[] = [];

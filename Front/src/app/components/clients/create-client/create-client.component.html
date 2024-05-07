@@ -57,7 +57,7 @@
                 class="form-input"
                 id="clientCode"
                 formControlName="clientCode"
-                placeholder="Digite o código do contador"
+                placeholder="Digite o código do cliente"
                 >
                 <div *ngIf=" clientForm.get('clientCode')?.touched && clientForm.get('clientCode')?.errors" class="invalid-feedback">
                     {{ getErrorMessage('clientCode') }}
@@ -91,6 +91,15 @@
                 formControlName="accountant">
                 <option *ngFor="let accountant of accountants" value="{{ accountant }}" class="box-option">{{ accountant.name }}</option>
                 </select>
+
+                <!-- <mat-form-field appearance="outline">
+                    <mat-label>Select</mat-label>
+                    <mat-select msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="offset === data.length">
+                      <mat-option *ngFor="let accountant of accountants | async" [value]="accountant">{{accountant.name}}</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+ -->
+
                 <div *ngIf=" clientForm.get('accountant')?.touched && clientForm.get('accountant')?.errors" class="invalid-feedback">
                     {{ getErrorMessage('accountant') }}
                 </div>
