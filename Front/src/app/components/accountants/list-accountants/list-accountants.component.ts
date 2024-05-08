@@ -29,7 +29,7 @@ export class ListAccountantsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAccountants(this.pageIndex, this.pageSize);
-    this.onKeyDown.pipe(debounceTime(800)).subscribe(_ => {
+    this.onKeyDown.pipe(debounceTime(600)).subscribe(_ => {
       this.filterByName();
     });
   };

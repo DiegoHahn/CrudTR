@@ -27,7 +27,7 @@ export class ListClientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadClients(this.pageIndex, this.pageSize);
-    this.onKeyDown.pipe(debounceTime(800)).subscribe(_ => {
+    this.onKeyDown.pipe(debounceTime(600)).subscribe(_ => {
       this.filterByName();
     });
   };
@@ -56,7 +56,6 @@ export class ListClientsComponent implements OnInit {
 
   onDeleteConfirm(confirmation: boolean) {
     if(confirmation) {
-    console.log("aqui +",this.selectedClientId)
      this.service.delete(this.selectedClientId).subscribe({
        next: () => {
          this.loadClients(this.pageIndex, this.pageSize);

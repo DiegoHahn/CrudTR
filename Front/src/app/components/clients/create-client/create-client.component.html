@@ -65,15 +65,17 @@
             </div>
             <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
-                <input matInput [matDatepicker]="picker" class="box" mask="d0/M0/0000">
+                <input id="registrationDate" matInput #registrationDateInput  [matDatepicker]='picker' class="box" mask="d0/M0/0000"  (dateChange)="onDateSelect($event)">
+                <!-- tive que fazer um segundo input hidden para o form não dar erro de acesso do campo -->
                 <input type="hidden" formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <div *ngIf=" clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
-                    {{ getErrorMessage('registrationDate') }}
+                
+                <div *ngIf="clientForm.get('registrationDateInput')?.touched && clientForm.get('registrationDateInput')?.errors" class="invalid-feedback">
+                  {{ getErrorMessage('registrationDate') }}
                 </div>
-            </div>
+              </div>
             <div class="form-group">
                 <label for="companyStatus" class="form-label">Situação do cliente:</label>
                 <select 
@@ -86,14 +88,12 @@
             </div>
             <div class="form-group">    
                 <label for="accountant" class="form-label">Contador:</label>
-                <mat-form-field appearance="outline">
+                <mat-form-field appearance="outline" >
                     <mat-label>Selecione</mat-label>
-                    <mat-select msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="offset === data.length">
-                        <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant">{{accountant.name}}</mat-option>
+                    <mat-select id="accountant" msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="offset === data.length" formControlName="accountant">
+                        <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant" >{{accountant.name}}</mat-option>
                     </mat-select>
                   </mat-form-field>
-
-
                 <div *ngIf=" clientForm.get('accountant')?.touched && clientForm.get('accountant')?.errors" class="invalid-feedback">
                     {{ getErrorMessage('accountant') }}
                 </div>
@@ -106,12 +106,15 @@
                 Cancelar
                 </button>
 
+                <button (click)="mostra()">
+                    aqui
+                </button>
                 <button
                 class="btn-salvar"
-                [disabled]="!clientForm.valid"
+          
                 (click)="createClient()"
                 [ngClass]="btnEnable()">
-                Salvars
+                Salvar
                 </button>
             </div>
             <!-- mensagem genérica por enquanto -->

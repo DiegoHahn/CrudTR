@@ -10,6 +10,8 @@ import { DateAdapter } from '@angular/material/core';
 import { Accountant } from '../../accountants/accountant';
 import { BehaviorSubject, Observable, scan } from 'rxjs';
 import { AccountantResponse } from '../../accountants/accountant-response';
+import { MatDatepickerInputEvent } from '@angular/material';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-create-client',
@@ -18,6 +20,7 @@ import { AccountantResponse } from '../../accountants/accountant-response';
 })
 export class CreateClientComponent implements OnInit {
 
+
   clientForm!: FormGroup;
   registrationType: RegistrationType = RegistrationType.CNPJ;
   registrationPlaceholder: string = 'Digite o CNPJ';
@@ -25,9 +28,9 @@ export class CreateClientComponent implements OnInit {
   companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
   picker: string = 'picker';
   errorMessage: string = '';
-  registrationDate: Date;
-
-  total = 12;
+  registrationDate: string = '';
+  //variáveis para paginação
+  total = 100;
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   limit = 10;
   offset = 0;
@@ -35,6 +38,7 @@ export class CreateClientComponent implements OnInit {
   accountants$: Observable<Accountant[]>;
 
   constructor(
+    private datePipe: DatePipe,
     private service: ClientService, 
     private router: Router,
     private formBuilder: FormBuilder,
@@ -69,7 +73,7 @@ export class CreateClientComponent implements OnInit {
         Validators.required,
         Validators.maxLength(250)
       ])],
-      registrationDate: [this.registrationDate, Validators.compose([
+      registrationDate: [, Validators.compose([
         Validators.required,
       ])],
       companyStatus: [this.companyStatus, Validators.compose([
@@ -81,6 +85,10 @@ export class CreateClientComponent implements OnInit {
     });
   }
 
+  mostra() {
+ console.log(this.registrationDate)
+  console.log(this.clientForm.value)
+    }
   //muda o tipo de registro a máscara do campo de registro e validação
   onRegistrationTypeChange(type: RegistrationType) {
     this.registrationType = type;
@@ -146,6 +154,10 @@ export class CreateClientComponent implements OnInit {
       this.offset += this.limit;
       this.total = response.totalElements;
     });
+  }
+
+  onDateSelect(event: MatDatepickerInputEvent<Date>): void {
+    this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
   }
 }
 

@@ -44,10 +44,6 @@ public class AccountantService {
         return accountantRepository.findById(id);
     }
 
-    public List<Accountant> findAllAccountants() {
-        return accountantRepository.findAllByOrderByNameAsc();
-    }
-
    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
     try {
         Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
