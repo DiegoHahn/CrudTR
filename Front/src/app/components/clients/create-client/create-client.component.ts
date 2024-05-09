@@ -69,7 +69,6 @@ export class CreateClientComponent implements OnInit {
         Validators.maxLength(250)
       ])],
       fantasyName: ['', Validators.compose([
-        Validators.required,
         Validators.maxLength(250)
       ])],
       registrationDate: [, Validators.compose([
@@ -78,7 +77,7 @@ export class CreateClientComponent implements OnInit {
       companyStatus: [this.companyStatus, Validators.compose([
         Validators.required,
       ])],
-      accountant: ['', Validators.compose([
+      accountantId: ['', Validators.compose([
         Validators.required,
       ])],
     });

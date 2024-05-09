@@ -14,7 +14,7 @@ public class ClientDTO {
     private String clientCode;
     private String name;
     private String fantasyName;
-    private String registrationDate; // Recebe String para simplificar a entrada, mas precisa converter depois
+    private String registrationDate;
     private CompanyStatus companyStatus;
     private Long accountantId;
 

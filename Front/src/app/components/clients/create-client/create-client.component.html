@@ -1,6 +1,6 @@
 <div class="container">
     <section class="form-section">
-        <header class="form-header">Adicionar novo Cliente</header>
+        <header class="form-header">Adicionar novo cliente</header>
         <form [formGroup]="clientForm" class="client-form">
             <div class="form-group">
                 <label for="name" class="form-label">Nome:</label>
@@ -87,15 +87,15 @@
                 </select>
             </div>
             <div class="form-group">    
-                <label for="accountant" class="form-label">Contador:</label>
+                <label for="accountantId" class="form-label">Contador:</label>
                 <mat-form-field appearance="outline" >
                     <mat-label>Selecione</mat-label>
-                    <mat-select id="accountant" msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="clientLoadOffset === data.length" formControlName="accountant">
-                        <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant" >{{accountant.name}}</mat-option>
+                    <mat-select id="accountantId" msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="clientLoadOffset === data.length" formControlName="accountantId">
+                        <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant.id" >{{accountant.name}}</mat-option>
                     </mat-select>
                   </mat-form-field>
-                <div *ngIf=" clientForm.get('accountant')?.touched && clientForm.get('accountant')?.errors" class="invalid-feedback">
-                    {{ getErrorMessage('accountant') }}
+                <div *ngIf=" clientForm.get('accountantId')?.touched && clientForm.get('accountantId')?.errors" class="invalid-feedback">
+                    {{ getErrorMessage('accountantId') }}
                 </div>
             </div>
   

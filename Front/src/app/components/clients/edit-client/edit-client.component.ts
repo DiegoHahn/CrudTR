@@ -56,7 +56,7 @@ export class EditClientComponent implements OnInit {
       fantasyName: [''],
       registrationDate: [''],
       companyStatus: [''],
-      accountant: ['']
+      accountantId: ['']
     });
     this.getNextBatch();
     const id = this.route.snapshot.paramMap.get('id');
@@ -86,17 +86,18 @@ export class EditClientComponent implements OnInit {
         companyStatus: [client.companyStatus, Validators.compose([
           Validators.required
         ])],
-        accountant: [client.accountantId, Validators.compose([
+        accountantId: [client.accountantId, Validators.compose([
           Validators.required
         ])]
       })
+      this.onRegistrationTypeChange(client.registrationType)
+      console.log(client);
     });
   }
 
   onRegistrationTypeChange(type: RegistrationType) {
     this.registrationType = type;
     this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
-    this.clientForm.get('registrationNumber')?.setValue('');
     this.registrationPlaceholder = type === 'CPF' ? 'Digite o CPF' : 'Digite o CNPJ';
     this.clientForm.get('registrationNumber')?.setValidators([
       type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
