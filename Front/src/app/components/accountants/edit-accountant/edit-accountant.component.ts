@@ -4,7 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AccountantService } from '../accountants.service';
 import { FormValidators } from '../../validators/form-validators';
 
-
 @Component({
   selector: 'app-edit-accountant',
   templateUrl: './edit-accountant.component.html',

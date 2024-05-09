@@ -1,5 +1,6 @@
 package crude.tr.cadastroclientes.service;
 
+import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.model.Client;
@@ -56,13 +57,10 @@ public class ClientService {
 
     //Conversor de Datas (é aqui o lugar dessa classe?)
     public static class DateUtil {
-
         public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
         public static LocalDate convertStringToLocalDate(String dateStr) {
             return LocalDate.parse(dateStr, FORMATTER);
         }
-
         public static String formatLocalDateToString(LocalDate date) {
             if (date == null) {
                 return null;
@@ -81,6 +79,16 @@ public class ClientService {
             client.setAccountant(accountant);
         }
         return clientRepository.save(client);
+    }
+
+    public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
+        Optional<Client> clientOptional = findCLientById(id);
+        if (clientOptional.isPresent()) {
+            Client client = convertToClient(clientDTO);
+            return new ResponseEntity<>(clientRepository.save(client), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     public ResponseEntity<Void> deleteClient(Long id) {

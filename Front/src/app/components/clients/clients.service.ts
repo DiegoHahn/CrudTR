@@ -47,18 +47,18 @@ export class ClientService {
       return this.http.post<Client>(this.clientAPI, client)
     }
 
-//   edit(client: Client): Observable<Client> {
-//     const url = `${this.API}/${client.id}`
-//     return this.http.put<Client>(url, client )
-//   }
+  edit(client: Client): Observable<Client> {
+    const url = `${this.clientAPI}/${client.id}`
+    return this.http.put<Client>(url, client )
+  }
 
   delete(id: number): Observable<Client> {
     const url = `${this.clientAPI}/${id}`
     return this.http.delete<Client>(url)
   }
 
-//   searchAccountByID(id: number): Observable<Client> {
-//     const url = `${this.API}/${id}`
-//     return this.http.get<Client>(url)
-//   }
+  searchClientByID(id: number): Observable<Client> {
+    const url = `${this.clientAPI}/${id}`
+    return this.http.get<Client>(url)
+  }
 }

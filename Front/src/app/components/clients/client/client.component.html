@@ -14,9 +14,9 @@
     <tbody class="table-form">
         <tr *ngFor="let client of listClients">
         <td class="table-cell-registro">{{ client.registrationType }}</td>
-        <td class="table-cell-numero">{{ client.registrationNumber}}</td>
+        <td class="table-cell-numero">{{ client.registrationNumber | mask:"CPF_CNPJ"}}</td>
         <td class="table-cell-codigo">{{ client.clientCode }}</td>
-        <td class="table-cell-nome">{{ client.name}}</td>
+        <td class="table-cell-nome">{{ client.name }}</td>
         <td class="table-cell-nome-fantasia">{{ client?.fantasyName}}</td>
         <td class="table-cell-data">{{ client.registrationDate | mask:"d0/M0/0000" }}</td>
         <td class="table-cell-status">{{ client.companyStatus ? 'Ativo' : 'Inativo'}}</td>

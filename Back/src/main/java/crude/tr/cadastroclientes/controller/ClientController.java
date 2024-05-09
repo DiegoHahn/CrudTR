@@ -1,22 +1,16 @@
 package crude.tr.cadastroclientes.controller;
 
-import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.dto.ClientDTO;
-import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.model.Client;
-import crude.tr.cadastroclientes.repository.ClientRepository;
 import crude.tr.cadastroclientes.service.ClientService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -51,9 +45,13 @@ public class ClientController {
             return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable Long id, @RequestBody @Valid ClientDTO clientDTO) {
+        return clientService.updateClient(id, clientDTO);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
         return clientService.deleteClient(id);
     }
-
 }

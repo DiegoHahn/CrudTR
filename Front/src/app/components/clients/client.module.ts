@@ -14,6 +14,7 @@ import { ClientService } from './clients.service';
 import { CreateClientComponent } from './create-client/create-client.component';
 import { DeleteClientComponent } from './delete-client/delete-client.component';
 import { ListClientsComponent } from './list-clients/list-clients.component';
+import { EditClientComponent } from './edit-client/edit-client.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { ListClientsComponent } from './list-clients/list-clients.component';
     ListClientsComponent,
     DeleteClientComponent,
     CreateClientComponent,
+    EditClientComponent
   ],
   imports: [
     CommonModule,

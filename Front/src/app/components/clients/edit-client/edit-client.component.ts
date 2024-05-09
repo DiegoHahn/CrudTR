@@ -1,33 +1,30 @@
 import { DatePipe } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material';
-import { DateAdapter } from '@angular/material/core';
-import { Router } from '@angular/router';
+import { DateAdapter, MatDatepickerInputEvent } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, scan } from 'rxjs';
 import { Accountant } from '../../accountants/accountant';
-import { FormValidators } from '../../validators/form-validators';
 import { ClientService } from '../clients.service';
-import { CompanyStatus } from '../companyStatus';
 import { RegistrationType } from '../registrationType';
+import { FormValidators } from '../../validators/form-validators';
+import { CompanyStatus } from '../companyStatus';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
-  selector: 'app-create-client',
-  templateUrl: './create-client.component.html',
-  styleUrls: ['./create-client.component.css']
+  selector: 'app-edit-client',
+  templateUrl: './edit-client.component.html',
+  styleUrls: ['./edit-client.component.css']
 })
-export class CreateClientComponent implements OnInit {
-
+export class EditClientComponent implements OnInit {
   clientForm!: FormGroup;
   registrationType: RegistrationType = RegistrationType.CNPJ;
   registrationPlaceholder: string = 'Digite o CNPJ';
-  mask: string = '00.000.000/0000-00';
-  companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
+  mask: string;
+  companyStatus: CompanyStatus;
   picker: string = 'picker';
   errorMessage: string = '';
   registrationDate: string = '';
-  //variáveis para paginação
   total = 100;
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   clientLoadLimit = 10;
@@ -36,55 +33,66 @@ export class CreateClientComponent implements OnInit {
   accountants$: Observable<Accountant[]>;
 
   constructor(
+    private router: Router,
+    private route: ActivatedRoute,
     private datePipe: DatePipe,
     private service: ClientService, 
-    private router: Router,
     private formBuilder: FormBuilder,
-    private adapter: DateAdapter<Date>
-  ) {
-    this.accountants$ = this.accountants.asObservable().pipe(
-      scan((acc:Accountant[], curr:Accountant[]) => {
-        return [...acc, ...curr];
-      }, [])
-    ),
-    
-    //formatar a data para o padrão brasileiro
-    this.adapter.setLocale('pt-BR');
-  }
+    private adapter: DateAdapter<Date>) {
+      this.accountants$ = this.accountants.asObservable().pipe(
+        scan((acc:Accountant[], curr:Accountant[]) => {
+          return [...acc, ...curr];
+        }, [])
+      ),
+      this.adapter.setLocale('pt-BR');
+     }
 
   ngOnInit(): void {
-    this.getNextBatch();
     this.clientForm = this.formBuilder.group({
-      registrationType: [RegistrationType.CNPJ, Validators.compose([
-        Validators.required],
-      )],
-      registrationNumber: ['', Validators.compose([
-        Validators.required,
-        FormValidators.cnpjValidator
-        ],
-      )],
-      clientCode: ['', Validators.required],
-      name: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(250)
-      ])],
-      fantasyName: ['', Validators.compose([
-        Validators.required,
-        Validators.maxLength(250)
-      ])],
-      registrationDate: [, Validators.compose([
-        Validators.required,
-      ])],
-      companyStatus: [this.companyStatus, Validators.compose([
-        Validators.required,
-      ])],
-      accountant: ['', Validators.compose([
-        Validators.required,
-      ])],
+      registrationType: [''],
+      registrationNumber: [''],
+      clientCode: [''],
+      name: [''],
+      fantasyName: [''],
+      registrationDate: [''],
+      companyStatus: [''],
+      accountant: ['']
+    });
+    this.getNextBatch();
+    const id = this.route.snapshot.paramMap.get('id');
+    this.service.searchClientByID(parseInt(id!)).subscribe(client => {
+      this.clientForm = this.formBuilder.group({
+        registrationType: [client.registrationType, Validators.compose([
+          Validators.required
+        ])],
+        registrationNumber: [client.registrationNumber, Validators.compose([
+          Validators.required,
+          FormValidators.cnpjValidator
+        ])],
+        clientCode: [client.clientCode, Validators.compose([
+          Validators.required
+        ])],
+        name: [client.name, Validators.compose([
+          Validators.required,
+          Validators.maxLength(250)
+        ])],
+        fantasyName: [client.fantasyName, Validators.compose([
+          Validators.required,
+          Validators.maxLength(250)
+        ])],
+        registrationDate: [client.registrationDate, Validators.compose([
+          Validators.required
+        ])],
+        companyStatus: [client.companyStatus, Validators.compose([
+          Validators.required
+        ])],
+        accountant: [client.accountantId, Validators.compose([
+          Validators.required
+        ])]
+      })
     });
   }
 
-  //muda o tipo de registro a máscara do campo de registro e validação
   onRegistrationTypeChange(type: RegistrationType) {
     this.registrationType = type;
     this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
@@ -121,9 +129,9 @@ export class CreateClientComponent implements OnInit {
     }
   }
 
-  createClient() {
+  editClient() {
     if (this.clientForm.valid) {
-      this.service.create(this.clientForm.value).subscribe({
+      this.service.edit(this.clientForm.value).subscribe({
         next: () => {
           this.router.navigate(['/clients','listClients']);
         },
@@ -155,5 +163,3 @@ export class CreateClientComponent implements OnInit {
     this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
   }
 }
-
-

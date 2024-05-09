@@ -66,7 +66,6 @@
             <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
                 <input id="registrationDate" matInput #registrationDateInput  [matDatepicker]='picker' class="box" mask="d0/M0/0000"  (dateChange)="onDateSelect($event)">
-                <!-- tive que fazer um segundo input hidden para o form não dar erro de acesso do campo -->
                 <input type="hidden" formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -98,24 +97,22 @@
                     {{ getErrorMessage('accountant') }}
                 </div>
             </div>
-  
             <div class="form-actions">
                 <button 
-                class="btn-cancel"
-                (click)="cancelClient()">
-                Cancelar
+                    class="btn-cancel"
+                    (click)="cancelClient()">
+                    Cancelar
                 </button>
-
                 <button
-                class="btn-salvar"
-                (click)="createClient()"
-                [ngClass]="btnEnable()">
-                Salvar
+                    class="btn-salvar"          
+                    (click)="editClient()"
+                    [ngClass]="btnEnable()">
+                    Salvar
                 </button>
             </div>
-            <!-- <div *ngIf="errorMessage" class="invalid-feedback">
+            <div *ngIf="errorMessage" class="invalid-feedback">
                 {{ errorMessage }}
-            </div> -->
+            </div>
         </form>
     </section>
 </div>

@@ -14,7 +14,7 @@
   <app-client [listClients]="listClients">
     <ng-template let-client #actions>  
         <button class="btn-edit">
-          <img src="../../../../assets/images/edit-btn.png" alt="Editar" [routerLink]="['/clients', 'editClients', client.id]">
+          <img src="../../../../assets/images/edit-btn.png" alt="Editar" [routerLink]="['/clients', 'editClient', client.id]">
       </button>
       <button class="btn-delete">
           <img src="../../../../assets/images/delete-btn.png"
