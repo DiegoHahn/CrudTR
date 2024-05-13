@@ -81,11 +81,37 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
+//    public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
+//        Optional<Client> clientOptional = findCLientById(id);
+//        if (clientOptional.isPresent()) {
+//            Client client = convertToClient(clientDTO);
+//            return new ResponseEntity<>(clientRepository.save(client), HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
     public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
         Optional<Client> clientOptional = findCLientById(id);
+        //Atualiza o valor de um client do banco ao inves de criar um novo registro, devido ao funcionamento da JPA
         if (clientOptional.isPresent()) {
-            Client client = convertToClient(clientDTO);
-            return new ResponseEntity<>(clientRepository.save(client), HttpStatus.OK);
+            Client existingClient = clientOptional.get();
+            existingClient.setRegistrationType(clientDTO.getRegistrationType());
+            existingClient.setRegistrationNumber(clientDTO.getRegistrationNumber());
+            existingClient.setClientCode(clientDTO.getClientCode());
+            existingClient.setName(clientDTO.getName());
+            existingClient.setFantasyName(clientDTO.getFantasyName());
+            existingClient.setRegistrationDate(DateUtil.convertStringToLocalDate(clientDTO.getRegistrationDate()));
+            existingClient.setCompanyStatus(clientDTO.getCompanyStatus());
+            if (clientDTO.getAccountantId() != null) {
+                Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
+                        .orElseGet(() -> {
+                            Accountant newAccountant = new Accountant();
+                            // set properties of newAccountant based on clientDTO
+                            return accountantRepository.save(newAccountant);
+                        });
+                existingClient.setAccountant(accountant);
+            }
+            return new ResponseEntity<>(clientRepository.save(existingClient), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -62,6 +62,7 @@ export class EditClientComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchClientByID(parseInt(id!)).subscribe(client => {
       this.clientForm = this.formBuilder.group({
+        id: [client.id],
         registrationType: [client.registrationType, Validators.compose([
           Validators.required
         ])],
