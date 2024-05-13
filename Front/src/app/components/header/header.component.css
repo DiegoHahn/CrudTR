@@ -1,14 +1,37 @@
 .header {
   background: url(../../../assets/images/footer-background.png);
   background-size: cover;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+  
+}
+.container{
   display: grid;
   align-items: center;
-  justify-content: space-between;
+ 
 }
 
-.header .logo img {
-  max-width: 350px;
-  margin-bottom: 2rem;
+.logo{
+  margin: 1rem 1rem;
+  align-items: start;
+  justify-content: flex-start;
+  justify-content: start;
+}
+
+.btn{
+  margin-left: 10rem;
+}
+.btn-router {
+  margin-left: 0.5rem;
   margin-top: 1rem;
-  margin-left: 4rem;
+  border-radius: 8px;
+  background-color: #19261a; 
+  border: white 0.5px solid;
+  color: white; 
+  padding: 5px 10px;
+  text-decoration: none;
+  font-size: 16px; 
+  cursor: pointer; 
 }

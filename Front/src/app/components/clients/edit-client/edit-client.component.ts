@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DateAdapter, MatDatepickerInputEvent } from '@angular/material';
+import { DateAdapter, MatDatepickerInput, MatDatepickerInputEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, scan } from 'rxjs';
 import { Accountant } from '../../accountants/accountant';
@@ -31,6 +31,7 @@ export class EditClientComponent implements OnInit {
   clientLoadOffset = 0;
   accountants = new BehaviorSubject<Accountant[]>([]);
   accountants$: Observable<Accountant[]>;
+  @ViewChild('registrationDateInput') registrationDateInput: MatDatepickerInput<any>;
 
   constructor(
     private router: Router,
@@ -81,19 +82,22 @@ export class EditClientComponent implements OnInit {
           Validators.required,
           Validators.maxLength(250)
         ])],
-        registrationDate: [client.registrationDate, Validators.compose([
+        registrationDate: [new Date (client.registrationDate), Validators.compose([
           Validators.required
         ])],
         companyStatus: [client.companyStatus, Validators.compose([
           Validators.required
         ])],
-        accountantId: [client.accountantId, Validators.compose([
+        accountantId: [client.accountant.id, Validators.compose([
           Validators.required
         ])]
       })
       this.onRegistrationTypeChange(client.registrationType)
-      console.log(client);
+      this.registrationDateInput.value = this.clientForm.get('registrationDate')!.value;
     });
+  }
+  ngAfterViewInit(): void {
+   
   }
 
   onRegistrationTypeChange(type: RegistrationType) {
@@ -162,6 +166,6 @@ export class EditClientComponent implements OnInit {
   }
 
   onDateSelect(event: MatDatepickerInputEvent<Date>): void {
-    this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
+    this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'yyyy-MM-dd')});
   }
 }

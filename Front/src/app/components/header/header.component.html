@@ -1,6 +1,10 @@
-<header class="header ff-inter">
-  <div class="logo">
-    <img src="../../../assets/images/logoTRHeader.png" alt="Logo da TR">
+<header class="header">
+  <div  class="container">
+    <img class="logo" src="../../../assets/images/logoTRHeader.png" alt="Logo da TR">
+    <div class="btn">
+      <button class="btn-router" [routerLink]="['/clients', 'listClients']">Clientes</button>
+      <button class="btn-router" [routerLink]="['/accountants', 'listAccountants']">Contadores</button>
+    </div>
   </div>
 </header>
 
