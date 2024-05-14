@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.OffsetDateTime;
+
 public class ClientDTO {
     public void setRegistrationType(RegistrationType registrationType) {
         this.registrationType = registrationType;
@@ -27,7 +29,7 @@ public class ClientDTO {
     private String fantasyName;
 
     @NotNull(message = "O campo de data é obrigatório.")
-    private String registrationDate;
+    private OffsetDateTime registrationDate;
 
 
     @NotNull(message = "O campo de data é obrigatório.")
@@ -64,11 +66,11 @@ public class ClientDTO {
         this.fantasyName = fantasyName;
     }
 
-    public String getRegistrationDate() {
+    public OffsetDateTime getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(String registrationDate) {
+    public void setRegistrationDate(OffsetDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
 

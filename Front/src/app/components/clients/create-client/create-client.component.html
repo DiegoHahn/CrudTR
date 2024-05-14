@@ -35,7 +35,7 @@
                     <option value="CPF">CPF</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group">    
                 <label for="registrationNumber" class="form-label">Número do registro:</label>
                 <input
                 [mask]="mask" 
@@ -65,14 +65,11 @@
             </div>
             <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
-                <input id="registrationDate" matInput #registrationDateInput  [matDatepicker]='picker' class="box" mask="d0/M0/0000"  (dateChange)="onDateSelect($event)">
-                <!-- tive que fazer um segundo input hidden para o form não dar erro de acesso do campo -->
-                <input type="hidden" formControlName="registrationDate">
+                <input id="registrationDate" [matDatepicker]='picker' class="box"  formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                
-                <div *ngIf="clientForm.get('registrationDateInput')?.touched && clientForm.get('registrationDateInput')?.errors" class="invalid-feedback">
+                <div *ngIf="clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
                   {{ getErrorMessage('registrationDate') }}
                 </div>
               </div>
@@ -105,6 +102,10 @@
                 (click)="cancelClient()">
                 Cancelar
                 </button>
+          
+                <button (click)="mostra()">
+                    Mcsao
+                </button>
 
                 <button
                 class="btn-salvar"
@@ -113,9 +114,9 @@
                 Salvar
                 </button>
             </div>
-            <!-- <div *ngIf="errorMessage" class="invalid-feedback">
+            <div *ngIf="errorMessage" class="invalid-feedback">
                 {{ errorMessage }}
-            </div> -->
+            </div>
         </form>
     </section>
 </div>

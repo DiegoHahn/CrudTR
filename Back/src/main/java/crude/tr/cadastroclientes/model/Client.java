@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "clients")
@@ -19,9 +20,8 @@ public class Client {
     private String name;
     private String fantasyName;
     //Anotação para configuração de formatação da data deixar em ISO
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
-    private LocalDate registrationDate;
+    private OffsetDateTime registrationDate;
+
     @Enumerated(EnumType.STRING)
     private CompanyStatus companyStatus;
 
@@ -31,7 +31,7 @@ public class Client {
     public Client() {
     }
 
-    public Client(Long id, RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, LocalDate registrationDate, CompanyStatus companyStatus, Accountant accountant) {
+    public Client(Long id, RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, OffsetDateTime registrationDate, CompanyStatus companyStatus, Accountant accountant) {
         this.id = id;
         this.registrationType = registrationType;
         this.registrationNumber = registrationNumber;
@@ -91,11 +91,11 @@ public class Client {
         this.fantasyName = fantasyName;
     }
 
-    public LocalDate getRegistrationDate() {
+    public OffsetDateTime getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(LocalDate registrationDate) {
+    public void setRegistrationDate(OffsetDateTime registrationDate) {
         this.registrationDate = registrationDate;
     }
 

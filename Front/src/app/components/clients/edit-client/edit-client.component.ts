@@ -24,7 +24,7 @@ export class EditClientComponent implements OnInit {
   companyStatus: CompanyStatus;
   picker: string = 'picker';
   errorMessage: string = '';
-  registrationDate: string = '';
+  registrationDate: Date;
   total = 100;
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   clientLoadLimit = 10;
@@ -61,8 +61,7 @@ export class EditClientComponent implements OnInit {
     this.getNextBatch();
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchClientByID(parseInt(id!)).subscribe(client => {
-      const registrationDateSplit = client.registrationDate.split('/');
-      const registrationDate = new Date(+registrationDateSplit[2], +registrationDateSplit[1] - 1, +registrationDateSplit[0]);
+      console.log(client.registrationDate);
       this.clientForm = this.formBuilder.group({
         id: [client.id],
         registrationType: [client.registrationType, Validators.compose([
@@ -82,7 +81,7 @@ export class EditClientComponent implements OnInit {
         fantasyName: [client.fantasyName, Validators.compose([
           Validators.maxLength(250)
         ])],
-        registrationDate: [registrationDate, Validators.compose([
+        registrationDate: [client.registrationDate, Validators.compose([
           Validators.required
         ])],
         companyStatus: [client.companyStatus, Validators.compose([
@@ -133,9 +132,8 @@ export class EditClientComponent implements OnInit {
 
   editClient() {
     if (this.clientForm.valid) {
-      const formPayload = this.clientForm.value;
-      formPayload.registrationDate = this.datePipe.transform(formPayload.registrationDate, 'dd-MM-yyyy');
-      this.service.edit(formPayload).subscribe({
+ 
+      this.service.edit(this.clientForm.value).subscribe({
         next: () => {
           this.router.navigate(['/clients','listClients']);
         },

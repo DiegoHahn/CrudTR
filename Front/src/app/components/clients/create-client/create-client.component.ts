@@ -26,7 +26,7 @@ export class CreateClientComponent implements OnInit {
   companyStatus: CompanyStatus = CompanyStatus.ACTIVE;
   picker: string = 'picker';
   errorMessage: string = '';
-  registrationDate: string = '';
+  registrationDate: Date  = new Date();
   //variáveis para paginação
   total = 100;
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
@@ -71,7 +71,7 @@ export class CreateClientComponent implements OnInit {
       fantasyName: ['', Validators.compose([
         Validators.maxLength(250)
       ])],
-      registrationDate: [, Validators.compose([
+      registrationDate: [this.registrationDate.toISOString(), Validators.compose([
         Validators.required,
       ])],
       companyStatus: [this.companyStatus, Validators.compose([
@@ -111,6 +111,12 @@ export class CreateClientComponent implements OnInit {
         return null;
     }
   }
+
+
+  mostra(){
+    console.log(this.clientForm.value)
+  }
+
 
   btnEnable(): string {
     if(this.clientForm.valid) {
