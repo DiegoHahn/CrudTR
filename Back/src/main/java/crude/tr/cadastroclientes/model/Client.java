@@ -18,7 +18,7 @@ public class Client {
     private String clientCode;
     private String name;
     private String fantasyName;
-    //Anotação para configuração de formatação da data
+    //Anotação para configuração de formatação da data deixar em ISO
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate registrationDate;

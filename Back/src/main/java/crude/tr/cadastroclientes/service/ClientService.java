@@ -57,7 +57,7 @@ public class ClientService {
 
     //Conversor de Datas (é aqui o lugar dessa classe?)
     public static class DateUtil {
-        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         public static LocalDate convertStringToLocalDate(String dateStr) {
             return LocalDate.parse(dateStr, FORMATTER);
         }

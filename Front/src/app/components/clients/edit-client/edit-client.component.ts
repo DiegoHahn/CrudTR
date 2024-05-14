@@ -62,6 +62,8 @@ export class EditClientComponent implements OnInit {
     this.getNextBatch();
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchClientByID(parseInt(id!)).subscribe(client => {
+      const registrationDateSplit = client.registrationDate.split('/');
+      const registrationDate = new Date(+registrationDateSplit[2], +registrationDateSplit[1] - 1, +registrationDateSplit[0]);
       this.clientForm = this.formBuilder.group({
         id: [client.id],
         registrationType: [client.registrationType, Validators.compose([
@@ -79,10 +81,9 @@ export class EditClientComponent implements OnInit {
           Validators.maxLength(250)
         ])],
         fantasyName: [client.fantasyName, Validators.compose([
-          Validators.required,
           Validators.maxLength(250)
         ])],
-        registrationDate: [new Date (client.registrationDate), Validators.compose([
+        registrationDate: [registrationDate, Validators.compose([
           Validators.required
         ])],
         companyStatus: [client.companyStatus, Validators.compose([
@@ -137,7 +138,9 @@ export class EditClientComponent implements OnInit {
 
   editClient() {
     if (this.clientForm.valid) {
-      this.service.edit(this.clientForm.value).subscribe({
+      const formPayload = this.clientForm.value;
+      formPayload.registrationDate = this.datePipe.transform(formPayload.registrationDate, 'dd-MM-yyyy');
+      this.service.edit(formPayload).subscribe({
         next: () => {
           this.router.navigate(['/clients','listClients']);
         },
@@ -160,13 +163,13 @@ export class EditClientComponent implements OnInit {
   getNextBatch() {
     this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
       this.accountants.next(response.content);
-      this.clientLoadOffset += this.clientLoadLimit;
+      this.clientLoadOffset++;
       this.total = response.totalElements;
     });
   }
 
   onDateSelect(event: MatDatepickerInputEvent<Date>): void {
-    const formattedDate = this.datePipe.transform(event.value, 'yyyy-MM-dd');
+    const formattedDate = this.datePipe.transform(event.value, 'dd-MM-yyyy');
     if (this.clientForm.get('registrationDate')) {
       this.clientForm.get('registrationDate')!.setValue(formattedDate);
     }

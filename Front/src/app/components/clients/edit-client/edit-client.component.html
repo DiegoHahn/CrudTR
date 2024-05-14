@@ -65,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
-                <input id="registrationDate" matInput #registrationDateInput  [matDatepicker]='picker' class="box" formControlName="registrationDate" (dateChange)="onDateSelect($event)">
+                <input id="registrationDate" matInput #registrationDateInput [matDatepicker]='picker' class="box" formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
