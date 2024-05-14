@@ -166,6 +166,9 @@ export class EditClientComponent implements OnInit {
   }
 
   onDateSelect(event: MatDatepickerInputEvent<Date>): void {
-    this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'yyyy-MM-dd')});
+    const formattedDate = this.datePipe.transform(event.value, 'yyyy-MM-dd');
+    if (this.clientForm.get('registrationDate')) {
+      this.clientForm.get('registrationDate')!.setValue(formattedDate);
+    }
   }
 }

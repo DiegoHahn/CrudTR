@@ -57,7 +57,7 @@ public class ClientService {
 
     //Conversor de Datas (é aqui o lugar dessa classe?)
     public static class DateUtil {
-        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         public static LocalDate convertStringToLocalDate(String dateStr) {
             return LocalDate.parse(dateStr, FORMATTER);
         }
@@ -81,15 +81,6 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
-//    public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
-//        Optional<Client> clientOptional = findCLientById(id);
-//        if (clientOptional.isPresent()) {
-//            Client client = convertToClient(clientDTO);
-//            return new ResponseEntity<>(clientRepository.save(client), HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
     public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
         Optional<Client> clientOptional = findCLientById(id);
         //Atualiza o valor de um client do banco ao inves de criar um novo registro, devido ao funcionamento da JPA
