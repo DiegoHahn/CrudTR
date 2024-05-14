@@ -31,7 +31,6 @@ export class EditClientComponent implements OnInit {
   clientLoadOffset = 0;
   accountants = new BehaviorSubject<Accountant[]>([]);
   accountants$: Observable<Accountant[]>;
-  @ViewChild('registrationDateInput') registrationDateInput: MatDatepickerInput<any>;
 
   constructor(
     private router: Router,
@@ -94,11 +93,7 @@ export class EditClientComponent implements OnInit {
         ])]
       })
       this.onRegistrationTypeChange(client.registrationType)
-      this.registrationDateInput.value = this.clientForm.get('registrationDate')!.value;
     });
-  }
-  ngAfterViewInit(): void {
-   
   }
 
   onRegistrationTypeChange(type: RegistrationType) {
@@ -166,12 +161,5 @@ export class EditClientComponent implements OnInit {
       this.clientLoadOffset++;
       this.total = response.totalElements;
     });
-  }
-
-  onDateSelect(event: MatDatepickerInputEvent<Date>): void {
-    const formattedDate = this.datePipe.transform(event.value, 'dd-MM-yyyy');
-    if (this.clientForm.get('registrationDate')) {
-      this.clientForm.get('registrationDate')!.setValue(formattedDate);
-    }
   }
 }
