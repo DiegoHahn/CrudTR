@@ -112,12 +112,6 @@ export class CreateClientComponent implements OnInit {
     }
   }
 
-
-  mostra(){
-    console.log(this.clientForm.value)
-  }
-
-
   btnEnable(): string {
     if(this.clientForm.valid) {
       return 'btn-save'
@@ -151,7 +145,7 @@ export class CreateClientComponent implements OnInit {
   getNextBatch() {
     this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
       this.accountants.next(response.content);
-      this.clientLoadOffset += this.clientLoadLimit;
+      this.clientLoadOffset++;
       this.total = response.totalElements;
     });
   }

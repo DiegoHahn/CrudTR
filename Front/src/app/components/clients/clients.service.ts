@@ -61,4 +61,9 @@ export class ClientService {
     const url = `${this.clientAPI}/${id}`
     return this.http.get<Client>(url)
   }
+
+  searchAccountantByID(id: number): Observable<Accountant> {
+    const url = `${this.accountantAPI}/${id}`
+    return this.http.get<Accountant>(url)
+  }
 }

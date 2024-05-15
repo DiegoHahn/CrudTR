@@ -87,7 +87,7 @@
                 <label for="accountantId" class="form-label">Contador:</label>
                 <mat-form-field appearance="outline" >
                     <mat-label>Selecione</mat-label>
-                    <mat-select id="accountantId" msInfiniteScroll (infiniteScroll)="getNextBatch()" [complete]="clientLoadOffset === data.length" formControlName="accountantId">
+                    <mat-select id="accountantId" msInfiniteScroll (infiniteScroll)="getNextBatch(accountantId)" [complete]="clientLoadOffset === data.length" formControlName="accountantId">
                         <mat-option *ngFor="let accountant of accountants$ | async" [value]="accountant.id" >{{accountant.name}}</mat-option>
                     </mat-select>
                   </mat-form-field>

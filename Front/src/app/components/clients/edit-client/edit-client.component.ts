@@ -1,15 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DateAdapter, MatDatepickerInput, MatDatepickerInputEvent } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, scan } from 'rxjs';
-import { Accountant } from '../../accountants/accountant';
-import { ClientService } from '../clients.service';
-import { RegistrationType } from '../registrationType';
-import { FormValidators } from '../../validators/form-validators';
-import { CompanyStatus } from '../companyStatus';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DateAdapter } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable, scan, tap } from 'rxjs';
+import { Accountant } from '../../accountants/accountant';
+import { FormValidators } from '../../validators/form-validators';
+import { ClientService } from '../clients.service';
+import { CompanyStatus } from '../companyStatus';
+import { RegistrationType } from '../registrationType';
 
 @Component({
   selector: 'app-edit-client',
@@ -29,13 +29,13 @@ export class EditClientComponent implements OnInit {
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   clientLoadLimit = 10;
   clientLoadOffset = 0;
+  accountantId: number | undefined;
   accountants = new BehaviorSubject<Accountant[]>([]);
   accountants$: Observable<Accountant[]>;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private datePipe: DatePipe,
     private service: ClientService, 
     private formBuilder: FormBuilder,
     private adapter: DateAdapter<Date>) {
@@ -58,10 +58,34 @@ export class EditClientComponent implements OnInit {
       companyStatus: [''],
       accountantId: ['']
     });
-    this.getNextBatch();
+  
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchClientByID(parseInt(id!)).subscribe(client => {
-      console.log(client.registrationDate);
+      
+
+
+      if (client.accountant && client.accountant.id) {
+        this.accountantId = client.accountant && client.accountant.id;
+        if (this.accountantId) {
+          this.getNextBatch(this.accountantId).subscribe(accountants => {
+            // for loop that checks if there is any accountant in the list with the same id as the client's accountant
+            for (let i = 0; i < accountants.length; i++) {
+              if (accountants[i].id === this.accountantId) {
+                // do nothing if the accountant is already in the list
+              } else {
+                // search for the accountant by id and add it to the list
+                this.service.searchAccountantByID(34).subscribe(accountant => {
+                  this.accountants.next([...accountants, accountant]);
+                });
+              }
+            }
+          });
+        }
+      }
+    
+
+
+
       this.clientForm = this.formBuilder.group({
         id: [client.id],
         registrationType: [client.registrationType, Validators.compose([
@@ -90,8 +114,8 @@ export class EditClientComponent implements OnInit {
         accountantId: [client.accountant.id, Validators.compose([
           Validators.required
         ])]
-      })
-      this.onRegistrationTypeChange(client.registrationType)
+      });
+      this.onRegistrationTypeChange(client.registrationType);
     });
   }
 
@@ -153,11 +177,13 @@ export class EditClientComponent implements OnInit {
     this.router.navigate(['/clients','listClients'])
   }
 
-  getNextBatch() {
+  getNextBatch(accountantId: number | undefined): Observable<Accountant[]> {
     this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
       this.accountants.next(response.content);
       this.clientLoadOffset++;
       this.total = response.totalElements;
     });
+    return this.accountants$;
   }
+
 }
