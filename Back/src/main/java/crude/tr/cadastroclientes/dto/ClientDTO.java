@@ -16,7 +16,8 @@ public class ClientDTO {
     private Long id;
     private RegistrationType registrationType;
 
-    @NotNull(message = "O número de registro é obrigatório.")
+    @Pattern(regexp = "[0-9]+", message = "O número de registro deve conter apenas dígitos.")
+    @ValidRegistration(message = "CPF inválido.")
     private String registrationNumber;
 
     @NotNull(message = "O código de registro é obrigatório.")

@@ -6,7 +6,6 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
-
 public class CPFValidator implements ConstraintValidator<ValidCPF, String> {
 
     private static final Pattern CPF_PATTERN = Pattern.compile("^\\d{11}$");
