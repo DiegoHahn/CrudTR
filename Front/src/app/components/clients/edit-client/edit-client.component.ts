@@ -1,10 +1,9 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, scan, tap } from 'rxjs';
+import { BehaviorSubject, Observable, scan } from 'rxjs';
 import { Accountant } from '../../accountants/accountant';
 import { FormValidators } from '../../validators/form-validators';
 import { ClientService } from '../clients.service';
@@ -29,22 +28,23 @@ export class EditClientComponent implements OnInit {
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   clientLoadLimit = 10;
   clientLoadOffset = 0;
-  accountantId: number | undefined;
+  accountantId: number;
   accountants = new BehaviorSubject<Accountant[]>([]);
   accountants$: Observable<Accountant[]>;
+  isLoading: boolean;
 
-  constructor(
+  constructor( 
     private router: Router,
     private route: ActivatedRoute,
     private service: ClientService, 
     private formBuilder: FormBuilder,
     private adapter: DateAdapter<Date>) {
       this.accountants$ = this.accountants.asObservable().pipe(
-        scan((acc:Accountant[], curr:Accountant[]) => {
-          return [...acc, ...curr];
+        scan((accountants:Accountant[], currentAccountants:Accountant[]) => {
+          return [...accountants, ...currentAccountants];
         }, [])
       ),
-      this.adapter.setLocale('pt-BR');
+    this.adapter.setLocale('pt-BR');
      }
 
   ngOnInit(): void {
@@ -61,31 +61,17 @@ export class EditClientComponent implements OnInit {
   
     const id = this.route.snapshot.paramMap.get('id');
     this.service.searchClientByID(parseInt(id!)).subscribe(client => {
-      
-
-
       if (client.accountant && client.accountant.id) {
-        this.accountantId = client.accountant && client.accountant.id;
-        if (this.accountantId) {
-          this.getNextBatch(this.accountantId).subscribe(accountants => {
-            // for loop that checks if there is any accountant in the list with the same id as the client's accountant
-            for (let i = 0; i < accountants.length; i++) {
-              if (accountants[i].id === this.accountantId) {
-                // do nothing if the accountant is already in the list
-              } else {
-                // search for the accountant by id and add it to the list
-                this.service.searchAccountantByID(34).subscribe(accountant => {
-                  this.accountants.next([...accountants, accountant]);
-                });
-              }
-            }
-          });
-        }
+        this.accountantId = client.accountant.id;
+        this.getNextBatch().subscribe(accountants => {
+          const accountantExists = accountants.some(accountant => accountant.id === this.accountantId);
+          if (!accountantExists) {
+            this.service.searchAccountantByID(this.accountantId!).subscribe(accountant => {
+              this.accountants.next([...this.accountants.getValue(), accountant]);
+            });
+          }
+        });
       }
-    
-
-
-
       this.clientForm = this.formBuilder.group({
         id: [client.id],
         registrationType: [client.registrationType, Validators.compose([
@@ -177,13 +163,12 @@ export class EditClientComponent implements OnInit {
     this.router.navigate(['/clients','listClients'])
   }
 
-  getNextBatch(accountantId: number | undefined): Observable<Accountant[]> {
+  getNextBatch(): Observable<Accountant[]> {
     this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
       this.accountants.next(response.content);
       this.clientLoadOffset++;
       this.total = response.totalElements;
     });
     return this.accountants$;
-  }
-
+    }
 }
