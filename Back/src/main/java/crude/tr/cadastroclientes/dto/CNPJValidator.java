@@ -36,10 +36,16 @@ public class CNPJValidator implements ConstraintValidator<ValidRegistration, Str
     }
 
     private boolean calculateCheckDigit(String registration, int length) {
-        int[] weight = (length == 9) ? new int[]{10, 9, 8, 7, 6, 5, 4, 3, 2} :
-                new int[]{6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
-        int sum = 0;
+        int[] weight;
+        if (length == 9) {
+            weight = new int[]{10, 9, 8, 7, 6, 5, 4, 3, 2};
+        } else if (length == 10) {
+            weight = new int[]{11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
+        } else {
+            weight = new int[]{6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        }
 
+        int sum = 0;
         for (int i = length - 1, digit; i >= 0; i--) {
             digit = Character.getNumericValue(registration.charAt(i));
             sum += digit * weight[weight.length - length + i];

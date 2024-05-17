@@ -39,7 +39,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> addClient(@RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<Client> addClient(@RequestBody @Valid ClientDTO clientDTO) {
             Client client = clientService.convertToClient(clientDTO);
             Client savedClient = clientService.addClient(client);
             return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
