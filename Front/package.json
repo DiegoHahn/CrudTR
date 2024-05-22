@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest",
+    "test": "jest --coverage",
     "test-watch": "jest --watch"
   },
   "private": true,
@@ -27,6 +27,7 @@
     "ng-mat-select-infinite-scroll": "^4.0.0",
     "ngx-mask": "^10.0.0",
     "rxjs": "~7.5.0",
+    "ts-jest": "^29.1.3",
     "tslib": "^2.6.2",
     "zone.js": "~0.11.4"
   },
@@ -45,7 +46,17 @@
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
-      "<rootDir>/dist/"
+      "<rootDir>/src/app/components/accountants/create-accountant/create-accountant.component.spec.ts",
+      "<rootDir>/src/app/components/accountants/edit-accountant/edit-accountant.component.spec.ts",
+      "<rootDir>/src/app/components/accountants/list-accountants/list-accountants.component.spec.ts",
+      "<rootDir>/src/app/components/accountants/delete-accountant/delete-accountant.component.spec.ts",
+      "<rootDir>/src/app/components/clients/client/client.component.spec.ts",
+      "<rootDir>/src/app/components/clients/create-client/create-client.component.spec.ts",
+      "<rootDir>/src/app/components/clients/edit-client/edit-client.component.spec.ts",
+      "<rootDir>/src/app/components/clients/list-clients/list-clients.component.spec.ts",
+      "<rootDir>/src/app/components/clients/delete-client/delete-client.component.spec.ts",
+      "<rootDir>/src/app/components/footer/footer.component.spec.ts",
+      "<rootDir>/src/app/components/header/header.component.spec.ts"
     ],
     "globals": {
       "ts-jest": {
