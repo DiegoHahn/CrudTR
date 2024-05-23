@@ -5,6 +5,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 
 describe('AppComponent', () => {
+  let component: AppComponent
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       //importa o módulo de teste de roteador para simular a navegação
@@ -19,10 +20,13 @@ describe('AppComponent', () => {
     }).compileComponents();
   }));
 
-  it('should create the app', () => {
+  beforeEach(() => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    component = fixture.componentInstance;
+  });
+
+  it('should create the app', () => {
+    expect(component).toBeTruthy();
   });
 
   it(`should have as title 'CrudTR'`, () => {

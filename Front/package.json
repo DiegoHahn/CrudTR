@@ -48,7 +48,7 @@
       "<rootDir>/node_modules/",
       "<rootDir>/src/app/components/accountants/create-accountant/create-accountant.component.spec.ts",
       "<rootDir>/src/app/components/accountants/edit-accountant/edit-accountant.component.spec.ts",
-      "<rootDir>/src/app/components/accountants/list-accountants/list-accountants.component.spec.ts",
+  
       "<rootDir>/src/app/components/accountants/delete-accountant/delete-accountant.component.spec.ts",
       "<rootDir>/src/app/components/clients/client/client.component.spec.ts",
       "<rootDir>/src/app/components/clients/create-client/create-client.component.spec.ts",

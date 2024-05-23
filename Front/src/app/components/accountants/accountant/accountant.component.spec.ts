@@ -8,7 +8,7 @@ describe('AccountantComponent', () => {
   let fixture: ComponentFixture<AccountantComponent>;
 
   beforeEach(async () => {
-    // Configuração do módulo de teste 
+    // Configuração do módulo de teste assincrona por causa do compilamento
     await TestBed.configureTestingModule({
       declarations: [ AccountantComponent ]
     })
