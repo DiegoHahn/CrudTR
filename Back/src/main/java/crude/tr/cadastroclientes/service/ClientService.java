@@ -35,7 +35,6 @@ public class ClientService {
         client.setFantasyName(clientDTO.getFantasyName());
         client.setRegistrationDate(clientDTO.getRegistrationDate());
         client.setCompanyStatus(clientDTO.getCompanyStatus());
-        //Passar o ID diretamente na requisição, pode ser que eu precise passar o objeto inteiro do front-end
         if (clientDTO.getAccountantId() != null) {
             Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
                     .orElseThrow(() -> new EntityNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
@@ -80,7 +79,6 @@ public class ClientService {
                 Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
                         .orElseGet(() -> {
                             Accountant newAccountant = new Accountant();
-                            // set properties of newAccountant based on clientDTO
                             return accountantRepository.save(newAccountant);
                         });
                 existingClient.setAccountant(accountant);

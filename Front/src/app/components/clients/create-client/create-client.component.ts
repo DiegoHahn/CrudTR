@@ -27,7 +27,7 @@ export class CreateClientComponent implements OnInit {
   picker: string = 'picker';
   errorMessage: string = '';
   registrationDate: Date  = new Date();
-  //variáveis para paginação
+  //variáveis para paginação do comboBox
   total = 100;
   data = Array.from({length: this.total}).map((_, i) => `Option ${i}`);
   clientLoadLimit = 10;

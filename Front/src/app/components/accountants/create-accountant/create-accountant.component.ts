@@ -75,6 +75,5 @@ export class CreateAccountantComponent implements OnInit {
     }
     return null;
   }
-  
 }
 

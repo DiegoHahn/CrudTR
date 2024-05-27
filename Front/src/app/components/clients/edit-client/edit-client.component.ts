@@ -64,8 +64,10 @@ export class EditClientComponent implements OnInit {
       if (client.accountant && client.accountant.id) {
         this.accountantId = client.accountant.id;
         this.getNextBatch().subscribe(accountants => {
+          // Verifica se o contador do cliente está no lote de contadores
           const accountantExists = accountants.some(accountant => accountant.id === this.accountantId);
           if (!accountantExists) {
+            //Caso não esteja faz uma requisição para adicionar a comboBox
             this.service.searchAccountantByID(this.accountantId!).subscribe(accountant => {
               this.accountants.next([...this.accountants.getValue(), accountant]);
             });

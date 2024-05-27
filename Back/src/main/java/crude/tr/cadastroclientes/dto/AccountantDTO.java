@@ -18,7 +18,7 @@ public class AccountantDTO {
     private String accountantCode;
 
     @NotNull(message = "O campo nome é obrigatório.")
-    @Length(max = 255, message = "O nome deve conter no máximo 250 caracteres.")
+    @Length(max = 250, message = "O nome deve conter no máximo 250 caracteres.")
     private String name;
 
     @NotNull(message = "O campo de status é obrigatório.")

@@ -11,7 +11,7 @@
                 formControlName="name"
                 placeholder="Digite o nome contador"
                 >
-                <!-- se o campo for clicado, passa o nome do campo e exibe a mensagem de erro das verificações (teria como fazer mais simplificado evitar repetição?) -->
+                <!-- se o campo for clicado, passa o nome do campo e exibe a mensagem de erro das verificações -->
                 <div *ngIf=" accountantForm.get('name')?.touched && accountantForm.get('name')?.errors" class="invalid-feedback">
                     {{ getErrorMessage('name') }}
                 </div>
@@ -69,7 +69,6 @@
                 Salvar
                 </button>
             </div>
-            <!-- mensagem genérica por enquanto -->
             <div *ngIf="errorMessage" class="invalid-feedback">
                 {{ errorMessage }}
             </div>

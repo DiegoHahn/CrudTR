@@ -44,7 +44,9 @@ export class EditAccountantComponent implements OnInit {
           Validators.required,
           Validators.maxLength(250)
         ])],
-        isActive: [accountant.isActive]
+        isActive: [accountant.isActive, Validators.compose([
+          Validators.required
+        ])]
       })
     });
   }

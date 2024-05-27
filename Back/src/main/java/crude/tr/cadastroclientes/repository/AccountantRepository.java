@@ -17,5 +17,4 @@ public interface AccountantRepository extends JpaRepository<Accountant, Long> {
     Optional<Accountant> findByRegistrationNumber(String registrationNumber);
 
     List<Accountant> findAllByOrderByNameAsc();
-
 }
