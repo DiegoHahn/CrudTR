@@ -2,6 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ListAccountantsComponent } from './list-accountants.component';
+import { Subscription, of } from 'rxjs';
+
+
 
 describe('ListAccountantsComponent', () => {
   let component: ListAccountantsComponent;
@@ -22,6 +25,26 @@ describe('ListAccountantsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('ngOnInit', () => {
+    it('should call loadAccountants and subscribe to onKeyDown', () => {
+      // Arrange
+      jest.spyOn(component, 'loadAccountants').mockImplementation(() => {});
+      jest.spyOn(component.onKeyDown, 'subscribe').mockImplementation( () => {
+        return of().subscribe();
+      });
+
+      const pageIndex = component.pageIndex;
+      const pageSize = component.pageSize;
+      
+      // Act
+      component.ngOnInit();
+
+      // Assert
+      expect(component.loadAccountants).toHaveBeenCalledWith(pageIndex, pageSize);
+      expect(component.onKeyDown.subscribe).toHaveBeenCalled();
+    })
+  })
 
   describe('changePage', () => {
     it ('should call loadAccountants', () => {
@@ -66,4 +89,20 @@ describe('ListAccountantsComponent', () => {
       })
     })
   })
+
+  // describe('loadAccountants', () => {
+  //   it('should call service.listAccountantsData', () => {
+  //     // Arrange
+  //     jest.spyOn(component.service, 'listAccountantsData').mockImplementation(() => of());
+  //     const pageIndex = 0;
+  //     const pageSize = 10;
+
+  //     // Act
+  //     component.loadAccountants(pageIndex, pageSize);
+
+  //     // Assert
+  //     expect(component.service.listAccountantsData).toHaveBeenCalledWith('', pageIndex, pageSize);
+  //   })
+  // })
+
 });
