@@ -21,7 +21,7 @@ export class ListAccountantsComponent implements OnInit {
   nameFilter: string = '';
   listAccountants: Accountant[] = [];
   showDeleteConfirmation = false;
-  selectedAccountId!: number;
+  selectedAccountantId!: number;
   onKeyDown = new Subject<KeyboardEvent>();  
   errorMessage: string;
 
@@ -42,7 +42,7 @@ export class ListAccountantsComponent implements OnInit {
   }
 
   renderDeleteConfirmation(accountantID: number) {
-    this.selectedAccountId = accountantID
+    this.selectedAccountantId = accountantID
     this.showDeleteConfirmation = true;
   }
 
@@ -62,7 +62,7 @@ export class ListAccountantsComponent implements OnInit {
   //operações assíncronas são tratadas como observables para isso o metodo subscribe tem os metodos next, error e complete
   onDeleteConfirm(confirmation: boolean) {
     if(confirmation) {
-     this.service.delete(this.selectedAccountId).subscribe({
+     this.service.delete(this.selectedAccountantId).subscribe({
        next: () => {
          //quando o delete é feito com sucesso, recarrega a lista de contadores
          this.loadAccountants(this.pageIndex, this.pageSize);
