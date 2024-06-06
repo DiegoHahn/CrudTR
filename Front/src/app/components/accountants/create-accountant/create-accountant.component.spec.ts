@@ -1,10 +1,11 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AccountantService } from '../accountants.service';
 import { CreateAccountantComponent } from './create-accountant.component';
 import { Router } from '@angular/router';
+import { FormValidators } from '../../validators/form-validators';
 
 describe('CreateAccountantComponent', () => {
   let component: CreateAccountantComponent;
@@ -35,7 +36,7 @@ describe('CreateAccountantComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should create the form with default values and set the validators for each form control', () => { 
+    it('should create the form with default values', () => { 
       // Arrange
       const formGroup = formBuilder.group({
         registrationNumber: [''],
@@ -43,9 +44,7 @@ describe('CreateAccountantComponent', () => {
         name: [''],
         isActive: [true]
       });
-      const control = component.accountantForm.get('registrationNumber');
-      control!.setValue('');
-
+      
       // Act
       component.ngOnInit();
 
@@ -139,4 +138,49 @@ describe('CreateAccountantComponent', () => {
     }));
   });
 
+  describe('btnEnable', () => {
+    it('should return btn-save when the form is valid', () => {
+      // Arrange
+      // component.accountantForm = formBuilder.group({
+      // registrationNumber: ['82454950006', Validators.compose([
+      //   Validators.required,
+      //   FormValidators.cpfValidator],
+      // )],
+      // accountantCode: ['123', Validators.required],
+      // name: ['Teste', Validators.compose([
+      //   Validators.required,
+      //   Validators.maxLength(250)
+      // ])],
+      // isActive: [true, Validators.required]
+    // });
+    component.ngOnInit();
+    component.accountantForm.get('registrationNumber')!.setValue('82454950006');
+    component.accountantForm.get('accountantCode')!.setValue('123');
+    component.accountantForm.get('name')!.setValue('Teste');
+    component.accountantForm.get('isActive')!.setValue(true);
+
+      // Act
+      const result = component.btnEnable();
+
+      // Assert
+      expect(result).toEqual('btn-save');
+    })
+
+    it('should return btn-disabled when the form is NOT valid', () => {
+      // Arrange
+     component.ngOnInit();
+
+      // Act
+      const result = component.btnEnable();
+
+      // Assert
+      expect(result).toEqual('btn-disabled');
+    });
+  });
+
+  describe('cancelAccountant', () => {
+    it('should call router.navigate with /accountants,listAccountants as the path', () => {
+
+    });
+  });
 });
