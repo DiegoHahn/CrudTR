@@ -1,11 +1,10 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, fakeAsync } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AccountantService } from '../accountants.service';
 import { CreateAccountantComponent } from './create-accountant.component';
-import { Router } from '@angular/router';
-import { FormValidators } from '../../validators/form-validators';
 
 describe('CreateAccountantComponent', () => {
   let component: CreateAccountantComponent;
@@ -103,11 +102,7 @@ describe('CreateAccountantComponent', () => {
         name: ['Teste'],
         isActive: [true]
       });
-      jest.spyOn(mockService, 'create').mockReturnValue({
-        subscribe: (callbacks: any) => {
-          callbacks.error({ status: 409 });
-        }
-      });
+      jest.spyOn(mockService, 'create').mockReturnValue({subscribe: (callbacks: any) => {callbacks.error({ status: 409 })}});
 
       // Act
       component.createAccountant();
@@ -141,23 +136,11 @@ describe('CreateAccountantComponent', () => {
   describe('btnEnable', () => {
     it('should return btn-save when the form is valid', () => {
       // Arrange
-      // component.accountantForm = formBuilder.group({
-      // registrationNumber: ['82454950006', Validators.compose([
-      //   Validators.required,
-      //   FormValidators.cpfValidator],
-      // )],
-      // accountantCode: ['123', Validators.required],
-      // name: ['Teste', Validators.compose([
-      //   Validators.required,
-      //   Validators.maxLength(250)
-      // ])],
-      // isActive: [true, Validators.required]
-    // });
-    component.ngOnInit();
-    component.accountantForm.get('registrationNumber')!.setValue('82454950006');
-    component.accountantForm.get('accountantCode')!.setValue('123');
-    component.accountantForm.get('name')!.setValue('Teste');
-    component.accountantForm.get('isActive')!.setValue(true);
+      component.ngOnInit();
+      component.accountantForm.get('registrationNumber')!.setValue('82454950006');
+      component.accountantForm.get('accountantCode')!.setValue('123');
+      component.accountantForm.get('name')!.setValue('Teste');
+      component.accountantForm.get('isActive')!.setValue(true);
 
       // Act
       const result = component.btnEnable();
@@ -180,7 +163,52 @@ describe('CreateAccountantComponent', () => {
 
   describe('cancelAccountant', () => {
     it('should call router.navigate with /accountants,listAccountants as the path', () => {
+      // Arrange
+      jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
 
+      // Act
+      component.cancelAccountant();
+
+      // Assert
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/accountants','listAccountants']);
+    });
+  });
+
+  describe('getErrorMessage', () => {
+    it('should return "Este campo é obrigatório." when the control.erros is equal to required', () => {
+      // Arrange
+      component.ngOnInit();
+      component.accountantForm.get('registrationNumber')!.setValue('');
+
+      // Act
+      const result = component.getErrorMessage('registrationNumber');
+
+      // Assert
+      expect(result).toEqual('Este campo é obrigatório.');
+    });
+
+    it('should return "CPF inválido." when the control.erros is equal to cpfInvalid', () => {
+      // Arrange
+      component.ngOnInit();
+      component.accountantForm.get('registrationNumber')!.setValue('123');
+
+      // Act
+      const result = component.getErrorMessage('registrationNumber');
+
+      // Assert
+      expect(result).toEqual('CPF inválido.');
+    });
+
+    it('should return null when the control.erros is null', () => {
+      // Arrange
+      component.ngOnInit();
+      component.accountantForm.get('registrationNumber')!.setValue('82454950006');
+
+      // Act
+      const result = component.getErrorMessage('registrationNumber');
+
+      // Assert
+      expect(result).toBeNull();
     });
   });
 });
