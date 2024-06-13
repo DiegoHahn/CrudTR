@@ -24,7 +24,7 @@ export class AccountantService {
       }));
   }
 
-  create(accountant: Accountant):any {
+  create(accountant: Accountant): Observable<Accountant> {
       return this.http.post<Accountant>(this.API, accountant)
     }
 
