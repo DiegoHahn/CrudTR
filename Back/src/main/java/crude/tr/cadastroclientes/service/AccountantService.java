@@ -97,6 +97,7 @@ public class AccountantService {
         } catch (DataIntegrityViolationException e) {
             //pega a causa raiz da exceção para verificar se é uma exceção de violação de chave estrangeira
             Throwable cause = e.getRootCause();
+            //Verificar se tem como pegar a causa de outra forma
             if (cause instanceof SQLException) {
                 SQLException sqlException = (SQLException) cause;
                 if ("23503".equals(sqlException.getSQLState())) {

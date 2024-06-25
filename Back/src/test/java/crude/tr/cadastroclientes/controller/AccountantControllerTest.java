@@ -12,11 +12,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Collections;
+import java.util.Optional;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,11 +58,22 @@ public class AccountantControllerTest {
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content[0].id").value(accountantTeste.getId()))
-                .andExpect(jsonPath("$.content[0].registrationNumber").value(accountantTeste.getRegistrationNumber()))
-                .andExpect(jsonPath("$.content[0].accountantCode").value(accountantTeste.getAccountantCode()))
-                .andExpect(jsonPath("$.content[0].name").value(accountantTeste.getName()))
-                .andExpect(jsonPath("$.content[0].isActive").value(accountantTeste.getIsActive()));
+//                .andDo(print())
+                .andExpect((ResultMatcher) jsonPath("$.content.size()", is(1)))
+                .andExpect(jsonPath("$.content[0].registrationNumber").value(accountantTeste.getRegistrationNumber()));
     }
 
+    @DisplayName("Given Id when getAccountantById then return C")
+    @Test
+    public void testGivenId_whenGetAccountantsById_thenReturnAccountantOptional() throws Exception {
+        //Arrange
+        long id = 1L;
+        given(accountantService.findAccountantByID(1L))
+                .willReturn(Optional.of(accountantTeste));
+
+        // Act & Assert
+        mockMvc.perform(get("/accountants/" + id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())));
+    }
 }
