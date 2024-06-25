@@ -27,6 +27,14 @@ public class AccountantDTO {
     public AccountantDTO() {
     }
 
+    public AccountantDTO(Long id, String registrationNumber, String accountantCode, String name, Boolean isActive) {
+        this.id = id;
+        this.registrationNumber = registrationNumber;
+        this.accountantCode = accountantCode;
+        this.name = name;
+        this.isActive = isActive;
+    }
+
     public String getRegistrationNumber() {
         return registrationNumber;
     }
@@ -55,7 +63,7 @@ public class AccountantDTO {
         return isActive;
     }
 
-    public void setActive(Boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 

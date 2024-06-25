@@ -1,5 +1,6 @@
 package crude.tr.cadastroclientes.service;
 
+import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
@@ -43,24 +44,42 @@ public class AccountantService {
         return accountantRepository.findById(id);
     }
 
-   public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
-    try {
+    //MUDA O RETORNO DA EXCEÇÃO
+//    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
+//        try {
+//            Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
+//            if (existingAccountant.isPresent()) {
+//                throw new DuplicateAccountantException("Registro duplicado");
+//            } else {
+//                return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
+//            }
+//        } catch (DuplicateAccountantException e) {
+//            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
+//        }
+//    }
+    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
         Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
         if (existingAccountant.isPresent()) {
-            throw new RuntimeException("Registro duplicado");
+            throw new DuplicateAccountantException("Registro duplicado");
         } else {
             return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
         }
-    } catch (RuntimeException e) {
-        return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
     }
-}
+
 
     public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {
         Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
-            Accountant accountant = convertToAccountant(accountantDTO);
-            return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
+            Accountant accountantToUpdate = accountantOptional.get();
+
+            // Atualiza as propriedades do Accountant existente
+            accountantToUpdate.setRegistrationNumber(accountantDTO.getRegistrationNumber());
+            accountantToUpdate.setAccountantCode(accountantDTO.getAccountantCode()); // Correção aqui!
+            accountantToUpdate.setName(accountantDTO.getName());
+            accountantToUpdate.setIsActive(accountantDTO.getIsActive());
+
+            Accountant updatedAccountant = accountantRepository.save(accountantToUpdate);
+            return new ResponseEntity<>(updatedAccountant, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -89,4 +108,5 @@ public class AccountantService {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }

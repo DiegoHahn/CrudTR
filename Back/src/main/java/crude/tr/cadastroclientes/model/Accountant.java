@@ -24,6 +24,13 @@ public class Accountant {
     public Accountant() {
     }
 
+    public Accountant(String registrationNumber, String accountantCode, String name, Boolean isActive) {
+        this.registrationNumber = registrationNumber;
+        this.accountantCode = accountantCode;
+        this.name = name;
+        this.isActive = isActive;
+
+    }
     public Accountant(Long id, String registrationNumber, String accountantCode, String name, Boolean isActive) {
         this.id = id;
         this.registrationNumber = registrationNumber;
