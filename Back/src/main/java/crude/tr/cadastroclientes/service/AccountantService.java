@@ -1,6 +1,8 @@
 package crude.tr.cadastroclientes.service;
 
+import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
 import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
+import crude.tr.cadastroclientes.Exceptions.ForeignKeyViolationException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
@@ -84,30 +86,46 @@ public class AccountantService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    public ResponseEntity<Void> deleteAccountant(Long id) {
-        Optional<Accountant> accountantOptional = findAccountantByID(id);
+//    public ResponseEntity<Void> deleteAccountant(Long id) {
+//        Optional<Accountant> accountantOptional = findAccountantByID(id);
+//        try {
+//            if (accountantOptional.isPresent()) {
+//                accountantRepository.deleteById(id);
+//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            }
+//        } catch (DataIntegrityViolationException e) {
+//            //pega a causa raiz da exceção para verificar se é uma exceção de violação de chave estrangeira
+//            Throwable cause = e.getRootCause();
+//            //Verificar se tem como pegar a causa de outra forma
+//            if (cause instanceof SQLException) {
+//                SQLException sqlException = (SQLException) cause;
+//                if ("23503".equals(sqlException.getSQLState())) {
+//                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+//                }
+//            }
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+public ResponseEntity<Void> deleteAccountant(Long id) {
+    Optional<Accountant> accountantOptional = findAccountantByID(id);
+    if (accountantOptional.isPresent()) {
         try {
-            if (accountantOptional.isPresent()) {
-                accountantRepository.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            accountantRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (DataIntegrityViolationException e) {
-            //pega a causa raiz da exceção para verificar se é uma exceção de violação de chave estrangeira
             Throwable cause = e.getRootCause();
-            //Verificar se tem como pegar a causa de outra forma
             if (cause instanceof SQLException) {
-                SQLException sqlException = (SQLException) cause;
-                if ("23503".equals(sqlException.getSQLState())) {
-                    return new ResponseEntity<>(HttpStatus.CONFLICT);
-                }
+                throw new ForeignKeyViolationException("Você não pode excluir um contador que está associado a um cliente");
             }
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new AccountantNotFoundException("Unexpected error occurred while deleting accountant");
         }
+    }  else {
+        throw new AccountantNotFoundException("Accountant not found with id: " + id);
     }
+}
 
 }
