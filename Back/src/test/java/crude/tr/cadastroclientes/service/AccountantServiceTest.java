@@ -1,6 +1,9 @@
 package crude.tr.cadastroclientes.service;
 
+import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
+import crude.tr.cadastroclientes.Exceptions.DeleteAccountantException;
 import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
+import crude.tr.cadastroclientes.Exceptions.ForeignKeyViolationException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.repository.AccountantRepository;
@@ -188,73 +191,53 @@ public class AccountantServiceTest {
         verify(accountantRepository, times(1)).deleteById(accountantId);
     }
 
-    @DisplayName("Given id that  doesn't exist in database when deleteAccountant then return HttpStatus NOT_FOUND")
+    @DisplayName("Given id that doesn't exist in database when deleteAccountant then throw AccountantNotFoundException")
     @Test
-    void testGivenIdThatDoNotExist_whenDeleteAccountant_thenReturnNotFound() {
+    void testGivenNonExistingId_whenDeleteAccountant_thenThrowAccountantNotFoundException() {
         // Arrange
         Long accountantId = 1L;
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
 
-        // Act
-        ResponseEntity<Void> result = accountantService.deleteAccountant(accountantId);
-
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        // Act & Assert
+        assertThrows(AccountantNotFoundException.class, () -> accountantService.deleteAccountant(accountantId));
         verify(accountantRepository, times(1)).findById(accountantId);
-        verify(accountantRepository, times(0)).deleteById(accountantId);
+        verify(accountantRepository, never()).deleteById(accountantId);
     }
 
-    @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException with FK constraint then return CONFLICT")
+    @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException with FK constraint then throw ForeignKeyViolationException")
     @Test
-    void testGivenIdThatIsReferencedInAnotherTable_whenDeleteAccountant_thenReturnFKViolation() {
+    void testGivenIdThatIsReferencedInAnotherTable_whenDeleteAccountant_thenThrowForeignKeyViolationException() {
         // Arrange
-        Long id = 1L;
+        Long accountantId = 1L;
         Accountant accountant = new Accountant();
-        when(accountantRepository.findById(id)).thenReturn(Optional.of(accountant));
+        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountant));
         DataIntegrityViolationException dataIntegrityViolationException = new DataIntegrityViolationException("Constraint violation",
                 new SQLException("Violation of foreign key constraint", "23503"));
-        doThrow(dataIntegrityViolationException).when(accountantRepository).deleteById(id);
+        doThrow(dataIntegrityViolationException).when(accountantRepository).deleteById(accountantId);
 
-        // Act
-        ResponseEntity<Void> response = accountantService.deleteAccountant(id);
-
-        // Assert
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        verify(accountantRepository, times(1)).deleteById(id);
+        // Act & Assert
+        ForeignKeyViolationException exception = assertThrows(ForeignKeyViolationException.class,
+                () -> accountantService.deleteAccountant(accountantId));
+        assertEquals("Você não pode excluir um contador que está associado a um cliente", exception.getMessage());
+        verify(accountantRepository, times(1)).findById(accountantId);
+        verify(accountantRepository, times(1)).deleteById(accountantId);
     }
 
-    @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException with non-FK constraint then return INTERNAL_SERVER_ERROR")
+    @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException without FK constraint then throw DeleteAccountantException")
     @Test
-    void testGivenIdThatGeneratesGenricDataIntegrityViolationException_whenDeleteAccountant_thenReturnDataIntegrityViolationException() {
+    void testGivenId_whenDeleteAccountantThrowsDataIntegrityViolationException_thenThrowDeleteAccountantException() {
         // Arrange
-        Long id = 1L;
+        Long accountantId = 1L;
         Accountant accountant = new Accountant();
-        when(accountantRepository.findById(id)).thenReturn(Optional.of(accountant));
-        DataIntegrityViolationException dataIntegrityViolationException = new DataIntegrityViolationException("Constraint violation",
-                new SQLException("Other SQL exception", "23000"));
-        doThrow(dataIntegrityViolationException).when(accountantRepository).deleteById(id);
+        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountant));
+        DataIntegrityViolationException dataIntegrityViolationException = new DataIntegrityViolationException("Other integrity violation");
+        doThrow(dataIntegrityViolationException).when(accountantRepository).deleteById(accountantId);
 
-        // Act
-        ResponseEntity<Void> response = accountantService.deleteAccountant(id);
-
-        // Assert
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        verify(accountantRepository, times(1)).deleteById(id);
-    }
-
-    @DisplayName("Given id when deleteAccountant throws Exception then return INTERNAL_SERVER_ERROR")
-    @Test
-    void testDeleteAccountant_OtherException() {
-        // Arrange
-        Long id = 1L;
-        when(accountantRepository.findById(id)).thenReturn(Optional.of(accountantTeste));
-        doThrow(new RuntimeException("Unexpected error")).when(accountantRepository).deleteById(id);
-
-        // Act
-        ResponseEntity<Void> response = accountantService.deleteAccountant(id);
-
-        // Assert
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        verify(accountantRepository, times(1)).deleteById(id);
+        // Act & Assert
+        DeleteAccountantException exception = assertThrows(DeleteAccountantException.class,
+                () -> accountantService.deleteAccountant(accountantId));
+        assertEquals("Não foi possivel excluir esse contador", exception.getMessage());
+        verify(accountantRepository, times(1)).findById(accountantId);
+        verify(accountantRepository, times(1)).deleteById(accountantId);
     }
 }

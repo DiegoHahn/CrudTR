@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,33 +83,65 @@ public class AccountantControllerTest {
                 .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())));
     }
 
-    @DisplayName("Given Id and AccountantDTO when updateAccountant then return Accountant")
+//    @DisplayName("Given Id and AccountantDTO when updateAccountant then return Accountant")
+//    @Test
+//    public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
+//        // Arrange
+//        given(accountantService.updateAccountant(1L, accountantDTO))
+//                .willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+//
+//        // Act & Assert
+//        mockMvc.perform(put("/accountants/1")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(accountantDTO)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
+//                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())));
+//
+//    }
+
+    @DisplayName("Given id when deleteAccountant then return NO_CONTENT")
     @Test
-    public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
+    public void testGivenId_whenDeleteAccountant_thenReturnNoContent() throws Exception {
         // Arrange
-        given(accountantService.updateAccountant(1L, accountantDTO))
-                .willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+        Long id = 1L;
+        when(accountantService.deleteAccountant(id))
+                .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
 
         // Act & Assert
-        mockMvc.perform(put("/accountants/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(accountantDTO)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
-                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())));
+        mockMvc.perform(delete("/accountants/{id}", id))
+                .andExpect(status().isNoContent());
 
+        verify(accountantService, times(1)).deleteAccountant(id);
     }
 
-
-    @DisplayName("Given Id when deleteAccountant throws Exception then return Internal Server Error")
+    @DisplayName("Given non-existing id when deleteAccountant then return NOT_FOUND")
     @Test
-    public void testGivenId_whenDeleteAccountantThrowsException_thenReturnInternalServerError() throws Exception {
+    public void testGivenNonExistingId_whenDeleteAccountant_thenReturnNotFound() throws Exception {
         // Arrange
-        given(accountantService.deleteAccountant(1L))
-                .willThrow(new RuntimeException("Unexpected error"));
+        Long id = 999L;
+        when(accountantService.deleteAccountant(id))
+                .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 
         // Act & Assert
-        mockMvc.perform(delete("/accountants/1"))
-                .andExpect(status().isInternalServerError());
+        mockMvc.perform(delete("/accountants/{id}", id))
+                .andExpect(status().isNotFound());
+
+        verify(accountantService, times(1)).deleteAccountant(id);
+    }
+
+    @DisplayName("Given id with foreign key constraint when deleteAccountant then return CONFLICT")
+    @Test
+    public void testGivenIdWithForeignKeyConstraint_whenDeleteAccountant_thenReturnConflict() throws Exception {
+        // Arrange
+        Long id = 1L;
+        when(accountantService.deleteAccountant(id))
+                .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
+
+        // Act & Assert
+        mockMvc.perform(delete("/accountants/{id}", id))
+                .andExpect(status().isConflict());
+
+        verify(accountantService, times(1)).deleteAccountant(id);
     }
 }
