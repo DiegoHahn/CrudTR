@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.Objects;
+
 public class AccountantDTO {
 
     private Long id;
@@ -69,5 +71,25 @@ public class AccountantDTO {
 
     public Long getId() {
         return id;
+    }
+
+
+    // Método equals e hashCode para comparar se objetos são iguais
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true; //  Verifica se as referências dos objetos são as mesmas
+        if (o == null || getClass() != o.getClass()) return false; // Verifica se o objeto é do mesmo tipo
+        AccountantDTO that = (AccountantDTO) o;
+        return Objects.equals(id, that.id) && // Compara cada campo relevante
+                Objects.equals(registrationNumber, that.registrationNumber) &&
+                Objects.equals(accountantCode, that.accountantCode) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(isActive, that.isActive);
+    }
+
+    // Método hashCode para gerar um código hash para o objeto baseado nos campos relevantes
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, registrationNumber, accountantCode, name, isActive);
     }
 }

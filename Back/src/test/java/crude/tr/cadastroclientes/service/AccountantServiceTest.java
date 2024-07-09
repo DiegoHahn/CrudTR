@@ -43,21 +43,21 @@ public class AccountantServiceTest {
     private AccountantService accountantService;
 
     private Accountant accountantTeste;
+    private Accountant accountant2;
+    private AccountantDTO accountantDTO;
     private List<Accountant> accountantList;
 
     @BeforeEach
     public void setUp() {
         accountantTeste = new Accountant(1L, "12345678901", "1123", "Contador1", true);
-        Accountant accountant2 = new Accountant(2L, "98765432109", "2456", "Contador2", true);
+        accountant2 = new Accountant(2L, "12345678902", "1124", "Contador2", true);
+        accountantDTO = new AccountantDTO(1L, "12345678901", "1123", "Contador1", true);
         accountantList = Arrays.asList(accountantTeste, accountant2);
     }
 
     @DisplayName("Given AccountantDTO when convertToAccountant then return Accountant")
     @Test
     void testGivenAccountantDTO_whenConvertToAccountant_thenReturnAccountant() {
-        // Arrange
-        AccountantDTO accountantDTO = new AccountantDTO(1L,"12345678901", "123", "Teste", true);
-
         // Act
         Accountant accountant = accountantService.convertToAccountant(accountantDTO);
 
@@ -106,7 +106,7 @@ public class AccountantServiceTest {
 
     @DisplayName("Given Accountant when addAccountant then return Accountant")
     @Test
-    void testGivenAccountant_whenAddAccountant_thenReturnAccountant() {
+    void testGivenAccountant_whenAddAccountant_thenReturnAccountant() throws DuplicateAccountantException {
         // Arrange
         when(accountantRepository.findByRegistrationNumber(accountantTeste.getRegistrationNumber())).thenReturn(Optional.empty());
         when(accountantRepository.save(accountantTeste)).thenReturn(accountantTeste);
@@ -142,7 +142,6 @@ public class AccountantServiceTest {
     void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() {
         // Arrange
         Long accountantId = 1L;
-        AccountantDTO accountantDTO = new AccountantDTO(accountantId, "12345678901", "1123", "ContadorAtualizado", true);
 
         // Mockando o comportamento do repositório
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
@@ -163,7 +162,6 @@ public class AccountantServiceTest {
     void testGivenIdThatDoesNotExist_whenUpdateAccountant_thenReturnNotFound() {
         // Arrange
         Long accountantId = 1L;
-        AccountantDTO accountantDTO = new AccountantDTO(accountantId, "12345678901", "1123", "ContadorAtualizado", true);
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
 
         // Act
@@ -199,20 +197,22 @@ public class AccountantServiceTest {
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(AccountantNotFoundException.class, () -> accountantService.deleteAccountant(accountantId));
+        AccountantNotFoundException exception = assertThrows(AccountantNotFoundException.class,
+                () -> accountantService.deleteAccountant(accountantId));
+        assertEquals("Contador não encontrado com o id: " + accountantId, exception.getMessage());
         verify(accountantRepository, times(1)).findById(accountantId);
         verify(accountantRepository, never()).deleteById(accountantId);
     }
+
 
     @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException with FK constraint then throw ForeignKeyViolationException")
     @Test
     void testGivenIdThatIsReferencedInAnotherTable_whenDeleteAccountant_thenThrowForeignKeyViolationException() {
         // Arrange
         Long accountantId = 1L;
-        Accountant accountant = new Accountant();
-        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountant));
-        DataIntegrityViolationException dataIntegrityViolationException = new DataIntegrityViolationException("Constraint violation",
-                new SQLException("Violation of foreign key constraint", "23503"));
+        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
+        DataIntegrityViolationException dataIntegrityViolationException = new DataIntegrityViolationException("Erro de constraint",
+                new SQLException("Contador está associado a um cliente"));
         doThrow(dataIntegrityViolationException).when(accountantRepository).deleteById(accountantId);
 
         // Act & Assert

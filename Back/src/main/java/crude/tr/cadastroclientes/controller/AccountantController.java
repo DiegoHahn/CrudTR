@@ -1,5 +1,9 @@
 package crude.tr.cadastroclientes.controller;
 
+import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
+import crude.tr.cadastroclientes.Exceptions.DeleteAccountantException;
+import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
+import crude.tr.cadastroclientes.Exceptions.ForeignKeyViolationException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.service.AccountantService;
@@ -10,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -41,23 +44,20 @@ public class AccountantController {
     }
 
     @PostMapping
-    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) {
+    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) throws DuplicateAccountantException { //poderia ser uma ResponseStatusException
         Accountant accountant = accountantService.convertToAccountant(accountantdto);
         ResponseEntity<Accountant> responseEntity = accountantService.addAccountant(accountant);
-        if (responseEntity.getStatusCode() == HttpStatus.CONFLICT) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Registro duplicado");
-        }
         return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    //PathVariable = id será passado na URL e RequestBody = corpo da requisição será um objeto cliente
+    //PathVariable = id será passado na URL e RequestBody = corpo da requisição será um objeto contador
     public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody @Valid AccountantDTO accountantDTO) {
        return accountantService.updateAccountant(id, accountantDTO);
         }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) throws ForeignKeyViolationException, AccountantNotFoundException, DeleteAccountantException {
         return accountantService.deleteAccountant(id);
     }
 }

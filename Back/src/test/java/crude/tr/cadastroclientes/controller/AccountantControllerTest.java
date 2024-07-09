@@ -1,6 +1,7 @@
 package crude.tr.cadastroclientes.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.service.AccountantService;
@@ -17,11 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,8 +50,8 @@ public class AccountantControllerTest {
 
     @BeforeEach
     public void setUp() {
-        accountantTeste = new Accountant(1L, "12345678901", "1123", "Contador1", true);
-        accountantDTO = new AccountantDTO(1L, "12345678901", "1123", "Contador1", true);
+        accountantTeste = new Accountant(1L, "47048010045", "1123", "Contador1", true);
+        accountantDTO = new AccountantDTO(1L, "47048010045", "1123", "Contador1", true);
     }
 
     @DisplayName("Given name, page, and size when listAccountants then return Accountant Page")
@@ -64,12 +67,11 @@ public class AccountantControllerTest {
                         .param("page", "0")
                         .param("size", "10"))
                 .andExpect(status().isOk())
-//                .andDo(print())
                 .andExpect((ResultMatcher) jsonPath("$.content.size()", is(1)))
                 .andExpect(jsonPath("$.content[0].registrationNumber").value(accountantTeste.getRegistrationNumber()));
     }
 
-    @DisplayName("Given Id when getAccountantById then return C")
+    @DisplayName("Given Id when getAccountantById then return Accountant Optional")
     @Test
     public void testGivenId_whenGetAccountantsById_thenReturnAccountantOptional() throws Exception {
         //Arrange
@@ -83,22 +85,66 @@ public class AccountantControllerTest {
                 .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())));
     }
 
-//    @DisplayName("Given Id and AccountantDTO when updateAccountant then return Accountant")
-//    @Test
-//    public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
-//        // Arrange
-//        given(accountantService.updateAccountant(1L, accountantDTO))
-//                .willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
-//
-//        // Act & Assert
-//        mockMvc.perform(put("/accountants/1")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(accountantDTO)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
-//                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())));
-//
-//    }
+    @DisplayName("Given valid AccountantDTO when addAccountant then return Created")
+    @Test
+    public void testGivenValidAccountantDTO_whenAddAccountant_thenReturnCreated() throws Exception {
+        // Arrange
+        given(accountantService.convertToAccountant(accountantDTO)).willReturn(accountantTeste);
+        given(accountantService.addAccountant(accountantTeste)).willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+
+        // Act & Assert
+        mockMvc.perform(post("/accountants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountantDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
+                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())))
+                .andExpect(jsonPath("$.accountantCode", is(accountantTeste.getAccountantCode())))
+                .andExpect(jsonPath("$.name", is(accountantTeste.getName())))
+                .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
+    }
+
+
+    @DisplayName("Given duplicate AccountantDTO when addAccountant then return Conflict")
+    @Test
+    public void testGivenDuplicateAccountantDTO_whenAddAccountant_thenReturnConflict() throws Exception {
+        // Arrange
+        given(accountantService.convertToAccountant(accountantDTO)).willReturn(accountantTeste);
+        given(accountantService.addAccountant(accountantTeste)).willThrow(new DuplicateAccountantException("Registro duplicado"));
+
+        // Act & Assert
+        mockMvc.perform(post("/accountants")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountantDTO)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    public void testObjectMapperSerialization() throws Exception {
+        String json = objectMapper.writeValueAsString(accountantDTO);
+        AccountantDTO deserialized = objectMapper.readValue(json, AccountantDTO.class);
+        assertEquals(accountantDTO, deserialized);
+    }
+
+    @DisplayName("Given Id and AccountantDTO when updateAccountant then return Accountant")
+    @Test
+    public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
+        // Arrange
+        given(accountantService.updateAccountant(1L, accountantDTO))
+                .willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+
+        // Act & Assert
+        mockMvc.perform(put("/accountants/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountantDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
+                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())))
+                .andExpect(jsonPath("$.accountantCode", is(accountantTeste.getAccountantCode())))
+                .andExpect(jsonPath("$.name", is(accountantTeste.getName())))
+                .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
+    }
+
 
     @DisplayName("Given id when deleteAccountant then return NO_CONTENT")
     @Test

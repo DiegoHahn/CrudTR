@@ -47,20 +47,7 @@ public class AccountantService {
         return accountantRepository.findById(id);
     }
 
-    //MUDA O RETORNO DA EXCEÇÃO
-//    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
-//        try {
-//            Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
-//            if (existingAccountant.isPresent()) {
-//                throw new DuplicateAccountantException("Registro duplicado");
-//            } else {
-//                return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
-//            }
-//        } catch (DuplicateAccountantException e) {
-//            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.CONFLICT);
-//        }
-//    }
-    public ResponseEntity<Accountant> addAccountant(Accountant accountant) {
+    public ResponseEntity<Accountant> addAccountant(Accountant accountant) throws DuplicateAccountantException {
         Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
         if (existingAccountant.isPresent()) {
             throw new DuplicateAccountantException("Registro duplicado");
@@ -73,13 +60,10 @@ public class AccountantService {
         Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
             Accountant accountantToUpdate = accountantOptional.get();
-
-            // Atualiza as propriedades do Accountant existente
             accountantToUpdate.setRegistrationNumber(accountantDTO.getRegistrationNumber());
-            accountantToUpdate.setAccountantCode(accountantDTO.getAccountantCode()); // Correção aqui!
+            accountantToUpdate.setAccountantCode(accountantDTO.getAccountantCode());
             accountantToUpdate.setName(accountantDTO.getName());
             accountantToUpdate.setIsActive(accountantDTO.getIsActive());
-
             Accountant updatedAccountant = accountantRepository.save(accountantToUpdate);
             return new ResponseEntity<>(updatedAccountant, HttpStatus.OK);
         } else {
@@ -87,22 +71,21 @@ public class AccountantService {
         }
     }
 
-public ResponseEntity<Void> deleteAccountant(Long id) {
-    Optional<Accountant> accountantOptional = findAccountantByID(id);
-    if (accountantOptional.isPresent()) {
-        try {
-            accountantRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (DataIntegrityViolationException e) {
-            Throwable cause = e.getRootCause();
-            if (cause instanceof SQLException) {
-                throw new ForeignKeyViolationException("Você não pode excluir um contador que está associado a um cliente");
+    public ResponseEntity<Void> deleteAccountant(Long id) throws ForeignKeyViolationException, DeleteAccountantException, AccountantNotFoundException {
+        Optional<Accountant> accountantOptional = findAccountantByID(id);
+        if (accountantOptional.isPresent()) {
+            try {
+                accountantRepository.deleteById(id);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } catch (DataIntegrityViolationException e) {
+                Throwable cause = e.getRootCause();
+                if (cause instanceof SQLException) {
+                    throw new ForeignKeyViolationException("Você não pode excluir um contador que está associado a um cliente");
+                }
+                throw new DeleteAccountantException("Não foi possivel excluir esse contador");
             }
-            throw new DeleteAccountantException("Não foi possivel excluir esse contador");
+        }  else {
+            throw new AccountantNotFoundException("Contador não encontrado com o id: " + id);
         }
-    }  else {
-        throw new AccountantNotFoundException("Accountant not found with id: " + id);
     }
-}
-
 }
