@@ -55,14 +55,27 @@ public class AccountantController {
     }
 
     @PutMapping("/{id}")
-    //PathVariable = id será passado na URL e RequestBody = corpo da requisição será um objeto contador
     public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody @Valid AccountantDTO accountantDTO) {
-       return accountantService.updateAccountant(id, accountantDTO);
+        try {
+            Accountant updatedAccountant = accountantService.updateAccountant(id, accountantDTO);
+            return new ResponseEntity<>(updatedAccountant, HttpStatus.OK);
+        } catch (AccountantNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) throws ForeignKeyViolationException, AccountantNotFoundException, DeleteAccountantException {
-        return accountantService.deleteAccountant(id);
+    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) {
+        try {
+            accountantService.deleteAccountant(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (AccountantNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (ForeignKeyViolationException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (DeleteAccountantException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
 

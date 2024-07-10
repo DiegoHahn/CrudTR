@@ -1,7 +1,10 @@
 package crude.tr.cadastroclientes.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
+import crude.tr.cadastroclientes.Exceptions.DeleteAccountantException;
 import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
+import crude.tr.cadastroclientes.Exceptions.ForeignKeyViolationException;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.service.AccountantService;
@@ -129,11 +132,12 @@ public class AccountantControllerTest {
     @Test
     public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
         // Arrange
-        given(accountantService.updateAccountant(1L, accountantDTO))
-                .willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+        Long id = 1L;
+        given(accountantService.updateAccountant(id, accountantDTO))
+                .willReturn(accountantTeste);
 
         // Act & Assert
-        mockMvc.perform(put("/accountants/{id}", 1L)
+        mockMvc.perform(put("/accountants/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountantDTO)))
                 .andExpect(status().isOk())
@@ -144,14 +148,27 @@ public class AccountantControllerTest {
                 .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
     }
 
+    @DisplayName("Given non-existing Id and AccountantDTO when updateAccountant then return NotFound")
+    @Test
+    public void testGivenNonExistingIdAndAccountantDTO_whenUpdateAccountant_thenReturnNotFound() throws Exception {
+        // Arrange
+        Long id = 999L;
+        given(accountantService.updateAccountant(id, accountantDTO))
+                .willThrow(new AccountantNotFoundException("Contador não encontrado com o id: " + id));
+
+        // Act & Assert
+        mockMvc.perform(put("/accountants/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(accountantDTO)))
+                .andExpect(status().isNotFound());
+    }
 
     @DisplayName("Given id when deleteAccountant then return NO_CONTENT")
     @Test
     public void testGivenId_whenDeleteAccountant_thenReturnNoContent() throws Exception {
         // Arrange
         Long id = 1L;
-        when(accountantService.deleteAccountant(id))
-                .thenReturn(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+        doNothing().when(accountantService).deleteAccountant(id);
 
         // Act & Assert
         mockMvc.perform(delete("/accountants/{id}", id))
@@ -165,8 +182,8 @@ public class AccountantControllerTest {
     public void testGivenNonExistingId_whenDeleteAccountant_thenReturnNotFound() throws Exception {
         // Arrange
         Long id = 999L;
-        when(accountantService.deleteAccountant(id))
-                .thenReturn(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        doThrow(new AccountantNotFoundException("Contador não encontrado com o id: " + id))
+                .when(accountantService).deleteAccountant(id);
 
         // Act & Assert
         mockMvc.perform(delete("/accountants/{id}", id))
@@ -180,12 +197,27 @@ public class AccountantControllerTest {
     public void testGivenIdWithForeignKeyConstraint_whenDeleteAccountant_thenReturnConflict() throws Exception {
         // Arrange
         Long id = 1L;
-        when(accountantService.deleteAccountant(id))
-                .thenReturn(new ResponseEntity<>(HttpStatus.CONFLICT));
+        doThrow(new ForeignKeyViolationException("Você não pode excluir um contador que está associado a um cliente"))
+                .when(accountantService).deleteAccountant(id);
 
         // Act & Assert
         mockMvc.perform(delete("/accountants/{id}", id))
                 .andExpect(status().isConflict());
+
+        verify(accountantService, times(1)).deleteAccountant(id);
+    }
+
+    @DisplayName("Given id when deleteAccountant throws DeleteAccountantException then return INTERNAL_SERVER_ERROR")
+    @Test
+    public void testGivenId_whenDeleteAccountantThrowsDeleteAccountantException_thenReturnInternalServerError() throws Exception {
+        // Arrange
+        Long id = 1L;
+        doThrow(new DeleteAccountantException("Não foi possível excluir esse contador"))
+                .when(accountantService).deleteAccountant(id);
+
+        // Act & Assert
+        mockMvc.perform(delete("/accountants/{id}", id))
+                .andExpect(status().isInternalServerError());
 
         verify(accountantService, times(1)).deleteAccountant(id);
     }

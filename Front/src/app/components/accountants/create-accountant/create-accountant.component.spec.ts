@@ -82,7 +82,12 @@ describe('CreateAccountantComponent', () => {
         name: ['Teste'],
         isActive: [true]
       });
-      jest.spyOn(mockService, 'create').mockReturnValue({subscribe: (callbacks: any) => {callbacks.next()}}); //simula o retorno do subscribe como o next
+      jest.spyOn(mockService, 'create').mockReturnValue({
+        subscribe: (callbacks: any) => {
+          callbacks.next();
+          return { unsubscribe: () => {} };
+        }
+      } as any); //simula o retorno do subscribe como o next
       jest.spyOn(mockRouter, 'navigate').mockImplementation(() => Promise.resolve(true));
       
       // Act
@@ -102,7 +107,12 @@ describe('CreateAccountantComponent', () => {
         name: ['Teste'],
         isActive: [true]
       });
-      jest.spyOn(mockService, 'create').mockReturnValue({subscribe: (callbacks: any) => {callbacks.error({ status: 409 })}});
+      jest.spyOn(mockService, 'create').mockReturnValue({
+        subscribe: (callbacks: any) => {
+          callbacks.error({ status: 409 });
+          return { unsubscribe: () => {} };
+        }
+      } as any);
 
       // Act
       component.createAccountant();
@@ -122,8 +132,9 @@ describe('CreateAccountantComponent', () => {
       jest.spyOn(mockService, 'create').mockReturnValue({
         subscribe: (callbacks: any) => {
           callbacks.error({ status: 500 });
+          return { unsubscribe: () => {} };
         }
-      });
+      } as any);
 
       // Act
       component.createAccountant();

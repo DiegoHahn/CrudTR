@@ -27,8 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 // Anotação para indicar que a classe de teste deve ser estendida com o MockitoExtension
@@ -136,9 +135,44 @@ public class AccountantServiceTest {
         verify(accountantRepository, times(0)).save(accountantTeste);
     }
 
-    @DisplayName("Given id and AccountantDTO when updateAccountant then return Accountant")
+//    @DisplayName("Given id and AccountantDTO when updateAccountant then return Accountant")
+//    @Test
+//    void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() {
+//        // Arrange
+//        Long accountantId = 1L;
+//
+//        // Mockando o comportamento do repositório
+//        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
+//        when(accountantRepository.save(any(Accountant.class))).thenReturn(accountantTeste);
+//
+//        // Act
+//        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
+//
+//        // Assert
+//        assertEquals(accountantTeste, result.getBody());
+//        assertEquals(HttpStatus.OK, result.getStatusCode());
+//        verify(accountantRepository, times(1)).findById(accountantId);
+//        verify(accountantRepository, times(1)).save(accountantTeste);
+//    }
+//
+//    @DisplayName("Given id that does not exist when updateAccountant then return Not_Found")
+//    @Test
+//    void testGivenIdThatDoesNotExist_whenUpdateAccountant_thenReturnNotFound() {
+//        // Arrange
+//        Long accountantId = 1L;
+//        when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
+//
+//        // Act
+//        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
+//
+//        // Assert
+//        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+//        verify(accountantRepository, times(1)).findById(accountantId);
+//        verify(accountantRepository, times(0)).save(any(Accountant.class));
+//    }
+    @DisplayName("Given id and AccountantDTO when updateAccountant then return updated Accountant")
     @Test
-    void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() {
+    void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnUpdatedAccountant() throws AccountantNotFoundException {
         // Arrange
         Long accountantId = 1L;
 
@@ -147,48 +181,42 @@ public class AccountantServiceTest {
         when(accountantRepository.save(any(Accountant.class))).thenReturn(accountantTeste);
 
         // Act
-        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
+        Accountant result = accountantService.updateAccountant(accountantId, accountantDTO);
 
         // Assert
-        assertEquals(accountantTeste, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(accountantTeste, result);
         verify(accountantRepository, times(1)).findById(accountantId);
         verify(accountantRepository, times(1)).save(accountantTeste);
     }
 
-    @DisplayName("Given id that does not exist when updateAccountant then return Not_Found")
+    @DisplayName("Given id that does not exist when updateAccountant then throw AccountantNotFoundException")
     @Test
-    void testGivenIdThatDoesNotExist_whenUpdateAccountant_thenReturnNotFound() {
+    void testGivenIdThatDoesNotExist_whenUpdateAccountant_thenThrowAccountantNotFoundException() {
         // Arrange
         Long accountantId = 1L;
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
 
-        // Act
-        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
+        // Act & Assert
+        AccountantNotFoundException exception = assertThrows(AccountantNotFoundException.class, () -> {
+            accountantService.updateAccountant(accountantId, accountantDTO);
+        });
 
-        // Assert
-        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
+        assertEquals("Contador não encontrado com o id: " + accountantId, exception.getMessage());
         verify(accountantRepository, times(1)).findById(accountantId);
-        verify(accountantRepository, times(0)).save(any(Accountant.class));
+        verify(accountantRepository, never()).save(any(Accountant.class));
     }
 
-    @DisplayName("Given id that exists in database when deleteAccountant then return HttpStatus NO_CONTENT")
+    @DisplayName("Given id that exists in database when deleteAccountant then delete successfully")
     @Test
-    void testGivenIdThatExists_whenDeleteAccountant_thenReturnNoContent() {
+    void testGivenIdThatExists_whenDeleteAccountant_thenDeleteSuccessfully() {
         // Arrange
         Long accountantId = 1L;
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
 
         // Act
-        ResponseEntity<Void> result = null;
-        try {
-            result = accountantService.deleteAccountant(accountantId);
-        } catch (ForeignKeyViolationException | DeleteAccountantException | AccountantNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        assertDoesNotThrow(() -> accountantService.deleteAccountant(accountantId));
 
         // Assert
-        assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());
         verify(accountantRepository, times(1)).findById(accountantId);
         verify(accountantRepository, times(1)).deleteById(accountantId);
     }
@@ -207,7 +235,6 @@ public class AccountantServiceTest {
         verify(accountantRepository, times(1)).findById(accountantId);
         verify(accountantRepository, never()).deleteById(accountantId);
     }
-
 
     @DisplayName("Given id when deleteAccountant throws DataIntegrityViolationException with FK constraint then throw ForeignKeyViolationException")
     @Test
@@ -240,7 +267,7 @@ public class AccountantServiceTest {
         // Act & Assert
         DeleteAccountantException exception = assertThrows(DeleteAccountantException.class,
                 () -> accountantService.deleteAccountant(accountantId));
-        assertEquals("Não foi possivel excluir esse contador", exception.getMessage());
+        assertEquals("Não foi possível excluir esse contador", exception.getMessage());
         verify(accountantRepository, times(1)).findById(accountantId);
         verify(accountantRepository, times(1)).deleteById(accountantId);
     }

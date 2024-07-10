@@ -56,35 +56,31 @@ public class AccountantService {
         }
     }
 
-    public ResponseEntity<Accountant> updateAccountant(Long id, AccountantDTO accountantDTO) {
-        Optional<Accountant> accountantOptional = findAccountantByID(id);
-        if (accountantOptional.isPresent()) {
-            Accountant accountantToUpdate = accountantOptional.get();
-            accountantToUpdate.setRegistrationNumber(accountantDTO.getRegistrationNumber());
-            accountantToUpdate.setAccountantCode(accountantDTO.getAccountantCode());
-            accountantToUpdate.setName(accountantDTO.getName());
-            accountantToUpdate.setIsActive(accountantDTO.getIsActive());
-            Accountant updatedAccountant = accountantRepository.save(accountantToUpdate);
-            return new ResponseEntity<>(updatedAccountant, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public Accountant updateAccountant(Long id, AccountantDTO accountantDTO) throws AccountantNotFoundException {
+        Accountant accountantToUpdate = findAccountantByID(id)
+                .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + id));
+
+        accountantToUpdate.setRegistrationNumber(accountantDTO.getRegistrationNumber());
+        accountantToUpdate.setAccountantCode(accountantDTO.getAccountantCode());
+        accountantToUpdate.setName(accountantDTO.getName());
+        accountantToUpdate.setIsActive(accountantDTO.getIsActive());
+
+        return accountantRepository.save(accountantToUpdate);
     }
 
-    public ResponseEntity<Void> deleteAccountant(Long id) throws DeleteAccountantException, AccountantNotFoundException, ForeignKeyViolationException {
+    public void deleteAccountant(Long id) throws AccountantNotFoundException, ForeignKeyViolationException, DeleteAccountantException {
         Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
             try {
                 accountantRepository.deleteById(id);
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } catch (DataIntegrityViolationException e) {
                 Throwable cause = e.getRootCause();
                 if (cause instanceof SQLException) {
                     throw new ForeignKeyViolationException("Você não pode excluir um contador que está associado a um cliente");
                 }
-                throw new DeleteAccountantException("Não foi possivel excluir esse contador");
+                throw new DeleteAccountantException("Não foi possível excluir esse contador");
             }
-        }  else {
+        } else {
             throw new AccountantNotFoundException("Contador não encontrado com o id: " + id);
         }
     }
