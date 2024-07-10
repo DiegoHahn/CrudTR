@@ -90,7 +90,7 @@ public class AccountantControllerTest {
     public void testGivenValidAccountantDTO_whenAddAccountant_thenReturnCreated() throws Exception {
         // Arrange
         given(accountantService.convertToAccountant(accountantDTO)).willReturn(accountantTeste);
-        given(accountantService.addAccountant(accountantTeste)).willReturn(new ResponseEntity<>(accountantTeste, HttpStatus.OK));
+        given(accountantService.addAccountant(accountantTeste)).willReturn(accountantTeste);
 
         // Act & Assert
         mockMvc.perform(post("/accountants")
@@ -103,7 +103,6 @@ public class AccountantControllerTest {
                 .andExpect(jsonPath("$.name", is(accountantTeste.getName())))
                 .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
     }
-
 
     @DisplayName("Given duplicate AccountantDTO when addAccountant then return Conflict")
     @Test

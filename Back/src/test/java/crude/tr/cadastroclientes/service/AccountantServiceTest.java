@@ -112,11 +112,10 @@ public class AccountantServiceTest {
         when(accountantRepository.save(accountantTeste)).thenReturn(accountantTeste);
 
         // Act
-        var result = accountantService.addAccountant(accountantTeste);
+        Accountant result = accountantService.addAccountant(accountantTeste);
 
         // Assert
-        assertEquals(accountantTeste, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+        assertEquals(accountantTeste, result);
         verify(accountantRepository, times(1)).findByRegistrationNumber(accountantTeste.getRegistrationNumber());
         verify(accountantRepository, times(1)).save(accountantTeste);
     }
@@ -181,7 +180,12 @@ public class AccountantServiceTest {
         when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
 
         // Act
-        ResponseEntity<Void> result = accountantService.deleteAccountant(accountantId);
+        ResponseEntity<Void> result = null;
+        try {
+            result = accountantService.deleteAccountant(accountantId);
+        } catch (ForeignKeyViolationException | DeleteAccountantException | AccountantNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         // Assert
         assertEquals(HttpStatus.NO_CONTENT, result.getStatusCode());

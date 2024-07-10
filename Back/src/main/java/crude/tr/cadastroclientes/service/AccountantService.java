@@ -47,12 +47,12 @@ public class AccountantService {
         return accountantRepository.findById(id);
     }
 
-    public ResponseEntity<Accountant> addAccountant(Accountant accountant) throws DuplicateAccountantException {
+    public Accountant addAccountant(Accountant accountant) throws DuplicateAccountantException {
         Optional<Accountant> existingAccountant = accountantRepository.findByRegistrationNumber(accountant.getRegistrationNumber());
         if (existingAccountant.isPresent()) {
             throw new DuplicateAccountantException("Registro duplicado");
         } else {
-            return new ResponseEntity<>(accountantRepository.save(accountant), HttpStatus.OK);
+            return accountantRepository.save(accountant);
         }
     }
 
@@ -71,7 +71,7 @@ public class AccountantService {
         }
     }
 
-    public ResponseEntity<Void> deleteAccountant(Long id) throws ForeignKeyViolationException, DeleteAccountantException, AccountantNotFoundException {
+    public ResponseEntity<Void> deleteAccountant(Long id) throws DeleteAccountantException, AccountantNotFoundException, ForeignKeyViolationException {
         Optional<Accountant> accountantOptional = findAccountantByID(id);
         if (accountantOptional.isPresent()) {
             try {

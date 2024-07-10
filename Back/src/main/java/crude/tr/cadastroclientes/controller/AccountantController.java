@@ -44,10 +44,14 @@ public class AccountantController {
     }
 
     @PostMapping
-    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantdto) throws DuplicateAccountantException { //poderia ser uma ResponseStatusException
-        Accountant accountant = accountantService.convertToAccountant(accountantdto);
-        ResponseEntity<Accountant> responseEntity = accountantService.addAccountant(accountant);
-        return new ResponseEntity<>(responseEntity.getBody(), HttpStatus.CREATED);
+    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantDTO) {
+        try {
+            Accountant accountant = accountantService.convertToAccountant(accountantDTO);
+            Accountant savedAccountant = accountantService.addAccountant(accountant);
+            return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
+        } catch (DuplicateAccountantException e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
     @PutMapping("/{id}")
