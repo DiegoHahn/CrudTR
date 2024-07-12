@@ -135,41 +135,6 @@ public class AccountantServiceTest {
         verify(accountantRepository, times(0)).save(accountantTeste);
     }
 
-//    @DisplayName("Given id and AccountantDTO when updateAccountant then return Accountant")
-//    @Test
-//    void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() {
-//        // Arrange
-//        Long accountantId = 1L;
-//
-//        // Mockando o comportamento do repositório
-//        when(accountantRepository.findById(accountantId)).thenReturn(Optional.of(accountantTeste));
-//        when(accountantRepository.save(any(Accountant.class))).thenReturn(accountantTeste);
-//
-//        // Act
-//        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
-//
-//        // Assert
-//        assertEquals(accountantTeste, result.getBody());
-//        assertEquals(HttpStatus.OK, result.getStatusCode());
-//        verify(accountantRepository, times(1)).findById(accountantId);
-//        verify(accountantRepository, times(1)).save(accountantTeste);
-//    }
-//
-//    @DisplayName("Given id that does not exist when updateAccountant then return Not_Found")
-//    @Test
-//    void testGivenIdThatDoesNotExist_whenUpdateAccountant_thenReturnNotFound() {
-//        // Arrange
-//        Long accountantId = 1L;
-//        when(accountantRepository.findById(accountantId)).thenReturn(Optional.empty());
-//
-//        // Act
-//        ResponseEntity<Accountant> result = accountantService.updateAccountant(accountantId, accountantDTO);
-//
-//        // Assert
-//        assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
-//        verify(accountantRepository, times(1)).findById(accountantId);
-//        verify(accountantRepository, times(0)).save(any(Accountant.class));
-//    }
     @DisplayName("Given id and AccountantDTO when updateAccountant then return updated Accountant")
     @Test
     void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnUpdatedAccountant() throws AccountantNotFoundException {

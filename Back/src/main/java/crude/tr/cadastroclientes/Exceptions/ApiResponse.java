@@ -1,20 +1,20 @@
 package crude.tr.cadastroclientes.Exceptions;
 
-public class ErrorResponse {
-    private int status;
+public class ApiResponse<T> {
+    private T data;
     private String message;
 
-    public ErrorResponse(int status, String message) {
-        this.status = status;
+    public ApiResponse(T data, String message) {
+        this.data = data;
         this.message = message;
     }
 
-    public int getStatus() {
-        return status;
+    public T getData() {
+        return data;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setData(T data) {
+        this.data = data;
     }
 
     public String getMessage() {

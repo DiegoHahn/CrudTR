@@ -1,9 +1,6 @@
 package crude.tr.cadastroclientes.controller;
 
-import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
-import crude.tr.cadastroclientes.Exceptions.DeleteAccountantException;
-import crude.tr.cadastroclientes.Exceptions.DuplicateAccountantException;
-import crude.tr.cadastroclientes.Exceptions.ForeignKeyViolationException;
+import crude.tr.cadastroclientes.Exceptions.*;
 import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.service.AccountantService;
@@ -44,37 +41,45 @@ public class AccountantController {
     }
 
     @PostMapping
-    public ResponseEntity<Accountant> addAccountant(@RequestBody @Valid AccountantDTO accountantDTO) {
+    public ResponseEntity<ApiResponse<Accountant>> addAccountant(@RequestBody @Valid AccountantDTO accountantDTO) {
         try {
             Accountant accountant = accountantService.convertToAccountant(accountantDTO);
             Accountant savedAccountant = accountantService.addAccountant(accountant);
-            return new ResponseEntity<>(savedAccountant, HttpStatus.CREATED);
+            ApiResponse<Accountant> response =new ApiResponse<>(savedAccountant, "Contador salvo com sucesso");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (DuplicateAccountantException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            ApiResponse<Accountant> response =new ApiResponse<>(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Accountant> updateAccountant(@PathVariable Long id, @RequestBody @Valid AccountantDTO accountantDTO) {
+    public ResponseEntity<ApiResponse<Accountant>> updateAccountant(@PathVariable Long id, @RequestBody @Valid AccountantDTO accountantDTO) {
         try {
             Accountant updatedAccountant = accountantService.updateAccountant(id, accountantDTO);
-            return new ResponseEntity<>(updatedAccountant, HttpStatus.OK);
+            ApiResponse<Accountant> response = new ApiResponse<>(updatedAccountant, "Contador atualizado com sucesso");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (AccountantNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            ApiResponse<Accountant> response = new ApiResponse<>(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccountant(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Accountant>> deleteAccountant(@PathVariable Long id) {
         try {
             accountantService.deleteAccountant(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            ApiResponse<Accountant> response = new ApiResponse<>(null, "Contador excluído com sucesso");
+            return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
         } catch (AccountantNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            ApiResponse<Accountant> response = new ApiResponse<>(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         } catch (ForeignKeyViolationException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            ApiResponse<Accountant> response = new ApiResponse<>(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
         } catch (DeleteAccountantException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            ApiResponse<Accountant> response = new ApiResponse<>(null, e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -7,11 +7,9 @@ import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.OffsetDateTime;
+import java.util.Objects;
 
 public class ClientDTO {
-    public void setRegistrationType(RegistrationType registrationType) {
-        this.registrationType = registrationType;
-    }
 
     private Long id;
     private RegistrationType registrationType;
@@ -37,6 +35,18 @@ public class ClientDTO {
 
     @NotNull(message = "O id do contador é obrigatório.")
     private Long accountantId;
+
+    public ClientDTO(Long id, RegistrationType registrationType, String registrationNumber, String clientCode, String name, String fantasyName, OffsetDateTime registrationDate, CompanyStatus companyStatus, Long accountantId) {
+        this.id = id;
+        this.registrationType = registrationType;
+        this.registrationNumber = registrationNumber;
+        this.clientCode = clientCode;
+        this.name = name;
+        this.fantasyName = fantasyName;
+        this.registrationDate = registrationDate;
+        this.companyStatus = companyStatus;
+        this.accountantId = accountantId;
+    }
 
     public String getRegistrationNumber() {
         return registrationNumber;
@@ -86,10 +96,13 @@ public class ClientDTO {
         return registrationType;
     }
 
+    public void setRegistrationType(RegistrationType registrationType) {
+        this.registrationType = registrationType;
+    }
+
     public void setRegistrationNumber(String registrationNumber) {
         this.registrationNumber = registrationNumber;
     }
-
 
     public Long getAccountantId() {
         return accountantId;
@@ -98,4 +111,25 @@ public class ClientDTO {
     public void setAccountantId(Long accountantId) {
         this.accountantId = accountantId;
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        ClientDTO clientDTO = (ClientDTO) o;
+//        return Objects.equals(id, clientDTO.id) &&
+//                registrationType == clientDTO.registrationType &&
+//                Objects.equals(registrationNumber, clientDTO.registrationNumber) &&
+//                Objects.equals(clientCode, clientDTO.clientCode) &&
+//                Objects.equals(name, clientDTO.name) &&
+//                Objects.equals(fantasyName, clientDTO.fantasyName) &&
+//                Objects.equals(registrationDate, clientDTO.registrationDate) &&
+//                companyStatus == clientDTO.companyStatus &&
+//                Objects.equals(accountantId, clientDTO.accountantId);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, registrationType, registrationNumber, clientCode, name, fantasyName, registrationDate, companyStatus, accountantId);
+//    }
 }

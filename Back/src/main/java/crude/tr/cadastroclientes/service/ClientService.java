@@ -1,5 +1,7 @@
 package crude.tr.cadastroclientes.service;
 
+import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
+import crude.tr.cadastroclientes.Exceptions.ClientNotFoundException;
 import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.model.Client;
@@ -26,7 +28,7 @@ public class ClientService {
         this.accountantRepository = accountantRepository;
     }
 
-    public Client convertToClient(ClientDTO clientDTO) {
+    public Client convertToClient(ClientDTO clientDTO) throws AccountantNotFoundException {
         Client client = new Client();
         client.setRegistrationType(clientDTO.getRegistrationType());
         client.setRegistrationNumber(clientDTO.getRegistrationNumber());
@@ -37,7 +39,7 @@ public class ClientService {
         client.setCompanyStatus(clientDTO.getCompanyStatus());
         if (clientDTO.getAccountantId() != null) {
             Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
-                    .orElseThrow(() -> new EntityNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
+                    .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
             client.setAccountant(accountant);
         }
         return client;
@@ -47,55 +49,47 @@ public class ClientService {
         return clientRepository.findClientsByName(name, pageable);
     }
 
-    public Optional<Client> findCLientById(Long id) {
+    public Optional<Client> findClientById(Long id) {
         return clientRepository.findById(id);
     }
 
     //Salva um cliente associado a um contador
-    public Client addClient(Client client) {
+    public Client addClient(Client client) throws AccountantNotFoundException {
         //verifica se está sendo passado um contador no corpo da requisição
         if (client.getAccountant() != null) {
             Long accountantId = client.getAccountant().getId();
             Accountant accountant = accountantRepository.findById(accountantId)
-                    .orElseThrow(() -> new EntityNotFoundException("Contador não encontrado com o id: " + accountantId));
+                    .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + accountantId));
             client.setAccountant(accountant);
         }
         return clientRepository.save(client);
     }
 
-    public ResponseEntity<Client> updateClient(Long id, ClientDTO clientDTO) {
-        Optional<Client> clientOptional = findCLientById(id);
-        //Atualiza o valor de um client do banco ao inves de criar um novo registro, devido ao funcionamento da JPA
-        if (clientOptional.isPresent()) {
-            Client existingClient = clientOptional.get();
-            existingClient.setRegistrationType(clientDTO.getRegistrationType());
-            existingClient.setRegistrationNumber(clientDTO.getRegistrationNumber());
-            existingClient.setClientCode(clientDTO.getClientCode());
-            existingClient.setName(clientDTO.getName());
-            existingClient.setFantasyName(clientDTO.getFantasyName());
-            existingClient.setRegistrationDate(clientDTO.getRegistrationDate());
-            existingClient.setCompanyStatus(clientDTO.getCompanyStatus());
-            if (clientDTO.getAccountantId() != null) {
-                Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
-                        .orElseGet(() -> {
-                            Accountant newAccountant = new Accountant();
-                            return accountantRepository.save(newAccountant);
-                        });
-                existingClient.setAccountant(accountant);
-            }
-            return new ResponseEntity<>(clientRepository.save(existingClient), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public Client updateClient(Long id, ClientDTO clientDTO) throws ClientNotFoundException, AccountantNotFoundException {
+        Client existingClient = findClientById(id)
+                .orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado com o id: " + id));
+
+        existingClient.setRegistrationType(clientDTO.getRegistrationType());
+        existingClient.setRegistrationNumber(clientDTO.getRegistrationNumber());
+        existingClient.setClientCode(clientDTO.getClientCode());
+        existingClient.setName(clientDTO.getName());
+        existingClient.setFantasyName(clientDTO.getFantasyName());
+        existingClient.setRegistrationDate(clientDTO.getRegistrationDate());
+        existingClient.setCompanyStatus(clientDTO.getCompanyStatus());
+
+        if (clientDTO.getAccountantId() != null) {
+            Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
+                    .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
+            existingClient.setAccountant(accountant);
         }
+
+        return clientRepository.save(existingClient);
     }
 
-    public ResponseEntity<Void> deleteClient(Long id) {
-        Optional<Client> clientOptional = findCLientById(id);
-        if (clientOptional.isPresent()) {
-            clientRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public void deleteClient(Long id) throws ClientNotFoundException {
+        if (!clientRepository.existsById(id)) {
+            throw new ClientNotFoundException("Cliente não encontrado com o id: " + id);
         }
+        clientRepository.deleteById(id);
     }
 }

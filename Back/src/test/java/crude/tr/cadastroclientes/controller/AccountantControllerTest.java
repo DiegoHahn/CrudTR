@@ -100,11 +100,12 @@ public class AccountantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountantDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
-                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())))
-                .andExpect(jsonPath("$.accountantCode", is(accountantTeste.getAccountantCode())))
-                .andExpect(jsonPath("$.name", is(accountantTeste.getName())))
-                .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
+                .andExpect(jsonPath("$.data.id", is(accountantTeste.getId().intValue())))
+                .andExpect(jsonPath("$.data.registrationNumber", is(accountantTeste.getRegistrationNumber())))
+                .andExpect(jsonPath("$.data.accountantCode", is(accountantTeste.getAccountantCode())))
+                .andExpect(jsonPath("$.data.name", is(accountantTeste.getName())))
+                .andExpect(jsonPath("$.data.isActive", is(accountantTeste.getIsActive())))
+                .andExpect(jsonPath("$.message", is("Contador salvo com sucesso")));
     }
 
     @DisplayName("Given duplicate AccountantDTO when addAccountant then return Conflict")
@@ -141,11 +142,12 @@ public class AccountantControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(accountantDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(accountantTeste.getId().intValue())))
-                .andExpect(jsonPath("$.registrationNumber", is(accountantTeste.getRegistrationNumber())))
-                .andExpect(jsonPath("$.accountantCode", is(accountantTeste.getAccountantCode())))
-                .andExpect(jsonPath("$.name", is(accountantTeste.getName())))
-                .andExpect(jsonPath("$.isActive", is(accountantTeste.getIsActive())));
+                .andExpect(jsonPath("$.data.id", is(accountantTeste.getId().intValue())))
+                .andExpect(jsonPath("$.data.registrationNumber", is(accountantTeste.getRegistrationNumber())))
+                .andExpect(jsonPath("$.data.accountantCode", is(accountantTeste.getAccountantCode())))
+                .andExpect(jsonPath("$.data.name", is(accountantTeste.getName())))
+                .andExpect(jsonPath("$.data.isActive", is(accountantTeste.getIsActive())))
+                .andExpect(jsonPath("$.message", is("Contador atualizado com sucesso")));
     }
 
     @DisplayName("Given non-existing Id and AccountantDTO when updateAccountant then return NotFound")
