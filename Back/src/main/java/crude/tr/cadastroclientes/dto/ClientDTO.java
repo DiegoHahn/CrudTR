@@ -1,5 +1,8 @@
 package crude.tr.cadastroclientes.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import crude.tr.cadastroclientes.model.CompanyStatus;
 import crude.tr.cadastroclientes.model.RegistrationType;
 import jakarta.validation.constraints.NotNull;
@@ -9,8 +12,10 @@ import org.hibernate.validator.constraints.Length;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class ClientDTO {
 
+    @JsonProperty("id")
     private Long id;
     private RegistrationType registrationType;
 
@@ -28,6 +33,7 @@ public class ClientDTO {
     private String fantasyName;
 
     @NotNull(message = "O campo de data é obrigatório.")
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSXXX")
     private OffsetDateTime registrationDate;
 
     @NotNull(message = "O campo de data é obrigatório.")
@@ -46,6 +52,8 @@ public class ClientDTO {
         this.registrationDate = registrationDate;
         this.companyStatus = companyStatus;
         this.accountantId = accountantId;
+    }
+    public ClientDTO() {
     }
 
     public String getRegistrationNumber() {
@@ -112,24 +120,24 @@ public class ClientDTO {
         this.accountantId = accountantId;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        ClientDTO clientDTO = (ClientDTO) o;
-//        return Objects.equals(id, clientDTO.id) &&
-//                registrationType == clientDTO.registrationType &&
-//                Objects.equals(registrationNumber, clientDTO.registrationNumber) &&
-//                Objects.equals(clientCode, clientDTO.clientCode) &&
-//                Objects.equals(name, clientDTO.name) &&
-//                Objects.equals(fantasyName, clientDTO.fantasyName) &&
-//                Objects.equals(registrationDate, clientDTO.registrationDate) &&
-//                companyStatus == clientDTO.companyStatus &&
-//                Objects.equals(accountantId, clientDTO.accountantId);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, registrationType, registrationNumber, clientCode, name, fantasyName, registrationDate, companyStatus, accountantId);
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClientDTO clientDTO = (ClientDTO) o;
+        return Objects.equals(id, clientDTO.id) &&
+                registrationType == clientDTO.registrationType &&
+                Objects.equals(registrationNumber, clientDTO.registrationNumber) &&
+                Objects.equals(clientCode, clientDTO.clientCode) &&
+                Objects.equals(name, clientDTO.name) &&
+                Objects.equals(fantasyName, clientDTO.fantasyName) &&
+                Objects.equals(registrationDate, clientDTO.registrationDate) &&
+                companyStatus == clientDTO.companyStatus &&
+                Objects.equals(accountantId, clientDTO.accountantId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, registrationType, registrationNumber, clientCode, name, fantasyName, registrationDate, companyStatus, accountantId);
+    }
 }

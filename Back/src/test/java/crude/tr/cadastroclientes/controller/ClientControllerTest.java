@@ -1,9 +1,11 @@
 package crude.tr.cadastroclientes.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import crude.tr.cadastroclientes.Exceptions.AccountantNotFoundException;
 import crude.tr.cadastroclientes.Exceptions.ClientNotFoundException;
-import crude.tr.cadastroclientes.dto.AccountantDTO;
 import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Accountant;
 import crude.tr.cadastroclientes.model.Client;
@@ -20,14 +22,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.TimeZone;
 
-import static crude.tr.cadastroclientes.model.CompanyStatus.*;
-import static crude.tr.cadastroclientes.model.RegistrationType.*;
+import static crude.tr.cadastroclientes.model.CompanyStatus.ACTIVE;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -48,17 +49,25 @@ public class ClientControllerTest {
     @MockBean
     private ClientService clientService;
 
-    private Accountant accountantTest;
     private Client clientTest;
     private ClientDTO clientDTO;
 
     @BeforeEach
     public void setUp() {
-        OffsetDateTime now = OffsetDateTime.now();
-        accountantTest = new Accountant(1L, "47048010045", "1123", "Contador1", true);
-        clientTest = new Client(1L, RegistrationType.CPF, "29563355024", "123", "Test Client", "Test Fantasy Name", now, ACTIVE, accountantTest);
-        clientDTO = new ClientDTO(1L, RegistrationType.CPF, "29563355024", "123", "Test Client", "Test Fantasy Name", now, CompanyStatus.ACTIVE, 1L);
+        // Configura o ObjectMapper para serializar OffsetDateTime e utilizar o timezone padrão estava dando erro na deserialização da data
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.setTimeZone(TimeZone.getDefault());
 
+        OffsetDateTime now = OffsetDateTime.now();
+        Accountant accountantTest = new Accountant(1L, "47048010045", "1123", "Contador1", true);
+        clientTest = new Client(1L, RegistrationType.CPF, "29563355024", "123", "Test Client", "Test Fantasy Name", normalizeOffsetDateTime(now), ACTIVE, accountantTest);
+        clientDTO = new ClientDTO(1L, RegistrationType.CPF, "29563355024", "123", "Test Client", "Test Fantasy Name", normalizeOffsetDateTime(now), CompanyStatus.ACTIVE, 1L);
+    }
+
+    private OffsetDateTime normalizeOffsetDateTime(OffsetDateTime dateTime) {
+        return dateTime.withNano((dateTime.getNano() / 1000) * 1000); // Ajusta a precisão para milissegundos para evitar erro de comparação de datas
     }
 
     @DisplayName("Given name, page, and size when listClients then return Client Page")
@@ -98,10 +107,8 @@ public class ClientControllerTest {
         mockMvc.perform(put("/clients/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientDTO)))
-                .andExpect(status().isOk());
-//                .andExpect(jsonPath("$.data.id", is(clientTest.getId().intValue())))
-//                .andExpect(jsonPath("$.data.name", is(clientTest.getName())))
-//                .andExpect(jsonPath("$.message", is("Cliente atualizado com sucesso")));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message", is("Cliente atualizado com sucesso")));
     }
 
     @Test
@@ -152,16 +159,34 @@ public class ClientControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(clientDTO)))
                 .andExpect(status().isCreated())
-//                .andExpect(jsonPath("$.data.id", is(clientTest.getId().intValue())))
-//                .andExpect(jsonPath("$.data.name", is(clientTest.getName())))
                 .andExpect(jsonPath("$.message", is("Cliente salvo com sucesso")));
+    }
+
+    @DisplayName("Given valid ClientDTO when addClient then return NOT_FOUND if AccountantNotFoundException is thrown")
+    @Test
+    public void testGivenValidClientDTO_whenAddClient_thenReturnNotFound() throws Exception {
+        // Arrange
+        long accountantId = 999L;
+        AccountantNotFoundException exception = new AccountantNotFoundException("Contador não encontrado com o id: " + accountantId);
+        when(clientService.convertToClient(any(ClientDTO.class))).thenThrow(exception);
+
+        // Act & Assert
+        mockMvc.perform(post("/clients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(clientDTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Contador não encontrado com o id: " + accountantId));
     }
 
     @Test
     public void testObjectMapperSerialization() throws Exception {
         String json = objectMapper.writeValueAsString(clientDTO);
+        System.out.println("Serialized JSON: " + json);
+
         ClientDTO deserialized = objectMapper.readValue(json, ClientDTO.class);
+        System.out.println("Original: " + clientDTO);
+        System.out.println("Deserialized: " + deserialized);
+
         assertEquals(clientDTO, deserialized);
     }
-
 }

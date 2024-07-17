@@ -28,22 +28,28 @@ public class ClientService {
         this.accountantRepository = accountantRepository;
     }
 
-    public Client convertToClient(ClientDTO clientDTO) throws AccountantNotFoundException {
-        Client client = new Client();
-        client.setRegistrationType(clientDTO.getRegistrationType());
-        client.setRegistrationNumber(clientDTO.getRegistrationNumber());
-        client.setClientCode(clientDTO.getClientCode());
-        client.setName(clientDTO.getName());
-        client.setFantasyName(clientDTO.getFantasyName());
-        client.setRegistrationDate(clientDTO.getRegistrationDate());
-        client.setCompanyStatus(clientDTO.getCompanyStatus());
-        if (clientDTO.getAccountantId() != null) {
-            Accountant accountant = accountantRepository.findById(clientDTO.getAccountantId())
-                    .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + clientDTO.getAccountantId()));
-            client.setAccountant(accountant);
-        }
-        return client;
+public Client convertToClient(ClientDTO clientDTO) throws AccountantNotFoundException {
+    Client client = new Client();
+    client.setRegistrationType(clientDTO.getRegistrationType());
+    client.setRegistrationNumber(clientDTO.getRegistrationNumber());
+    client.setClientCode(clientDTO.getClientCode());
+    client.setName(clientDTO.getName());
+    client.setFantasyName(clientDTO.getFantasyName());
+    client.setRegistrationDate(clientDTO.getRegistrationDate());
+    client.setCompanyStatus(clientDTO.getCompanyStatus());
+
+    Long accountantId = clientDTO.getAccountantId();
+
+    if (accountantId != null ) {
+        Accountant accountant = accountantRepository.findById(accountantId)
+                .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + accountantId));
+        client.setAccountant(accountant);
+    } else {
+        // Caso o accountantId não seja válido
+        throw new AccountantNotFoundException("Você deve informar um contador válido");
     }
+    return client;
+}
 
     public Page<Client> findClientsOrderedByName(String name, Pageable pageable) {
         return clientRepository.findClientsByName(name, pageable);
@@ -56,7 +62,7 @@ public class ClientService {
     //Salva um cliente associado a um contador
     public Client addClient(Client client) throws AccountantNotFoundException {
         //verifica se está sendo passado um contador no corpo da requisição
-        if (client.getAccountant() != null) {
+        if (client.getAccountant() != null && client.getAccountant().getId() != null) {
             Long accountantId = client.getAccountant().getId();
             Accountant accountant = accountantRepository.findById(accountantId)
                     .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + accountantId));

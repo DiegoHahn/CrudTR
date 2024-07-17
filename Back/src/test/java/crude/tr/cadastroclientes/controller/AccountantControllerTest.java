@@ -122,13 +122,6 @@ public class AccountantControllerTest {
                 .andExpect(status().isConflict());
     }
 
-    @Test
-    public void testObjectMapperSerialization() throws Exception {
-        String json = objectMapper.writeValueAsString(accountantDTO);
-        AccountantDTO deserialized = objectMapper.readValue(json, AccountantDTO.class);
-        assertEquals(accountantDTO, deserialized);
-    }
-
     @DisplayName("Given Id and AccountantDTO when updateAccountant then return Accountant")
     @Test
     public void testGivenIdAndAccountantDTO_whenUpdateAccountant_thenReturnAccountant() throws Exception {
@@ -222,5 +215,12 @@ public class AccountantControllerTest {
                 .andExpect(status().isInternalServerError());
 
         verify(accountantService, times(1)).deleteAccountant(id);
+    }
+
+    @Test
+    public void testObjectMapperSerialization() throws Exception {
+        String json = objectMapper.writeValueAsString(accountantDTO);
+        AccountantDTO deserialized = objectMapper.readValue(json, AccountantDTO.class);
+        assertEquals(accountantDTO, deserialized);
     }
 }
