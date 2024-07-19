@@ -43,7 +43,7 @@ export class ClientService {
      return this.http.get<Accountant[]>(url);
   }
 
-  create(client: Client):any {
+  create(client: Client):Observable<Client> {
       return this.http.post<Client>(this.clientAPI, client)
     }
 
