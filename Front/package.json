@@ -47,8 +47,7 @@
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/",
       "<rootDir>/src/app/components/clients/edit-client/edit-client.component.spec.ts",
-      "<rootDir>/src/app/components/clients/list-clients/list-clients.component.spec.ts",
-      "<rootDir>/src/app/components/clients/delete-client/delete-client.component.spec.ts",
+      "<rootDir>/src/app/components/clients/create-client/create-client.component.spec.ts",
       "<rootDir>/src/app/components/footer/footer.component.spec.ts",
       "<rootDir>/src/app/components/header/header.component.spec.ts"
     ],

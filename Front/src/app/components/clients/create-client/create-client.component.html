@@ -63,7 +63,7 @@
                     {{ getErrorMessage('clientCode') }}
                 </div>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label for="registrationDate" class="form-label">Data da abertura:</label>
                 <input id="registrationDate" [matDatepicker]='picker' class="box"  formControlName="registrationDate">
                 <mat-hint class="hint">Selecione:</mat-hint>
@@ -72,7 +72,7 @@
                 <div *ngIf="clientForm.get('registrationDate')?.touched && clientForm.get('registrationDate')?.errors" class="invalid-feedback">
                   {{ getErrorMessage('registrationDate') }}
                 </div>
-              </div>
+              </div> -->
             <div class="form-group">
                 <label for="companyStatus" class="form-label">Situação do cliente:</label>
                 <select 

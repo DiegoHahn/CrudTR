@@ -52,68 +52,76 @@ describe('AccountantService', () => {
     }));
   });
 
-  it('should create an accountant', () => {
-    const mockAccountant: Accountant = {
-      name: 'Test',
-      registrationNumber: '123456',
-      accountantCode: '123456',
-      isActive: true
-    };
+  describe('create', () => {
+    it('should create an accountant', () => {
+      const mockAccountant: Accountant = {
+        name: 'Test',
+        registrationNumber: '123456',
+        accountantCode: '123456',
+        isActive: true
+      };
 
-    service.create(mockAccountant).subscribe((response:  Accountant) => {
-      expect(response).toEqual(mockAccountant);
+      service.create(mockAccountant).subscribe((response:  Accountant) => {
+        expect(response).toEqual(mockAccountant);
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/accountants');
+      expect(req.request.method).toBe('POST');
+      req.flush(mockAccountant);
     });
-
-    const req = httpMock.expectOne('http://localhost:8080/accountants');
-    expect(req.request.method).toBe('POST');
-    req.flush(mockAccountant);
   });
 
-  it('should edit an accountant', () => {
-    const mockAccountant: Accountant = {
-      id: 1,
-      name: 'Test',
-      registrationNumber: '123456',
-      accountantCode: '123456',
-      isActive: true
-    };
+  describe('edit', () => {
+    it('should edit an accountant', () => {
+      const mockAccountant: Accountant = {
+        id: 1,
+        name: 'Test',
+        registrationNumber: '123456',
+        accountantCode: '123456',
+        isActive: true
+      };
 
-    service.edit(mockAccountant).subscribe((response:Accountant) => {
-      expect(response).toEqual(mockAccountant);
+      service.edit(mockAccountant).subscribe((response:Accountant) => {
+        expect(response).toEqual(mockAccountant);
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/accountants/1');
+      expect(req.request.method).toBe('PUT');
+      req.flush(mockAccountant);
     });
-
-    const req = httpMock.expectOne('http://localhost:8080/accountants/1');
-    expect(req.request.method).toBe('PUT');
-    req.flush(mockAccountant);
   });
 
-  it('should delete an accountant', () => {
-    const accountantID = 1;
+  describe('delete', () => {
+    it('should delete an accountant', () => {
+      const accountantID = 1;
 
-    service.delete(accountantID).subscribe((response:Accountant) => {
-      expect(response).toEqual({});
+      service.delete(accountantID).subscribe((response:Accountant) => {
+        expect(response).toEqual({});
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/accountants/1');
+      expect(req.request.method).toBe('DELETE');
     });
-
-    const req = httpMock.expectOne('http://localhost:8080/accountants/1');
-    expect(req.request.method).toBe('DELETE');
   });
 
-  it('should search an accountant by ID', () => {
-    const accountantID = 1;
-    const mockAccountant: Accountant = {
-      id: 1,
-      name: 'Test',
-      registrationNumber: '123456',
-      accountantCode: '123456',
-      isActive: true
-    };
+  describe('searchAccountByID', () => {
+    it('should search an accountant by ID', () => {
+      const accountantID = 1;
+      const mockAccountant: Accountant = {
+        id: 1,
+        name: 'Test',
+        registrationNumber: '123456',
+        accountantCode: '123456',
+        isActive: true
+      };
 
-    service.searchAccountByID(accountantID).subscribe((response:Accountant) => {
-      expect(response).toEqual(mockAccountant);
+      service.searchAccountByID(accountantID).subscribe((response:Accountant) => {
+        expect(response).toEqual(mockAccountant);
+      });
+
+      const req = httpMock.expectOne('http://localhost:8080/accountants/1');
+      expect(req.request.method).toBe('GET');
+      req.flush(mockAccountant);
     });
-
-    const req = httpMock.expectOne('http://localhost:8080/accountants/1');
-    expect(req.request.method).toBe('GET');
-    req.flush(mockAccountant);
   });
 });

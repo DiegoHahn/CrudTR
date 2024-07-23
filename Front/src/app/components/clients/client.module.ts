@@ -29,7 +29,7 @@ import { ListClientsComponent } from './list-clients/list-clients.component';
     CommonModule,
     ClientRoutingModule,
     FormsModule,
-    MatDatepickerModule,
+    // MatDatepickerModule,
     MatFormFieldModule,
     MatSelectInfiniteScrollModule,
     MatNativeDateModule,
