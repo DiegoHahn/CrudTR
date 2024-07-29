@@ -40,7 +40,7 @@ export class CreateClientComponent implements OnInit {
     private service: ClientService, 
     private router: Router,
     private formBuilder: FormBuilder,
-    // private adapter: DateAdapter<Date>
+    private adapter: DateAdapter<Date>
   ) 
   {
     this.accountants$ = this.accountants.asObservable().pipe(
@@ -50,7 +50,7 @@ export class CreateClientComponent implements OnInit {
     )
     
     //formatar a data para o padrão brasileiro
-    // this.adapter.setLocale('pt-BR');
+    this.adapter.setLocale('pt-BR');
   }
 
   ngOnInit(): void {
@@ -151,9 +151,9 @@ export class CreateClientComponent implements OnInit {
     });
   }
 
-  // onDateSelect(event: MatDatepickerInputEvent<Date>): void {
-  //   this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
-  // }
+  onDateSelect(event: MatDatepickerInputEvent<Date>): void {
+    this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
+  }
 }
 
 
