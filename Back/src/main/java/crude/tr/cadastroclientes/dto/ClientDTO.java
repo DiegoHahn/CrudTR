@@ -1,6 +1,5 @@
 package crude.tr.cadastroclientes.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import crude.tr.cadastroclientes.model.CompanyStatus;
@@ -33,7 +32,6 @@ public class ClientDTO {
     private String fantasyName;
 
     @NotNull(message = "O campo de data é obrigatório.")
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSXXX")
     private OffsetDateTime registrationDate;
 
     @NotNull(message = "O campo de data é obrigatório.")
