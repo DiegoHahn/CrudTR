@@ -41,12 +41,13 @@ export class CreateClientComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private adapter: DateAdapter<Date>
-  ) {
+  ) 
+  {
     this.accountants$ = this.accountants.asObservable().pipe(
       scan((acc:Accountant[], curr:Accountant[]) => {
         return [...acc, ...curr];
       }, [])
-    ),
+    )
     
     //formatar a data para o padrão brasileiro
     this.adapter.setLocale('pt-BR');

@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { AccountantService } from '../accountants.service';
 import { ListAccountantsComponent } from './list-accountants.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PageEvent } from '@angular/material';
 
 describe('ListAccountantsComponent', () => {
   let component: ListAccountantsComponent;
@@ -51,11 +52,32 @@ describe('ListAccountantsComponent', () => {
     }));
   });
 
+  describe('loadAccountants', () => {
+    it('should call listAccountantsData and set listAccountants and totalElements', () => {
+      // Arrange
+      const response: any = {
+        content: ['accountant1', 'accountant2'],
+        totalElements: 2
+      };
+      jest.spyOn(mockService, 'listAccountantsData').mockReturnValue(of(response));
+      const pageIndex = 0;
+      const pageSize = 10;
+    
+      // Act
+      component.loadAccountants(pageIndex, pageSize);
+    
+      // Assert
+      expect(mockService.listAccountantsData).toHaveBeenCalledWith(component.nameFilter, pageIndex, pageSize);
+      expect(component.listAccountants).toEqual(response.content);
+      expect(component.totalElements).toEqual(response.totalElements);
+    });
+  });
+  
   describe('changePage', () => {
     it ('should call loadAccountants', () => {
       // Arrange
       jest.spyOn(component, 'loadAccountants').mockImplementation(() => {});
-      const event = {pageIndex: 0, pageSize: 10} as any;
+      const event = {pageIndex: 0, pageSize: 10} as PageEvent;
 
       // Act
       component.changePage(event);
@@ -93,28 +115,6 @@ describe('ListAccountantsComponent', () => {
       })
     })
   })
-
-  describe('loadAccountants', () => {
-  //perguntar se o é necessario tipar corretamente a resposta do mockservice
-    it('should call listAccountantsData and set listAccountants and totalElements', () => {
-      // Arrange
-      const response: any = {
-        content: ['accountant1', 'accountant2'],
-        totalElements: 2,
-      };
-      jest.spyOn(mockService, 'listAccountantsData').mockReturnValue(of(response));
-      const pageIndex = 0;
-      const pageSize = 10;
-    
-      // Act
-      component.loadAccountants(pageIndex, pageSize);
-    
-      // Assert
-      expect(mockService.listAccountantsData).toHaveBeenCalledWith(component.nameFilter, pageIndex, pageSize);
-      expect(component.listAccountants).toEqual(response.content);
-      expect(component.totalElements).toEqual(response.totalElements);
-    });
-  });
 
   describe('onDeleteConfirm', () => {
     it ('should call delete with selectedAccountantID and loadAccountants when confirmation is true', () => {

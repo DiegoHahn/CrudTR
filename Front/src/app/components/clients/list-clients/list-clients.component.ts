@@ -4,6 +4,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { ClientResponse } from '../client.response';
 import { ClientService } from '../clients.service';
 import { Client } from './../client';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-list-clients',
@@ -60,7 +61,7 @@ export class ListClientsComponent implements OnInit {
        next: () => {
          this.loadClients(this.pageIndex, this.pageSize);
        },
-       error: (error) => {
+       error: (error: HttpErrorResponse) => {
          console.log(error);
        },
        complete: () => {

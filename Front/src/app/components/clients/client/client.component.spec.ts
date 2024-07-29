@@ -26,10 +26,24 @@ describe('ClientComponent', () => {
 
    // Teste para verificar se a entrada de listAccountants é aceita
    it('should accept listClients input', () => {
-    const clients: Client[] = [
-      {registrationType:RegistrationType.CPF, registrationNumber:"34388376094", clientCode:"123", name:"Cliente1 ", fantasyName:"Cliente1 Ltda", registrationDate:"2024-04-18T17:56:46.970Z", companyStatus:CompanyStatus.ACTIVE, accountantId:52, accountant: { name: "teste1", registrationNumber: "59023624076", accountantCode: "123", isActive: false }},
-      {registrationType:RegistrationType.CNPJ, registrationNumber:"48719378000176", clientCode:"1223", name:"Cliente2 ", fantasyName:"Cliente2 Ltda", registrationDate:"2024-07-18T17:56:46.970Z", companyStatus:CompanyStatus.INACTIVE, accountantId:23, accountant: { name: "teste2", registrationNumber: "21243735015", accountantCode: "123", isActive: false }}
-    ];
+    const clients: Client[] = [{
+      registrationType:RegistrationType.CPF, registrationNumber:"34388376094", 
+      clientCode:"123",
+      name:"Cliente1 ", 
+      fantasyName:"Cliente1 Ltda", 
+      registrationDate:"2024-04-18T17:56:46.970Z", 
+      companyStatus:CompanyStatus.ACTIVE, 
+      accountantId:52, accountant: { name: "teste1", registrationNumber: "59023624076", accountantCode: "123", isActive: false }
+    }, {
+      registrationType:RegistrationType.CNPJ, 
+      registrationNumber:"48719378000176", 
+      clientCode:"1223", name:"Cliente2 ", 
+      fantasyName:"Cliente2 Ltda", 
+      registrationDate:"2024-07-18T17:56:46.970Z", 
+      companyStatus:CompanyStatus.INACTIVE, 
+      accountantId:23, 
+      accountant: { name: "teste2", registrationNumber: "21243735015", accountantCode: "123", isActive: false }
+    }];
     component.listClients = clients;
     expect(component.listClients).toEqual(clients);
   });

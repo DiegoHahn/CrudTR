@@ -20,4 +20,26 @@ describe('DeleteClientComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('confirmDeletion() should emit true', () => {
+    // Arrange
+    jest.spyOn(component.confirmation, 'emit');
+
+    // Act
+    component.confirmDeletion();
+
+    // Assert
+    expect(component.confirmation.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('cancelDeletion() should emit false', () => {
+    // Arrange
+    jest.spyOn(component.confirmation, 'emit');
+
+    // Act
+    component.cancelDeletion();
+
+    // Assert
+    expect(component.confirmation.emit).toHaveBeenCalledWith(false);
+  });
 });
