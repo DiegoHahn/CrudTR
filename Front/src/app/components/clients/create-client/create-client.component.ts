@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material';
 import { DateAdapter } from '@angular/material/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, scan } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, scan, tap } from 'rxjs';
 import { Accountant } from '../../accountants/accountant';
 import { FormValidators } from '../../validators/form-validators';
 import { ClientService } from '../clients.service';
@@ -41,14 +41,11 @@ export class CreateClientComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder,
     private adapter: DateAdapter<Date>
-  ) 
-  {
+  ) {
     this.accountants$ = this.accountants.asObservable().pipe(
       scan((acc:Accountant[], curr:Accountant[]) => {
         return [...acc, ...curr];
-      }, [])
-    )
-    
+      }, []));
     //formatar a data para o padrão brasileiro
     this.adapter.setLocale('pt-BR');
   }
@@ -85,14 +82,26 @@ export class CreateClientComponent implements OnInit {
   }
 
   //muda o tipo de registro a máscara do campo de registro e validação
+  // onRegistrationTypeChange(type: RegistrationType) {
+  //   this.registrationType = type;
+  //   this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
+  //   this.clientForm.get('registrationNumber')?.setValue('');
+  //   this.registrationPlaceholder = type === 'CPF' ? 'Digite o CPF' : 'Digite o CNPJ';
+  //   this.clientForm.get('registrationNumber')?.setValidators([
+  //     type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
+  //   ]);
+  // }
+
   onRegistrationTypeChange(type: RegistrationType) {
-    this.registrationType = type;
-    this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
-    this.clientForm.get('registrationNumber')?.setValue('');
-    this.registrationPlaceholder = type === 'CPF' ? 'Digite o CPF' : 'Digite o CNPJ';
-    this.clientForm.get('registrationNumber')?.setValidators([
-      type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
-    ]);
+    if (type === RegistrationType.CPF) {
+      this.registrationType = RegistrationType.CPF;
+      this.mask = '000.000.000-00';
+      this.clientForm.get('registrationNumber')?.setValidators([FormValidators.cpfValidator]);
+    } else {
+      this.registrationType = RegistrationType.CNPJ;
+      this.mask = '00.000.000/0000-00';
+      this.clientForm.get('registrationNumber')?.setValidators([FormValidators.cnpjValidator]);
+    }
   }
 
   getErrorMessage(controlName: string): string | null {
@@ -100,7 +109,6 @@ export class CreateClientComponent implements OnInit {
     if (!control?.errors) {
       return null;
     }
-
     switch (true) {
       case !!control.errors['required']:
         return 'Este campo é obrigatório.';
@@ -121,21 +129,40 @@ export class CreateClientComponent implements OnInit {
     }
   }
 
+  // createClient() {
+  //   if (this.clientForm.valid) {
+  //     this.service.create(this.clientForm.value).subscribe({
+  //       next: () => {
+  //         this.router.navigate(['/clients','listClients']);
+  //       },
+  //       error: (error: HttpErrorResponse) => {
+  //         console.log(error);
+  //         if (error.status === 409) {
+  //           this.errorMessage = "Registro duplicado";
+  //         } else {
+  //           this.errorMessage = "Erro inesperado";
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+
   createClient() {
     if (this.clientForm.valid) {
-      this.service.create(this.clientForm.value).subscribe({
-        next: () => {
-          this.router.navigate(['/clients','listClients']);
-        },
-        error: (error: HttpErrorResponse) => {
+      this.service.create(this.clientForm.value).pipe(
+        tap(() => {
+          this.router.navigate(['/clients', 'listClients']);
+        }),
+        catchError((error: HttpErrorResponse) => {
           console.log(error);
           if (error.status === 409) {
             this.errorMessage = "Registro duplicado";
           } else {
             this.errorMessage = "Erro inesperado";
           }
-        }
-      });
+          return of(null); // Retorna um observable vazio para completar o fluxo
+        })
+      ).subscribe(); // Inscreve-se no observable para executar a requisição
     }
   }
 
@@ -143,14 +170,28 @@ export class CreateClientComponent implements OnInit {
     this.router.navigate(['/clients','listClients'])
   }
 
-  getNextBatch() {
-    this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
-      this.accountants.next(response.content);
-      this.clientLoadOffset++;
-      this.total = response.totalElements;
-    });
-  }
+  // getNextBatch() {
+  //   this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
+  //     this.accountants.next(response.content);
+  //     this.clientLoadOffset++;
+  //     this.total = response.totalElements;
+  //   });
+  // }
 
+  getNextBatch() {
+    this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).pipe(
+      tap(response => {
+        this.total = response.totalElements; 
+        this.accountants.next(response.content);
+        this.clientLoadOffset++;
+      }),
+      catchError(() => {
+        this.accountants.next([]); //Atualiza o combobox com uma lista vazia em caso de erro
+        return of({content: [], totalElements: 0});
+      }) 
+    ).subscribe();
+  }
+  
   onDateSelect(event: MatDatepickerInputEvent<Date>): void {
     this.clientForm.patchValue({registrationDate: this.datePipe.transform(event.value, 'dd/MM/yyyy')});
   }

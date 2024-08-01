@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, scan } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, scan, tap } from 'rxjs';
 import { Accountant } from '../../accountants/accountant';
 import { FormValidators } from '../../validators/form-validators';
 import { ClientService } from '../clients.service';
@@ -107,13 +107,25 @@ export class EditClientComponent implements OnInit {
     });
   }
 
+  // onRegistrationTypeChange(type: RegistrationType) {
+  //   this.registrationType = type;
+  //   this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
+  //   this.registrationPlaceholder = type === 'CPF' ? 'Digite o CPF' : 'Digite o CNPJ';
+  //   this.clientForm.get('registrationNumber')?.setValidators([
+  //     type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
+  //   ]);
+  // }
+
   onRegistrationTypeChange(type: RegistrationType) {
-    this.registrationType = type;
-    this.mask = type === RegistrationType.CPF ? '000.000.000-00' : '00.000.000/0000-00';
-    this.registrationPlaceholder = type === 'CPF' ? 'Digite o CPF' : 'Digite o CNPJ';
-    this.clientForm.get('registrationNumber')?.setValidators([
-      type === RegistrationType.CPF ? FormValidators.cpfValidator : FormValidators.cnpjValidator
-    ]);
+    if (type === RegistrationType.CPF) {
+      this.registrationType = RegistrationType.CPF;
+      this.mask = '000.000.000-00';
+      this.clientForm.get('registrationNumber')?.setValidators([FormValidators.cpfValidator]);
+    } else {
+      this.registrationType = RegistrationType.CNPJ;
+      this.mask = '00.000.000/0000-00';
+      this.clientForm.get('registrationNumber')?.setValidators([FormValidators.cnpjValidator]);
+    }
   }
 
   getErrorMessage(controlName: string): string | null {
@@ -142,35 +154,68 @@ export class EditClientComponent implements OnInit {
     }
   }
 
+  // editClient() {
+  //   if (this.clientForm.valid) {
+  //     this.service.edit(this.clientForm.value).subscribe({
+  //       next: () => {
+  //         this.router.navigate(['/clients','listClients']);
+  //       },
+  //       error: (error: HttpErrorResponse) => {
+  //         console.log(error);
+  //         if (error.status === 409) {
+  //           this.errorMessage = "Registro duplicado";
+  //         } else {
+  //           this.errorMessage = "Erro inesperado";
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
+
   editClient() {
     if (this.clientForm.valid) {
- 
-      this.service.edit(this.clientForm.value).subscribe({
-        next: () => {
-          this.router.navigate(['/clients','listClients']);
-        },
-        error: (error: HttpErrorResponse) => {
+      this.service.edit(this.clientForm.value).pipe(
+        tap(() => {
+          this.router.navigate(['/clients', 'listClients']);
+        }),
+        catchError((error: HttpErrorResponse) => {
           console.log(error);
           if (error.status === 409) {
             this.errorMessage = "Registro duplicado";
           } else {
             this.errorMessage = "Erro inesperado";
           }
-        }
-      });
+          return of(null); 
+        })
+      ).subscribe();
     }
   }
-
+  
   cancelClient(){
     this.router.navigate(['/clients','listClients'])
   }
 
-  getNextBatch(): Observable<Accountant[]> {
-    this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
-      this.accountants.next(response.content);
-      this.clientLoadOffset++;
-      this.total = response.totalElements;
-    });
+  // getNextBatch(): Observable<Accountant[]> {
+  //   this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).subscribe(response => {
+  //     this.accountants.next(response.content);
+  //     this.clientLoadOffset++;
+  //     this.total = response.totalElements;
+  //   });
+  //   return this.accountants$;
+  // }
+
+  getNextBatch() {
+    this.service.listAccountantsData('', this.clientLoadOffset, this.clientLoadLimit).pipe(
+      tap(response => {
+        this.total = response.totalElements; 
+        this.accountants.next(response.content);
+        this.clientLoadOffset++;
+      }),
+      catchError(() => {
+        this.accountants.next([]); 
+        return of({content: [], totalElements: 0});
+      }) 
+    ).subscribe();
     return this.accountants$;
-    }
+  }
 }
