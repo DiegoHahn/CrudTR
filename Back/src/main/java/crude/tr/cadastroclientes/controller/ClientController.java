@@ -7,7 +7,6 @@ import crude.tr.cadastroclientes.dto.ClientDTO;
 import crude.tr.cadastroclientes.model.Client;
 import crude.tr.cadastroclientes.service.ClientService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

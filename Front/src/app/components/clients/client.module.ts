@@ -45,4 +45,3 @@ import { ListClientsComponent } from './list-clients/list-clients.component';
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },]
 })
 export class ClientModule { }
-
