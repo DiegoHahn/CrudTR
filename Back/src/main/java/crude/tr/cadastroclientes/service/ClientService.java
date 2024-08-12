@@ -18,11 +18,13 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final AccountantRepository accountantRepository;
+    private final RabbitService rabbitService;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository, AccountantRepository accountantRepository) {
+    public ClientService(ClientRepository clientRepository, AccountantRepository accountantRepository, RabbitService rabbitService) {
         this.clientRepository = clientRepository;
         this.accountantRepository = accountantRepository;
+        this.rabbitService = rabbitService;
     }
 
 public Client convertToClient(ClientDTO clientDTO) throws AccountantNotFoundException {
@@ -65,6 +67,7 @@ public Client convertToClient(ClientDTO clientDTO) throws AccountantNotFoundExce
                     .orElseThrow(() -> new AccountantNotFoundException("Contador não encontrado com o id: " + accountantId));
             client.setAccountant(accountant);
         }
+        rabbitService.createClient(client, "cadastro-cliente-exchange");
         return clientRepository.save(client);
     }
 
