@@ -9,6 +9,10 @@ public class RabbitService {
 
     private RabbitTemplate rabbitTemplate;
 
+    public RabbitService(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
     public void createClient(Client client, String exchange) {
         rabbitTemplate.convertAndSend(exchange, "", client);
     }
